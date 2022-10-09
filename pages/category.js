@@ -7,7 +7,6 @@ import Head from "next/head";
 import styles from "../styles/category.module.css";
 import Link from "next/link";
 import Row from "react-bootstrap/Row";
-// import CssBaseline from '@mui/material/CssBaseline';
 
 export default function Category() {
   var categoryList = [

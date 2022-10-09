@@ -5,7 +5,7 @@ import Account from "../../models/accountModel";
  * @param {import('next').NextApiRequest} req
  * @param {import('next').NextApiResponse} res
  */
-export default async function SignUp(req, res) {
+export default async function Login(req, res) {
   try {
     console.log("CONNECTING TO MONGO");
     await connectMongo();
@@ -16,18 +16,13 @@ export default async function SignUp(req, res) {
         console.log(err);
       } else {
         if (!account) {
-          console.log("CREATING DOCUMENT");
-          const account = new Account({
-            email: req.body.email,
-            password: req.body.password,
-          });
-
-          account.save();
-          console.log("CREATED DOCUMENT");
-          res.redirect("/dashboard");
-          
+          res.status(400).send("Account not exists");
         } else {
-          res.status(400).send('Account already exists');
+          if (account.password === req.body.password) {
+            res.redirect("/dashboard");
+          } else {
+            res.status(400).send("Wrong password");
+          }
         }
       }
     });

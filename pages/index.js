@@ -1,10 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
-// import connectMongo from "../utils/connectMongo";
-// import Account from "../models/accountModel";
 
-export default function Home({ accounts }) {
+export default function Home() {
   return (
     <>
       <Head>
@@ -19,41 +17,15 @@ export default function Home({ accounts }) {
         </h1>
         <div className="d-grid gap-2 col-1 mx-auto">
           <Link href="/category" style={{ textDecoration: "none" }}>
-            <button type="button" className={`${styles.startButton} btn btn-outline-dark btn-lg`}>
+            <button
+              type="button"
+              className={`${styles.startButton} btn btn-outline-dark btn-lg`}
+            >
               Start
             </button>
           </Link>
         </div>
       </div>
-
-      {/* {accounts.map((account)=>{
-          return (
-            <h1>{account.email}</h1>
-          );
-        })} */}
     </>
   );
 }
-
-// export const getServerSideProps = async () => {
-//   try {
-//     console.log('CONNECTING TO MONGO');
-//     await connectMongo();
-//     console.log('CONNECTED TO MONGO');
-
-//     console.log('FETCHING DOCUMENTS');
-//     const accounts = await Account.find();
-//     console.log('FETCHED DOCUMENTS');
-
-//     return {
-//       props: {
-//         accounts: JSON.parse(JSON.stringify(accounts)),
-//       },
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       notFound: true,
-//     };
-//   }
-// };

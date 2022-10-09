@@ -1,5 +1,9 @@
-import connectMongo from "../../utils/connectMongo";
-import Restaurant from "../../models/restaurantModel";
+import connectMongo from "../../../utils/connectMongo";
+import Restaurant from "../../../models/restaurantModel";
+import RestaurantCard from "../../../components/restaurantCard";
+import Row from "react-bootstrap/Row";
+import Link from "next/link";
+import _ from "lodash";
 
 export async function getStaticPaths() {
   const categoryNames = ["sushi", "donburi", "ramen", "burger"];
@@ -19,10 +23,9 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  console.log("test");
   await connectMongo();
 
-  const restaurantData = await Restaurant.findOne({
+  const restaurantData = await Restaurant.find({
     category: params.category,
   }).exec();
 
@@ -36,5 +39,11 @@ export async function getStaticProps({ params }) {
 }
 
 export default function RestaurantList({ restaurantDataSanitized }) {
-  return <h1>{restaurantDataSanitized.name}</h1>;
+  return (
+    <Row xs={1} md={2} lg={3} className="g-2">
+      {restaurantDataSanitized.map((foundItem, index) => {
+        return <RestaurantCard key={index} name={foundItem.name} category={foundItem.category}/>;
+      })}
+    </Row>
+  );
 }

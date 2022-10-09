@@ -37,18 +37,6 @@ export default function Login() {
     setConfirmPassword(event.target.value);
   }
 
-  function handleSubmit() {
-    if (isRegistered === false) {
-      if (logInDetail.password === confirmPassword) {
-        alert("Signup");
-      } else {
-        alert("Check your password");
-      }
-    } else {
-      alert("login");
-    }
-  }
-
   return (
     <div>
       <Form action={isRegistered ? "/api/login" : "/api/signup"} method="post">
@@ -60,6 +48,7 @@ export default function Login() {
             placeholder="Enter email"
             onChange={updateLogInDetail}
             value={logInDetail.email}
+            required
           />
         </Form.Group>
 
@@ -71,6 +60,7 @@ export default function Login() {
             placeholder="Password"
             onChange={updateLogInDetail}
             value={logInDetail.password}
+            required
           />
         </Form.Group>
 
@@ -85,6 +75,7 @@ export default function Login() {
             type="password"
             placeholder="Confirm Password"
             onChange={updateConfirmPassword}
+            value={confirmPassword}
           />
         </Form.Group>
 
@@ -92,8 +83,8 @@ export default function Login() {
           <Button
             variant="primary"
             type="submit"
-            onClick={handleSubmit}
             name={isRegistered ? "Login" : "Signup"}
+            disabled={((logInDetail.password===confirmPassword) || isRegistered===true)?false:true}
           >
             {isRegistered ? "Login" : "Signup"}
           </Button>
