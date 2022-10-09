@@ -1,0 +1,7 @@
+@media (prefers-color-scheme: dark) {
+    .startButton {
+        color: white;
+        border-color: white;
+    }
+  }
+  

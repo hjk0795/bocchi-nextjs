@@ -4,6 +4,8 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  text-align: center;
+  background-image: url(../public/45-degree-fabric-light.png);
 }
 
 a {
@@ -18,6 +20,7 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+    background: black;
   }
   body {
     color: white;

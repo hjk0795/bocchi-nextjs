@@ -1,0 +1,4 @@
+.notRegistered:hover {
+  cursor: pointer;
+  text-shadow: 0.5px 0.5px;
+}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import styles from "./loginForm.module.css";
 
 export default function Login() {
   const [isRegistered, setIsRegistered] = useState(true);
@@ -50,7 +51,7 @@ export default function Login() {
 
   return (
     <div>
-      <Form action="/api/login" method="post">
+      <Form action={isRegistered ? "/api/login" : "/api/signup"} method="post">
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -87,17 +88,22 @@ export default function Login() {
           />
         </Form.Group>
 
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={handleSubmit}
-          name={isRegistered ? "Login" : "Signup"}
-        >
-          {isRegistered ? "Login" : "Signup"}
-        </Button>
-        <Form.Text className="text-muted" onClick={updateIsRegistered}>
-          Not registered?
-        </Form.Text>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Button
+            variant="primary"
+            type="submit"
+            onClick={handleSubmit}
+            name={isRegistered ? "Login" : "Signup"}
+          >
+            {isRegistered ? "Login" : "Signup"}
+          </Button>
+          <Form.Text
+            className={`text-muted ${styles.notRegistered}`}
+            onClick={updateIsRegistered}
+          >
+            Not registered?
+          </Form.Text>
+        </div>
       </Form>
     </div>
   );

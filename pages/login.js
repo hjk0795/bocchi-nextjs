@@ -1,7 +1,7 @@
 import Head from "next/head";
-import LoginForm from "../components/loginForm"
+import LoginForm from "../components/loginForm";
 
-export default function Login() {
+export default function Login({ createdAccountData }) {
   return (
     <>
       <Head>
