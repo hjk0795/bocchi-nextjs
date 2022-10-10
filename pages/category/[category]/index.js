@@ -1,4 +1,4 @@
-import connectMongo from "../../../utils/connectionCheck";
+import connectionCheck from "../../../utils/connectionCheck";
 import Restaurant from "../../../models/restaurantModel";
 import RestaurantCard from "../../../components/restaurantCard";
 import Row from "react-bootstrap/Row";
@@ -23,7 +23,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  await connectMongo();
+  connectionCheck();
 
   const restaurantData = await Restaurant.find({
     category: params.category,

@@ -1,11 +1,11 @@
-import connectMongo from "../../../utils/connectionCheck";
+import connectionCheck from "../../../utils/connectionCheck";
 import Restaurant from "../../../models/restaurantModel";
 import RestaurantCard from "../../../components/restaurantCard";
 import Row from "react-bootstrap/Row";
 import DetailCard from "../../../components/detailCard";
 
 export async function getStaticPaths() {
-  await connectMongo();
+    connectionCheck();
 
   const categoryNames = ["sushi", "donburi", "ramen", "burger"];
 
@@ -35,7 +35,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  await connectMongo();
+    connectionCheck();
 
   const restaurantDetail = await Restaurant.findOne({
     name: params.restaurant,

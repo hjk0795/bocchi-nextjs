@@ -1,4 +1,4 @@
-import connectMongo from "../../utils/connectionCheck";
+import connectionCheck from "../../utils/connectionCheck";
 import Account from "../../models/accountModel";
 
 /**
@@ -8,7 +8,7 @@ import Account from "../../models/accountModel";
 export default async function SignUp(req, res) {
   try {
     console.log("CONNECTING TO MONGO");
-    await connectMongo();
+    connectionCheck();
     console.log("CONNECTED TO MONGO");
 
     Account.findOne({ email: req.body.email }, function (err, account) {
