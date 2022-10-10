@@ -1,4 +1,4 @@
-import connectMongo from "../../../utils/connectMongo";
+import connectMongo from "../../../utils/connectionCheck";
 import Restaurant from "../../../models/restaurantModel";
 import RestaurantCard from "../../../components/restaurantCard";
 import Row from "react-bootstrap/Row";
