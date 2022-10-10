@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Review from "./review";
 import Carousel from 'react-bootstrap/Carousel';
+import Link from "next/link";
 
 export default function DetailCard(props) {
     const parsed = JSON.parse(props.review);
@@ -97,8 +98,8 @@ export default function DetailCard(props) {
             </div>
             
             {/* Review */}
-            {parsed.map((foundItem)=> {
-                return <Review star={foundItem.star} statement={foundItem.statement} />
+            {parsed.map((foundItem, index)=> {
+                return <Review key={index} star={foundItem.star} statement={foundItem.statement} />
             })}
             
           </div>
