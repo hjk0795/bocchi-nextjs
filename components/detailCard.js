@@ -13,7 +13,7 @@ export default function DetailCard(props) {
       <main>
         <section class="py-5 text-center container">
           <Image
-            src="https://img.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_1361-1507.jpg?w=1480&t=st=1665352005~exp=1665352605~hmac=5add2beab207bb6a6c8be2fc5ece529e4a1ef6d3ecafa9689855333b79379595"
+            src="https://img.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_1361-1507.jpg?w=1480&t=st=1665436213~exp=1665436813~hmac=f9cb934c2689911a292551b40a23ac251609e3723784fd74a9a2150e361ca51d"
             width="900px"
             height="500px"
             layout="intrinsic"

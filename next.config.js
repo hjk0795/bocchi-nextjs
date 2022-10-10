@@ -2,18 +2,32 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
 
 module.exports = {
   images: {
-    domains: ['images.freeimages.com', 'img.freepik.com', 'cdn-icons-png.flaticon.com'],
+    domains: [
+      "images.freeimages.com",
+      "img.freepik.com",
+      "cdn-icons-png.flaticon.com",
+    ],
   },
-}
+  nextConfig: {
+    reactStrictMode: true,
+    swcMinify: true,
+  },
+};
 
-module.exports = {
-  // time in seconds of no pages generating during static
-  // generation before timing out
-  staticPageGenerationTimeout: 1000,
-}
+// module.exports = {
+//   staticPageGenerationTimeout: 1000,
+// };
+
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
+module.exports = withBundleAnalyzer({
+  // put the rest of config here
+});
