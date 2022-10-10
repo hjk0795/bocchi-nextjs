@@ -3,8 +3,10 @@ import mongoose from "mongoose";
 // const connection = {};
 // console.log(connection);
 
-const uri= process.env.MONGODB_URI;
-const connectionCheck = async () => mongoose.connect(uri);
+const connectionCheck = async () => {
+  console.log("Connecting..")
+  return mongoose.connect(process.env.MONGODB_URI);
+};
 
 // const connectionCheck = async () => {
 //   if (connection.isConnected) return;

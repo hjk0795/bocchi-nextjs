@@ -35,7 +35,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-    await connectionCheck();
+    // await connectionCheck();
 
   const restaurantDetail = await Restaurant.findOne({
     name: params.restaurant,
