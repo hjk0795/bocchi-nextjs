@@ -14,10 +14,6 @@ module.exports = {
       "cdn-icons-png.flaticon.com",
     ],
   },
-  nextConfig: {
-    reactStrictMode: true,
-    swcMinify: true,
-  },
 };
 
 // module.exports = {

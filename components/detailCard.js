@@ -1,27 +1,31 @@
 import Image from "next/image";
 import Review from "./review";
-import Carousel from 'react-bootstrap/Carousel';
+import Carousel from "react-bootstrap/Carousel";
 import Link from "next/link";
+import MyImage from "../utils/imageLoader";
 
 export default function DetailCard(props) {
-    const parsed = JSON.parse(props.review);
-
+  const parsed = JSON.parse(props.review);
 
   return (
     <>
       <h1>{props.name}</h1>
       <main>
         <section class="py-5 text-center container">
-          <Image
-            src="https://img.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_1361-1507.jpg?w=1480&t=st=1665436213~exp=1665436813~hmac=f9cb934c2689911a292551b40a23ac251609e3723784fd74a9a2150e361ca51d"
+        {MyImage()}
+          {/* <Image
+            src="https://img.freepik.com/free-vector/burger-restaurant-menu-template-with-illustrations_1361-1505.jpg?w=1480&t=st=1665436786~exp=1665437386~hmac=9049ebecc677613bebedaa1c91568398f1da22da7c6c61eea2f4b13b8f54e156"
             width="900px"
             height="500px"
             layout="intrinsic"
             alt="banner"
-          />
+          /> */}
           <br></br>
           <span>
-            <Link href="https://www.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_5059593.htm#query=food%20menu&position=1&from_view=keyword" passHref={true}>
+            <Link
+              href="https://www.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_5059593.htm#query=food%20menu&position=1&from_view=keyword"
+              passHref={true}
+            >
               Image by BiZkettE1
             </Link>{" "}
             on Freepik
@@ -50,32 +54,30 @@ export default function DetailCard(props) {
               <div class="col">
                 <div class="card shadow-sm" style={{ height: "100%" }}>
                   <div class="card-body">
-                    <Carousel style={{filter: "invert(100%)"}}>
+                    <Carousel style={{ filter: "invert(100%)" }}>
                       <Carousel.Item>
-                        <img style={{filter: "invert(100%)"}}
+                        <img
+                          style={{ filter: "invert(100%)" }}
                           className="d-block w-100"
                           src="https://cdn-icons-png.flaticon.com/512/84/84042.png"
                           alt="First slide"
                         />
-                       
                       </Carousel.Item>
                       <Carousel.Item>
-                        <img style={{filter: "invert(100%)"}}
+                        <img
+                          style={{ filter: "invert(100%)" }}
                           className="d-block w-100"
                           src="https://cdn-icons-png.flaticon.com/512/84/84042.png"
                           alt="Second slide"
                         />
-
-                        
                       </Carousel.Item>
                       <Carousel.Item>
-                        <img style={{filter: "invert(100%)"}}
+                        <img
+                          style={{ filter: "invert(100%)" }}
                           className="d-block w-100"
                           src="https://cdn-icons-png.flaticon.com/512/84/84042.png"
                           alt="Third slide"
                         />
-
-                       
                       </Carousel.Item>
                     </Carousel>
 
@@ -96,12 +98,17 @@ export default function DetailCard(props) {
                 </div>
               </div>
             </div>
-            
+
             {/* Review */}
-            {parsed.map((foundItem, index)=> {
-                return <Review key={index} star={foundItem.star} statement={foundItem.statement} />
+            {parsed.map((foundItem, index) => {
+              return (
+                <Review
+                  key={index}
+                  star={foundItem.star}
+                  statement={foundItem.statement}
+                />
+              );
             })}
-            
           </div>
         </div>
       </main>
