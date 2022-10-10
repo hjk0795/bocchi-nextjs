@@ -23,7 +23,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  connectionCheck();
+  await connectionCheck();
 
   const restaurantData = await Restaurant.find({
     category: params.category,

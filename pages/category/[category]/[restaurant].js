@@ -5,7 +5,7 @@ import Row from "react-bootstrap/Row";
 import DetailCard from "../../../components/detailCard";
 
 export async function getStaticPaths() {
-    connectionCheck();
+    await connectionCheck();
 
   const categoryNames = ["sushi", "donburi", "ramen", "burger"];
 
@@ -35,7 +35,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-    connectionCheck();
+    await connectionCheck();
 
   const restaurantDetail = await Restaurant.findOne({
     name: params.restaurant,

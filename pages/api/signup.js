@@ -8,7 +8,7 @@ import Account from "../../models/accountModel";
 export default async function SignUp(req, res) {
   try {
     console.log("CONNECTING TO MONGO");
-    connectionCheck();
+    await connectionCheck();
     console.log("CONNECTED TO MONGO");
 
     Account.findOne({ email: req.body.email }, function (err, account) {
