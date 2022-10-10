@@ -1,17 +1,14 @@
 import mongoose from "mongoose";
 
 const connection = {};
+// console.log(connection);
 
-const connectMongo = async () => mongoose.connect(process.env.MONGODB_URI);
+// const connectionCheck = async () => mongoose.connect(process.env.MONGODB_URI);
 
 const connectionCheck = async () => {
-  if (connection.isConnected) {
-    console.log("Already connected");
-    return;
-  }
+  if (connection.isConnected) return;
 
-  console.log("Connecting to Mongo");
-  const db = await connectMongo();
+  const db = await mongoose.connect(process.env.MONGODB_URI);
 
   connection.isConnected = db.connections[0]._readyState;
 };
