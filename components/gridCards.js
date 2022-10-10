@@ -13,7 +13,8 @@ export default function GridCards(props) {
             <Card.Img
               variant="top"
               src={props.src}
-              style={{ height: "200px" }}
+              style={{ height: "200px", padding: "1rem" }}
+              alt="category"
             />
             <Card.Body>
               <Card.Title className={styles.cardTitle}>

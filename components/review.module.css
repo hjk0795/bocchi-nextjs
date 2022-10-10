@@ -1,0 +1,9 @@
+.cardText {
+    margin-top: "1rem"
+}
+
+@media (prefers-color-scheme: dark) {
+    .cardText {
+        color: black;
+    }
+  }

@@ -42,7 +42,7 @@ export default function RestaurantList({ restaurantDataSanitized }) {
   return (
     <Row xs={1} md={2} lg={3} className="g-2">
       {restaurantDataSanitized.map((foundItem, index) => {
-        return <RestaurantCard key={index} name={foundItem.name} category={foundItem.category}/>;
+        return <RestaurantCard key={index} name={foundItem.name} category={foundItem.category} review={foundItem.review} brandImg={foundItem.brandImg}/>;
       })}
     </Row>
   );

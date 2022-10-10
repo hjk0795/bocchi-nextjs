@@ -55,7 +55,7 @@ export async function getStaticProps({ params }) {
 export default function RestaurantList({ restaurantDetailSanitized }) {
   return (
     <>
-      <DetailCard name={restaurantDetailSanitized.name} />
+      <DetailCard name={restaurantDetailSanitized.name} review={restaurantDetailSanitized.review} />
     </>
   );
 }

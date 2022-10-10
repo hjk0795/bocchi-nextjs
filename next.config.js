@@ -8,6 +8,6 @@ module.exports = nextConfig
 
 module.exports = {
   images: {
-    domains: ['images.freeimages.com', 'img.freepik.com'],
+    domains: ['images.freeimages.com', 'img.freepik.com', 'cdn-icons-png.flaticon.com'],
   },
 }

@@ -12,23 +12,23 @@ export default function Category() {
   var categoryList = [
     {
       title: "Sushi",
-      src: "https://images.freeimages.com/images/large-previews/ac4/sushi-on-a-japanese-plate-9-1324901.jpg",
+      src: "https://cdn-icons-png.flaticon.com/512/1539/1539701.png",
     },
     {
       title: "Donburi",
-      src: "https://images.freeimages.com/images/previews/fb0/donburi-1317504.jpg",
+      src: "https://cdn-icons-png.flaticon.com/512/3978/3978700.png",
     },
     {
       title: "Ramen",
-      src: "https://images.freeimages.com/variants/aLS1Anur3eUVLXz19bEEcX5D/f4a36f6589a0e50e702740b15352bc00e4bfaf6f58bd4db850e167794d05993d",
+      src: "https://cdn-icons-png.flaticon.com/512/1046/1046850.png",
     },
     {
       title: "Burger",
-      src: "https://images.freeimages.com/images/previews/271/big-mac-1256385.jpg",
+      src: "https://cdn-icons-png.flaticon.com/512/3075/3075935.png",
     },
     {
       title: "?",
-      src: "https://images.freeimages.com/images/previews/2c7/question-mark-4-1237384.jpg",
+      src: "https://cdn-icons-png.flaticon.com/512/84/84042.png",
     },
   ];
 
@@ -45,6 +45,12 @@ export default function Category() {
           );
         })}
       </Row>
+
+      <Link href="https://www.flaticon.com/free-icons/sushi" title="sushi icons" passHref={true}>Sushi icons created by Freepik - Flaticon</Link>
+      <Link href="https://www.flaticon.com/free-icons/food-and-restaurant" title="food and restaurant icons" passHref={true}>Food and restaurant icons created by Freepik - Flaticon</Link>
+      <Link href="https://www.flaticon.com/free-icons/ramen" title="ramen icons" passHref={true}>Ramen icons created by Freepik - Flaticon</Link>
+      <Link href="https://www.flaticon.com/free-icons/burger" title="burger icons" passHref={true}>Burger icons created by Freepik - Flaticon</Link>
+      <Link href="https://www.flaticon.com/free-icons/question-mark" title="question mark icons" passHref={true}>Question mark icons created by Freepik - Flaticon</Link>
     </>
   );
 }

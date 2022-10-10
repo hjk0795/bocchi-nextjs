@@ -2,3 +2,10 @@
     display: flex;
     justify-content: space-between;
 }
+
+@media (prefers-color-scheme: dark) {
+    .cardBody {
+        color: black;
+    }
+  }
+  
