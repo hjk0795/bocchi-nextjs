@@ -1,5 +1,6 @@
 import connectionCheck from "../../utils/connectionCheck";
 import Account from "../../models/accountModel";
+import bcrypt, { compare } from "bcrypt";
 
 /**
  * @param {import('next').NextApiRequest} req
@@ -7,9 +8,7 @@ import Account from "../../models/accountModel";
  */
 export default async function Login(req, res) {
   try {
-    console.log("CONNECTING TO MONGO");
     await connectionCheck();
-    console.log("CONNECTED TO MONGO");
 
     Account.findOne({ email: req.body.email }, function (err, account) {
       if (err) {
@@ -18,11 +17,17 @@ export default async function Login(req, res) {
         if (!account) {
           res.status(400).send("Account not exists");
         } else {
-          if (account.password === req.body.password) {
-            res.redirect("/dashboard");
-          } else {
-            res.status(400).send("Wrong password");
-          }
+          bcrypt.compare(
+            req.body.password,
+            account.password,
+            function (err, result) {
+              if (result === true) {
+                res.redirect("/dashboard");
+              } else {
+                res.status(400).send("Wrong password");
+              }
+            }
+          );
         }
       }
     });

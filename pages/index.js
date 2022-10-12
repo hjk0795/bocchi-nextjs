@@ -24,6 +24,16 @@ export default function Home() {
               Start
             </button>
           </Link>
+
+
+          <Link href="/dbTest" style={{ textDecoration: "none" }}>
+            <button
+              type="button"
+              className={`${styles.startButton} btn btn-outline-dark btn-lg`}
+            >
+              dbTest
+            </button>
+          </Link>
         </div>
       </div>
     </>

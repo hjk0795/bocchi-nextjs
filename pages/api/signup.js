@@ -1,5 +1,6 @@
 import connectionCheck from "../../utils/connectionCheck";
 import Account from "../../models/accountModel";
+import bcrypt, { hash } from "bcrypt";
 
 /**
  * @param {import('next').NextApiRequest} req
@@ -7,27 +8,25 @@ import Account from "../../models/accountModel";
  */
 export default async function SignUp(req, res) {
   try {
-    console.log("CONNECTING TO MONGO");
     await connectionCheck();
-    console.log("CONNECTED TO MONGO");
 
     Account.findOne({ email: req.body.email }, function (err, account) {
       if (err) {
         console.log(err);
       } else {
         if (!account) {
-          console.log("CREATING DOCUMENT");
-          const account = new Account({
-            email: req.body.email,
-            password: req.body.password,
-          });
+          bcrypt.hash(req.body.password, 10, function (err, hash) {
+            const account = new Account({
+              email: req.body.email,
+              password: hash,
+            });
 
-          account.save();
-          console.log("CREATED DOCUMENT");
-          res.redirect("/dashboard");
-          
+            account.save();
+
+            res.redirect("/dashboard");
+          });
         } else {
-          res.status(400).send('Account already exists');
+          res.status(400).send("Account already exists");
         }
       }
     });

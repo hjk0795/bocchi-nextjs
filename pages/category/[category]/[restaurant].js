@@ -41,9 +41,26 @@ export async function getStaticProps({ params }) {
     name: params.restaurant,
   }).exec();
 
+  const reviewProjected = await Restaurant.find({
+    name: params.restaurant,
+  }).select({ 
+    "_id": 0,
+    "category": 0,
+    "brandImg": 0,
+    "name": 0,
+    "foodImg": 0,
+    "menuImg": 0,
+    "openingHours": 0,
+    "location": 0,
+    "review": { "$slice": 1 } 
+  }).exec()
+
+
   const restaurantDetailSanitized = JSON.parse(
     JSON.stringify(restaurantDetail)
   );
+
+  console.log(reviewProjected);
 
   return {
     props: {

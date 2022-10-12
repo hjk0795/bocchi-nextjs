@@ -3,8 +3,11 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Link from "next/link";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Header() {
+  const { data: session } = useSession();
+
   return (
     <>
       <Navbar bg="light" expand="lg">
@@ -16,7 +19,17 @@ export default function Header() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <Nav.Link as="div" className="me-auto">
-                <Link href="/login">Log in</Link>
+                {session === null ? (
+                  <Link href="/login">Log in</Link>
+                ) : (
+                  <div style={{cursor: "pointer"}}
+                    onClick={() => {
+                      signOut({ callbackUrl: "http://localhost:3000/login" });
+                    }}
+                  >
+                    Sign out
+                  </div>
+                )}
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
@@ -25,3 +38,18 @@ export default function Header() {
     </>
   );
 }
+
+// {session && (
+//   <>
+//     <p>
+//       Welcome, {session.user.name ?? session.user.email}
+//     </p>
+//     <br />
+//     <img src={session.user.image} alt="" />
+//   </>
+// )}
+// {!session && (
+//   <>
+//     <p>Please Sign in</p>
+//   </>
+// )}

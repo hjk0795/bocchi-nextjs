@@ -5,7 +5,7 @@ import Link from "next/link";
 import MyImage from "../utils/imageLoader";
 
 export default function DetailCard(props) {
-  const parsed = JSON.parse(props.review);
+  
 
   return (
     <>
@@ -100,7 +100,7 @@ export default function DetailCard(props) {
             </div>
 
             {/* Review */}
-            {parsed.map((foundItem, index) => {
+            {props.review.map((foundItem, index) => {
               return (
                 <Review
                   key={index}
