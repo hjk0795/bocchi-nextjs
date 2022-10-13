@@ -5,7 +5,7 @@ import Row from "react-bootstrap/Row";
 import DetailCard from "../../../components/detailCard";
 
 export async function getStaticPaths() {
-    await connectionCheck();
+  await connectionCheck();
 
   const categoryNames = ["sushi", "donburi", "ramen", "burger"];
 
@@ -35,44 +35,51 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-    await connectionCheck();
+  await connectionCheck();
 
   const restaurantDetail = await Restaurant.findOne({
     name: params.restaurant,
   }).exec();
 
-  const reviewProjected = await Restaurant.find({
+  const reviewProjected = await Restaurant.findOne({
     name: params.restaurant,
-  }).select({ 
-    "_id": 0,
-    "category": 0,
-    "brandImg": 0,
-    "name": 0,
-    "foodImg": 0,
-    "menuImg": 0,
-    "openingHours": 0,
-    "location": 0,
-    "review": { "$slice": 1 } 
-  }).exec()
-
+  })
+    .select({
+      _id: 0,
+      category: 0,
+      brandImg: 0,
+      name: 0,
+      foodImg: 0,
+      menuImg: 0,
+      openingHours: 0,
+      location: 0,
+      review: { $slice: 2 },
+    })
+    .exec();
 
   const restaurantDetailSanitized = JSON.parse(
     JSON.stringify(restaurantDetail)
   );
 
-  console.log(reviewProjected);
+  const reviewProjectedSanitized = JSON.parse(
+    JSON.stringify(reviewProjected)
+  );
 
   return {
     props: {
       restaurantDetailSanitized,
+      reviewProjectedSanitized
     },
   };
 }
 
-export default function RestaurantList({ restaurantDetailSanitized }) {
+export default function RestaurantList({ restaurantDetailSanitized, reviewProjectedSanitized }) {
   return (
     <>
-      <DetailCard name={restaurantDetailSanitized.name} review={restaurantDetailSanitized.review} />
+      <DetailCard
+        name={restaurantDetailSanitized.name}
+        review={reviewProjectedSanitized.review}
+      />
     </>
   );
 }

@@ -3,16 +3,74 @@ import Review from "./review";
 import Carousel from "react-bootstrap/Carousel";
 import Link from "next/link";
 import MyImage from "../utils/imageLoader";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 
 export default function DetailCard(props) {
+  const [reviews, setReviews] = useState(props.review);
+
   
+
+  var data = JSON.stringify({
+    "collection": "restaurants",
+    "database": "bocchiDB",
+    "dataSource": "Cluster0",
+    "filter": { name: props.name},
+    "projection": {
+      "_id": 0,
+      "category": 0,
+        "brandImg": 0,
+        "name": 0,
+        "foodImg": 0,
+        "menuImg": 0,
+        "openingHours": 0,
+        "location": 0,
+      "review": {$slice: [reviews.length,2]}
+  }
+});
+
+
+  var config = {
+    method: 'post',
+    url: 'https://data.mongodb-api.com/app/data-ycggt/endpoint/data/v1/action/findOne',
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Request-Headers': '*',
+      'api-key': process.env.API_KEY_MONGO,
+    },
+    data: data
+};
+
+axios(config)
+.then(function (response) {
+  var parsed = JSON.parse(JSON.stringify(response.data)).document.review;
+  var parsedSanitized = JSON.parse(JSON.stringify(parsed));
+
+
+  // console.log(parsedSanitized);
+  // const newReviews = parsedSanitized.json();
+
+  setReviews((reviews) => {
+          [...reviews, ...parsedSanitized];
+        });
+})
+.catch(function (error) {
+    console.log(error);
+});
+
+
+  // function getMoreReviews() {
+ 
+  //   };
 
   return (
     <>
       <h1>{props.name}</h1>
       <main>
         <section class="py-5 text-center container">
-        {MyImage()}
+          {MyImage()}
           {/* <Image
             src="https://img.freepik.com/free-vector/burger-restaurant-menu-template-with-illustrations_1361-1505.jpg?w=1480&t=st=1665436786~exp=1665437386~hmac=9049ebecc677613bebedaa1c91568398f1da22da7c6c61eea2f4b13b8f54e156"
             width="900px"
@@ -100,15 +158,23 @@ export default function DetailCard(props) {
             </div>
 
             {/* Review */}
-            {props.review.map((foundItem, index) => {
-              return (
-                <Review
-                  key={index}
-                  star={foundItem.star}
-                  statement={foundItem.statement}
-                />
-              );
-            })}
+            {/* <InfiniteScroll
+              dataLength={reviews.length}
+              next={getMoreReviews}
+              hasMore={true}
+              loader={<h4>Loading...</h4>}
+              endMessage={<p>You have seen it all</p>}
+            > */}
+              {reviews.map((foundItem, index) => {
+                return (
+                  <Review
+                    key={index}
+                    star={foundItem.star}
+                    statement={foundItem.statement}
+                  />
+                );
+              })}
+            {/* </InfiniteScroll> */}
           </div>
         </div>
       </main>

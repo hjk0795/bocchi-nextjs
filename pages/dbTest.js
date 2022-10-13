@@ -7,7 +7,7 @@ await connectionCheck();
   const restaurant = new Restaurant({
     category: "sushi",
     brandImg: "https://stpierres.co.nz/images/20180406142932.jpeg",
-    name: "sushi",
+    name: "Test",
     foodImg:
       "https://images.freeimages.com/images/large-previews/609/rainbow-roll-1329728.jpg",
     location:
@@ -18,6 +18,57 @@ await connectionCheck();
       {
         star: "5",
         statement: "test1",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },{
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
+      },
+      {
+        star: "2",
+        statement: "test2",
       },
       {
         star: "2",
