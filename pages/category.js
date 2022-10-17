@@ -7,6 +7,7 @@ import Head from "next/head";
 import styles from "../styles/category.module.css";
 import Link from "next/link";
 import Row from "react-bootstrap/Row";
+import axios from "axios";
 
 export default function Category() {
   var categoryList = [
@@ -32,6 +33,19 @@ export default function Category() {
     },
   ];
 
+  // async function test() {
+  //   const url = process.env.STRAPI_URL;
+
+  //   const res = await fetch(`${url}/reviews?filters[name][$eq]=Ikkyu&fields[0]=review&pagination[start]=0&pagination[limit]=2`);
+  //   const data = await res.json();
+  //   const parsed = data.data;
+
+    
+  //   console.log(parsed);
+  // }
+
+  // test();
+
   return (
     <>
       <Head>
@@ -46,11 +60,41 @@ export default function Category() {
         })}
       </Row>
 
-      <Link href="https://www.flaticon.com/free-icons/sushi" title="sushi icons" passHref={true}>Sushi icons created by Freepik - Flaticon</Link>
-      <Link href="https://www.flaticon.com/free-icons/food-and-restaurant" title="food and restaurant icons" passHref={true}>Food and restaurant icons created by Freepik - Flaticon</Link>
-      <Link href="https://www.flaticon.com/free-icons/ramen" title="ramen icons" passHref={true}>Ramen icons created by Freepik - Flaticon</Link>
-      <Link href="https://www.flaticon.com/free-icons/burger" title="burger icons" passHref={true}>Burger icons created by Freepik - Flaticon</Link>
-      <Link href="https://www.flaticon.com/free-icons/question-mark" title="question mark icons" passHref={true}>Question mark icons created by Freepik - Flaticon</Link>
+      <Link
+        href="https://www.flaticon.com/free-icons/sushi"
+        title="sushi icons"
+        passHref={true}
+      >
+        Sushi icons created by Freepik - Flaticon
+      </Link>
+      <Link
+        href="https://www.flaticon.com/free-icons/food-and-restaurant"
+        title="food and restaurant icons"
+        passHref={true}
+      >
+        Food and restaurant icons created by Freepik - Flaticon
+      </Link>
+      <Link
+        href="https://www.flaticon.com/free-icons/ramen"
+        title="ramen icons"
+        passHref={true}
+      >
+        Ramen icons created by Freepik - Flaticon
+      </Link>
+      <Link
+        href="https://www.flaticon.com/free-icons/burger"
+        title="burger icons"
+        passHref={true}
+      >
+        Burger icons created by Freepik - Flaticon
+      </Link>
+      <Link
+        href="https://www.flaticon.com/free-icons/question-mark"
+        title="question mark icons"
+        passHref={true}
+      >
+        Question mark icons created by Freepik - Flaticon
+      </Link>
     </>
   );
 }

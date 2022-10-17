@@ -5,65 +5,86 @@ import Link from "next/link";
 import MyImage from "../utils/imageLoader";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import styles from "./detailCard.module.css";
+import Rating from "@mui/material/Rating";
 import axios from "axios";
 
-
 export default function DetailCard(props) {
+  var totalCount = 0;
   const [reviews, setReviews] = useState(props.review);
+  const [hasMore, setHasMore] = useState(true);
+  const [reviewWrite, setReviewWrite] = useState({
+    star: null,
+    text: "",
+  });
+  const [isChecked, setIsChecked] = useState(false);
 
-  
+  async function getMoreReviews() {
+    console.log("getMoreReviews triggered");
 
-  var data = JSON.stringify({
-    "collection": "restaurants",
-    "database": "bocchiDB",
-    "dataSource": "Cluster0",
-    "filter": { name: props.name},
-    "projection": {
-      "_id": 0,
-      "category": 0,
-        "brandImg": 0,
-        "name": 0,
-        "foodImg": 0,
-        "menuImg": 0,
-        "openingHours": 0,
-        "location": 0,
-      "review": {$slice: [reviews.length,2]}
+    const res = await fetch(
+      `http://localhost:1337/api/reviews?filters[name][$eq]=${props.name}&fields[0]=review&pagination[start]=${reviews.length}&pagination[limit]=1`
+    );
+    const data = await res.json();
+    const parsed = data.data;
+
+    setReviews((reviews) => [...reviews, ...parsed]);
   }
-});
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setReviewWrite((prevReviewWrite) => {
+      if (name === "reviewStar") {
+        return {
+          star: Number(value),
+          text: prevReviewWrite.text,
+        };
+      } else {
+        return {
+          star: prevReviewWrite.star,
+          text: value,
+        };
+      }
+    });
+  }
+
+  function toggleHidden() {
+    setIsChecked(!isChecked);
+  }
+
+  useEffect(() => {
+    setHasMore(reviews.length < props.totalCount ? true : false);
+  }, [reviews]);
+
+  const addReview = async (reviewWrite) => {
+
+    const result = await fetch(`http://localhost:1337/api/reviews`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {
+          name: props.name,
+          review: {
+            star: reviewWrite.star,
+            review: reviewWrite.text,
+          },
+        },
+      }),
+    });
+
+    console.log("posted!")
+
+    const reRender = await fetch(`http://localhost:1337/api/reviews?filters[name][$eq]=${props.name}&fields[0]=review&pagination[start]=0&pagination[limit]=1&pagination[withCount]=true`)
+    const data = await reRender.json();
+    totalCount = data.meta.pagination.total;
 
 
-  var config = {
-    method: 'post',
-    url: 'https://data.mongodb-api.com/app/data-ycggt/endpoint/data/v1/action/findOne',
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Request-Headers': '*',
-      'api-key': process.env.API_KEY_MONGO,
-    },
-    data: data
-};
-
-axios(config)
-.then(function (response) {
-  var parsed = JSON.parse(JSON.stringify(response.data)).document.review;
-  var parsedSanitized = JSON.parse(JSON.stringify(parsed));
-
-
-  // console.log(parsedSanitized);
-  // const newReviews = parsedSanitized.json();
-
-  setReviews((reviews) => {
-          [...reviews, ...parsedSanitized];
-        });
-})
-.catch(function (error) {
-    console.log(error);
-});
-
-
-  // function getMoreReviews() {
- 
-  //   };
+    // setReviews((reviews) => [...reviews, reviewWrite]);
+  };
 
   return (
     <>
@@ -156,25 +177,61 @@ axios(config)
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-3 d-flex justify-content-between align-items-center">
+                <Rating
+                  name="reviewStar"
+                  value={reviewWrite.star}
+                  size="small"
+                  style={{ padding: "7px 0 0 7px" }}
+                  onChange={handleChange}
+                />
+              </div>
+              <div class="col-9">
+                <div class="mt-3">
+                  <div className={styles.textareaContainer}>
+                    <textarea
+                      class="form-control"
+                      rows={isChecked ? "3" : "1"}
+                      name="reviewText"
+                      placeholder="Write a review"
+                      onChange={handleChange}
+                      value={reviewWrite.text}
+                      onClick={toggleHidden}
+                    ></textarea>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      style={{ display: isChecked ? "block" : "none" }}
+                      onClick={() => {
+                        return addReview(reviewWrite);
+                      }}
+                    >
+                      Post
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Review */}
-            {/* <InfiniteScroll
+            <InfiniteScroll
               dataLength={reviews.length}
               next={getMoreReviews}
-              hasMore={true}
+              hasMore={hasMore}
               loader={<h4>Loading...</h4>}
               endMessage={<p>You have seen it all</p>}
-            > */}
+            >
               {reviews.map((foundItem, index) => {
                 return (
                   <Review
                     key={index}
-                    star={foundItem.star}
-                    statement={foundItem.statement}
+                    star={foundItem.attributes.review.star}
+                    statement={foundItem.attributes.review.review}
                   />
                 );
               })}
-            {/* </InfiniteScroll> */}
+            </InfiniteScroll>
           </div>
         </div>
       </main>

@@ -41,44 +41,52 @@ export async function getStaticProps({ params }) {
     name: params.restaurant,
   }).exec();
 
-  const reviewProjected = await Restaurant.findOne({
-    name: params.restaurant,
-  })
-    .select({
-      _id: 0,
-      category: 0,
-      brandImg: 0,
-      name: 0,
-      foodImg: 0,
-      menuImg: 0,
-      openingHours: 0,
-      location: 0,
-      review: { $slice: 2 },
-    })
-    .exec();
+  // const reviewProjected = await Restaurant.findOne({
+  //   name: params.restaurant,
+  // })
+  //   .select({
+  //     _id: 0,
+  //     category: 0,
+  //     brandImg: 0,
+  //     name: 0,
+  //     foodImg: 0,
+  //     menuImg: 0,
+  //     openingHours: 0,
+  //     location: 0,
+  //     review: { $slice: 2 },
+  //   })
+  //   .exec();
+
+  
+    const url = process.env.STRAPI_URL;
+
+    const res = await fetch(`${url}/reviews?filters[name][$eq]=${params.restaurant}&fields[0]=review&pagination[start]=0&pagination[limit]=2&pagination[withCount]=true`);
+    const data = await res.json();
+    const reviewArray = data.data;
+    const totalCount = data.meta.pagination.total;
+
 
   const restaurantDetailSanitized = JSON.parse(
     JSON.stringify(restaurantDetail)
   );
 
-  const reviewProjectedSanitized = JSON.parse(
-    JSON.stringify(reviewProjected)
-  );
 
   return {
     props: {
       restaurantDetailSanitized,
-      reviewProjectedSanitized
+      reviewArray,
+      totalCount
     },
   };
 }
 
-export default function RestaurantList({ restaurantDetailSanitized, reviewProjectedSanitized }) {
+export default function RestaurantList({ restaurantDetailSanitized, reviewArray, totalCount }) {
   return (
     <>
       <DetailCard
         name={restaurantDetailSanitized.name}
-        review={reviewProjectedSanitized.review}
+        review={reviewArray}
+        totalCount={totalCount}
       />
     </>
   );
