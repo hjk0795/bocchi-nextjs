@@ -11,25 +11,55 @@ import Rating from "@mui/material/Rating";
 import axios from "axios";
 
 export default function DetailCard(props) {
-  var totalCount = 0;
-  const [reviews, setReviews] = useState(props.review);
+{/* <Review
+                    key={index}
+                    star={foundItem.attributes.review.star}
+                    statement={foundItem.attributes.review.review}
+                  /> */}
+
+  const reviewPropArray = props.review.map((foundItem, index)=>{
+    return(
+      {
+        star: foundItem.attributes.review.star,
+        review: foundItem.attributes.review.review
+      }
+    );
+  })
+
+
+  const name=props.name;
+  const [totalCount, setTotalCount] = useState(props.totalCount);
   const [hasMore, setHasMore] = useState(true);
+  var [reviews, setReviews] = useState(reviewPropArray);
   const [reviewWrite, setReviewWrite] = useState({
     star: null,
-    text: "",
+    review: "",
   });
   const [isChecked, setIsChecked] = useState(false);
 
+
+
   async function getMoreReviews() {
+    
     console.log("getMoreReviews triggered");
 
-    const res = await fetch(
-      `http://localhost:1337/api/reviews?filters[name][$eq]=${props.name}&fields[0]=review&pagination[start]=${reviews.length}&pagination[limit]=1`
-    );
-    const data = await res.json();
-    const parsed = data.data;
+   
+      const res = await fetch(
+        `http://localhost:1337/api/reviews?filters[name][$eq]=${name}&fields[0]=review&pagination[start]=${reviews.length}&pagination[limit]=1`
+      );
+      const data = await res.json();
+      const parsed = data.data;
+  console.log(parsed);
 
-    setReviews((reviews) => [...reviews, ...parsed]);
+      reviews = [...reviews, {
+        star: parsed[0].attributes.review.star,
+        review: parsed[0].attributes.review.review
+      }];
+      console.log(reviews);
+  
+
+  setReviews(reviews);
+   setHasMore(reviews.length < totalCount ? true : false);
   }
 
   function handleChange(event) {
@@ -39,12 +69,12 @@ export default function DetailCard(props) {
       if (name === "reviewStar") {
         return {
           star: Number(value),
-          text: prevReviewWrite.text,
+          review: prevReviewWrite.text,
         };
       } else {
         return {
           star: prevReviewWrite.star,
-          text: value,
+          review: value,
         };
       }
     });
@@ -53,10 +83,6 @@ export default function DetailCard(props) {
   function toggleHidden() {
     setIsChecked(!isChecked);
   }
-
-  useEffect(() => {
-    setHasMore(reviews.length < props.totalCount ? true : false);
-  }, [reviews]);
 
   const addReview = async (reviewWrite) => {
 
@@ -70,25 +96,24 @@ export default function DetailCard(props) {
           name: props.name,
           review: {
             star: reviewWrite.star,
-            review: reviewWrite.text,
+            review: reviewWrite.review,
           },
         },
       }),
     });
 
     console.log("posted!")
+    totalCount = totalCount + 1;
 
-    const reRender = await fetch(`http://localhost:1337/api/reviews?filters[name][$eq]=${props.name}&fields[0]=review&pagination[start]=0&pagination[limit]=1&pagination[withCount]=true`)
-    const data = await reRender.json();
-    totalCount = data.meta.pagination.total;
+setHasMore(true);
 
 
-    // setReviews((reviews) => [...reviews, reviewWrite]);
+ 
   };
 
   return (
     <>
-      <h1>{props.name}</h1>
+      <h1>{name}</h1>
       <main>
         <section class="py-5 text-center container">
           {MyImage()}
@@ -196,7 +221,7 @@ export default function DetailCard(props) {
                       name="reviewText"
                       placeholder="Write a review"
                       onChange={handleChange}
-                      value={reviewWrite.text}
+                      value={reviewWrite.review}
                       onClick={toggleHidden}
                     ></textarea>
                     <Button
@@ -226,8 +251,8 @@ export default function DetailCard(props) {
                 return (
                   <Review
                     key={index}
-                    star={foundItem.attributes.review.star}
-                    statement={foundItem.attributes.review.review}
+                    star={foundItem.star}
+                    statement={foundItem.review}
                   />
                 );
               })}
