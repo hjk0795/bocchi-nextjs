@@ -1,4 +1,7 @@
 import styles from "./review.module.css";
+import { useSession } from "next-auth/react";
+import { BiEdit } from "react-icons/bi";
+import { BsTrash } from "react-icons/bs";
 
 export default function Review(props) {
   function numToStar(num) {
@@ -10,12 +13,27 @@ export default function Review(props) {
 
     return star;
   }
+
+  async function deleteReview() {
+    const result = await fetch(
+      `http://localhost:1337/api/reviews/${props.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    alert("deleted");
+  }
+
   return (
     <>
       <div class="row g-3" style={{ paddingTop: "16px" }}>
         <div class="col-3">
           <p class="card-text">
-            <div class="row row-cols-1 g-3" >
+            <div class="row row-cols-1 g-3">
               <div class="col">
                 <div class="d-flex justify-content-between align-items-center">
                   <img
@@ -24,7 +42,6 @@ export default function Review(props) {
                     height="100%"
                     alt="table image"
                   />
-              
                 </div>
               </div>
             </div>
@@ -36,12 +53,25 @@ export default function Review(props) {
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <small class="text-muted">{numToStar(props.star)}</small>
+                {props.isAuthenticated === "authenticated" &&
+                  props.userName === props.sessionUserName && (
+                    <small>
+                      <BiEdit
+                        className={styles.BiEdit}
+                        style={{ marginRight: "5px", cursor: "pointer" }}
+                      />
+                      <BsTrash
+                        className={styles.BsTrash}
+                        style={{ cursor: "pointer" }}
+                        onClick={deleteReview}
+                      />
+                    </small>
+                  )}
               </div>
-              <p class={`card-text ${styles.cardText}`}>
-                {props.statement}
-              </p>
+
+              <p class={`card-text ${styles.cardText}`}>{props.statement}</p>
               <div class="d-flex justify-content-end align-items-center">
-                <small class="text-muted">anonymous</small>
+                <small class="text-muted">{props.userName}</small>
               </div>
             </div>
           </div>

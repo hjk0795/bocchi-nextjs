@@ -23,6 +23,7 @@
     "babel-plugin-macros": "^3.1.0",
     "bcrypt": "^5.1.0",
     "bootstrap": "^5.2.2",
+    "bootstrap-icons": "^1.9.1",
     "cross-env": "^7.0.3",
     "express-session": "^1.17.3",
     "isomorphic-fetch": "^3.0.0",
@@ -31,13 +32,10 @@
     "mongoose": "^6.6.5",
     "next": "12.3.1",
     "next-auth": "^4.13.0",
-    "passport": "^0.6.0",
-    "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^7.1.2",
-    "qs": "^6.11.0",
     "react": "18.2.0",
     "react-bootstrap": "^2.5.0",
     "react-dom": "18.2.0",
+    "react-icons": "^4.6.0",
     "react-infinite-scroll-component": "^6.1.0"
   },
   "devDependencies": {

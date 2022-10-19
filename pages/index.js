@@ -25,15 +25,14 @@ export default function Home() {
             </button>
           </Link>
 
-
-          <Link href="/dbTest" style={{ textDecoration: "none" }}>
+          {/* <Link href="/dbTest" style={{ textDecoration: "none" }}>
             <button
               type="button"
               className={`${styles.startButton} btn btn-outline-dark btn-lg`}
             >
               dbTest
             </button>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </>

@@ -2,9 +2,6 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import styles from "./loginForm.module.css";
-import session from "express-session";
-import passport from "passport";
-import passportLocalMongoose from "passport-local-mongoose";
 
 export default function Login() {
   const [isRegistered, setIsRegistered] = useState(true);

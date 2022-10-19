@@ -18,14 +18,3 @@ module.exports = {
   },
 };
 
-// module.exports = {
-//   staticPageGenerationTimeout: 1000,
-// };
-
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-});
-
-module.exports = withBundleAnalyzer({
-  // put the rest of config here
-});

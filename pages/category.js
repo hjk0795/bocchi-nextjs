@@ -1,13 +1,7 @@
 import GridCards from "../components/gridCards";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
 import Head from "next/head";
-import styles from "../styles/category.module.css";
 import Link from "next/link";
 import Row from "react-bootstrap/Row";
-import axios from "axios";
 
 export default function Category() {
   var categoryList = [
@@ -32,19 +26,6 @@ export default function Category() {
       src: "https://cdn-icons-png.flaticon.com/512/84/84042.png",
     },
   ];
-
-  // async function test() {
-  //   const url = process.env.STRAPI_URL;
-
-  //   const res = await fetch(`${url}/reviews?filters[name][$eq]=Ikkyu&fields[0]=review&pagination[start]=0&pagination[limit]=2`);
-  //   const data = await res.json();
-  //   const parsed = data.data;
-
-    
-  //   console.log(parsed);
-  // }
-
-  // test();
 
   return (
     <>
