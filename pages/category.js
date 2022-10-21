@@ -2,8 +2,29 @@ import GridCards from "../components/gridCards";
 import Head from "next/head";
 import Link from "next/link";
 import Row from "react-bootstrap/Row";
+// import { initializeApp } from "firebase/app";
+// import { getFirestore } from "firebase/firestore";
+// import { getAnalytics } from "firebase/analytics";
+// import { collection, query, where, getDocs } from "firebase/firestore";
 
 export default function Category() {
+ 
+
+  // const app = initializeApp(firebaseConfig);
+  // const analytics = getAnalytics(app);
+  // const db = getFirestore(app);
+
+  // async function test() {
+  //   const q = query(collection(db, "restaurants"), where("category", "==", "sushi"));
+
+  //   const querySnapshot = await getDocs(q);
+  //   querySnapshot.forEach((doc) => {
+  //     console.log(doc.id, " => ", doc.data());
+  //   });
+  // }
+
+  // test();
+
   var categoryList = [
     {
       title: "Sushi",
