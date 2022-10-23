@@ -1,5 +1,5 @@
-import connectionCheck from "../../../utils/connectionCheck";
-import Restaurant from "../../../models/restaurantModel";
+// import connectionCheck from "../../../utils/connectionCheck";
+// import Restaurant from "../../../models/restaurantModel";
 import RestaurantCard from "../../../components/restaurantCard";
 import Row from "react-bootstrap/Row";
 import Link from "next/link";
@@ -60,16 +60,30 @@ export async function getStaticProps({ params }) {
   const querySnapshot = await getDocs(q);
   const querySnapshotDocs = querySnapshot.docs;
 
+// console.log(querySnapshotDocs);
 
+
+// const sanitized = JSON.parse(JSON.stringify(querySnapshotDocs));
+// console.log(JSON.stringify(querySnapshotDocs));
+// console.log(sanitized);
+
+// console.log(sanitized);
+
+// console.log(querySnapshotDocs[0].data());
+
+const docArray = querySnapshotDocs.map((doc, index)=>{
+  return doc.data();
+})
+
+// console.log(docArray);
 
    return {
     props: {
-      querySnapshotDocs
+      docArray
     },
   };
 
 
-  // console.log(restaurantDataSanitized);
   // return {
   //   props: {
   //     restaurantDataSanitized,
@@ -77,16 +91,16 @@ export async function getStaticProps({ params }) {
   // };
 }
 
-export default function RestaurantList({ querySnapshotDocs }) {
+export default function RestaurantList({ docArray }) {
   return (
     <Row xs={1} md={2} lg={3} className="g-2">
-      {querySnapshotDocs.forEach((foundItem, index) => {
+      {docArray.map((foundItem, index) => {
         return (
           <RestaurantCard
             key={index}
-            name={foundItem.id}
-            category={foundItem.data().category}
-            brandImg={foundItem.data().brandImg}
+            name={foundItem.name}
+            category={foundItem.category}
+            brandImg={foundItem.brandImg}
           />
         );
       })}
