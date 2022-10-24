@@ -12,9 +12,9 @@ import { useSession } from "next-auth/react";
 export default function DetailCard(props) {
   const reviewPropArray = props.review.map((foundItem, index) => {
     return {
-      star: foundItem.attributes.review.star,
-      review: foundItem.attributes.review.review,
-      userName: foundItem.attributes.userName,
+      star: foundItem.star,
+      review: foundItem.statement,
+      userName: foundItem.userName,
       id: 99999
     };
   });
