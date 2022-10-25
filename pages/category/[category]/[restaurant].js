@@ -2,7 +2,7 @@
 // import Restaurant from "../../../models/restaurantModel";
 import DetailCard from "../../../components/detailCard";
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 // import { getAnalytics } from "firebase/analytics";
 import { collection, query, where, getDocs, getCountFromServer } from "firebase/firestore";
 

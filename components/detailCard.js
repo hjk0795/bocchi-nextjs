@@ -8,6 +8,19 @@ import Button from "@mui/material/Button";
 import styles from "./detailCard.module.css";
 import Rating from "@mui/material/Rating";
 import { useSession } from "next-auth/react";
+import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  startAfter,
+  getDocs,
+  getCountFromServer,
+  getFirestore,
+} from "firebase/firestore";
 
 export default function DetailCard(props) {
   const reviewPropArray = props.review.map((foundItem, index) => {
@@ -15,11 +28,12 @@ export default function DetailCard(props) {
       star: foundItem.star,
       review: foundItem.statement,
       userName: foundItem.userName,
-      id: 99999
+      // id: 99999
     };
   });
 
-  const { data: session, status } = useSession()
+
+  const { data: session, status } = useSession();
   const name = props.name;
   const [totalCount, setTotalCount] = useState(props.totalCount);
   const [hasMore, setHasMore] = useState(true);
@@ -31,27 +45,57 @@ export default function DetailCard(props) {
   });
   const [isChecked, setIsChecked] = useState(false);
 
-  async function getMoreReviews() {
-    const res = await fetch(
-      `http://localhost:1337/api/reviews?filters[name][$eq]=${name}&fields[0]=review&fields[1]=userName&pagination[start]=${reviews.length}&pagination[limit]=1`
-    );
-    const data = await res.json();
+  const firebaseConfig = {
+    apiKey: process.env.API_KEY_FIREBASE,
+    authDomain: "bocchi-cd32c.firebaseapp.com",
+    databaseURL:
+      "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "bocchi-cd32c",
+    storageBucket: "bocchi-cd32c.appspot.com",
+    messagingSenderId: "429017394127",
+    appId: "1:429017394127:web:97bf9a991af175637340ba",
+    measurementId: "G-HW15LB2E2F",
+  };
 
-    console.log(data);
-    const parsed = data.data;
+  async function getMoreReviews() {
+    const app = initializeApp(firebaseConfig);
+    // const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    const first = query(
+      collection(db, `restaurants/${name}/reviews`),
+      limit(1)
+    );
+    const documentSnapshots = await getDocs(first);
+
+
+
+
+    const lastVisible =
+      documentSnapshots.docs[reviews.length - 1];
+
+    const next = query(
+      collection(db, `restaurants/${name}/reviews`),
+      startAfter(lastVisible),
+      limit(1)
+    );
+    
+
+
 
     reviews = [
       ...reviews,
       {
-        star: parsed[0].attributes.review.star,
-        review: parsed[0].attributes.review.review,
-        userName: parsed[0].attributes.userName,
-        id: parsed[0].id
+        star: next.star,
+        review: next.statement,
+        userName: next.userName,
+        // id:
       },
     ];
 
     setReviews(reviews);
     setHasMore(reviews.length < totalCount ? true : false);
+
   }
 
   function handleChange(event) {
@@ -78,40 +122,40 @@ export default function DetailCard(props) {
 
   const addReview = async (reviewWrite) => {
     if (status === "authenticated") {
-    const result = await fetch(`http://localhost:1337/api/reviews`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: {
-          name: props.name,
-          review: {
-            star: reviewWrite.star,
-            review: reviewWrite.review,
-          },
-          userName: session.user.name,
+      const result = await fetch(`http://localhost:1337/api/reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
-  } else if (status === "unauthenticated") {
-    const result = await fetch(`http://localhost:1337/api/reviews`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: {
-          name: props.name,
-          review: {
-            star: reviewWrite.star,
-            review: reviewWrite.review,
+        body: JSON.stringify({
+          data: {
+            name: props.name,
+            review: {
+              star: reviewWrite.star,
+              review: reviewWrite.review,
+            },
+            userName: session.user.name,
           },
-          userName: "anonymous"
+        }),
+      });
+    } else if (status === "unauthenticated") {
+      const result = await fetch(`http://localhost:1337/api/reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
-  }
+        body: JSON.stringify({
+          data: {
+            name: props.name,
+            review: {
+              star: reviewWrite.star,
+              review: reviewWrite.review,
+            },
+            userName: "anonymous",
+          },
+        }),
+      });
+    }
     console.log("posted!");
     totalCount = totalCount + 1;
     setHasMore(true);
@@ -233,13 +277,17 @@ export default function DetailCard(props) {
               {reviews.map((foundItem, index) => {
                 return (
                   <Review
-                    id={foundItem.id}
+                    // id={foundItem.id}
                     key={index}
                     star={foundItem.star}
                     statement={foundItem.review}
                     userName={foundItem.userName}
                     isAuthenticated={status}
-                    sessionUserName={status==="authenticated"?session.user.name:"anonymous"}
+                    sessionUserName={
+                      status === "authenticated"
+                        ? session.user.name
+                        : "anonymous"
+                    }
                   />
                 );
               })}
