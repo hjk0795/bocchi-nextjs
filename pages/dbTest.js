@@ -1,5 +1,5 @@
 import Restaurant from "../models/restaurantModel";
-import connectionCheck from "../utils/connectionCheck";
+import connectionCheck from "../utils/connectFirestore";
 
 export default async function DBTest(req, res)  {
 await connectionCheck();

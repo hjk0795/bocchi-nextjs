@@ -1,4 +1,4 @@
-import connectionCheck from "../../utils/connectionCheck";
+import connectionCheck from "../../utils/connectFirestore";
 import Account from "../../models/accountModel";
 import bcrypt, { compare } from "bcrypt";
 

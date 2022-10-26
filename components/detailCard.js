@@ -10,6 +10,7 @@ import Rating from "@mui/material/Rating";
 import { useSession } from "next-auth/react";
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
+import connectFirestore from "../utils/connectFirestore";
 import {
   collection,
   query,
@@ -20,6 +21,9 @@ import {
   getDocs,
   getCountFromServer,
   getFirestore,
+  doc,
+  setDoc,
+  addDoc,
 } from "firebase/firestore";
 
 export default function DetailCard(props) {
@@ -28,10 +32,9 @@ export default function DetailCard(props) {
       star: foundItem.star,
       review: foundItem.statement,
       userName: foundItem.userName,
-      // id: 99999
+      id: foundItem.id,
     };
   });
-
 
   const { data: session, status } = useSession();
   const name = props.name;
@@ -42,60 +45,36 @@ export default function DetailCard(props) {
     star: null,
     review: "",
     userName: "",
+    id: "",
   });
   const [isChecked, setIsChecked] = useState(false);
 
-  const firebaseConfig = {
-    apiKey: process.env.API_KEY_FIREBASE,
-    authDomain: "bocchi-cd32c.firebaseapp.com",
-    databaseURL:
-      "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "bocchi-cd32c",
-    storageBucket: "bocchi-cd32c.appspot.com",
-    messagingSenderId: "429017394127",
-    appId: "1:429017394127:web:97bf9a991af175637340ba",
-    measurementId: "G-HW15LB2E2F",
-  };
-
   async function getMoreReviews() {
-    const app = initializeApp(firebaseConfig);
-    // const analytics = getAnalytics(app);
-    const db = getFirestore(app);
-
-    const first = query(
-      collection(db, `restaurants/${name}/reviews`),
-      limit(1)
-    );
-    const documentSnapshots = await getDocs(first);
-
-
-
-
-    const lastVisible =
-      documentSnapshots.docs[reviews.length - 1];
+    const [app, db] = await connectFirestore();
 
     const next = query(
       collection(db, `restaurants/${name}/reviews`),
-      startAfter(lastVisible),
+      orderBy("id"),
+      startAfter(`${reviews.length}`),
       limit(1)
     );
-    
 
+    const querySnapshot = await getDocs(next);
 
+    const nextReview = querySnapshot.docs[0];
 
     reviews = [
       ...reviews,
       {
-        star: next.star,
-        review: next.statement,
-        userName: next.userName,
-        // id:
+        id: nextReview.data().id,
+        star: nextReview.data().star,
+        review: nextReview.data().statement,
+        userName: nextReview.data().userName,
       },
     ];
 
     setReviews(reviews);
     setHasMore(reviews.length < totalCount ? true : false);
-
   }
 
   function handleChange(event) {
@@ -121,45 +100,42 @@ export default function DetailCard(props) {
   }
 
   const addReview = async (reviewWrite) => {
+    const [app, db] = await connectFirestore();
+
     if (status === "authenticated") {
-      const result = await fetch(`http://localhost:1337/api/reviews`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: {
-            name: props.name,
-            review: {
-              star: reviewWrite.star,
-              review: reviewWrite.review,
-            },
-            userName: session.user.name,
-          },
-        }),
-      });
+      const docRef = await setDoc(
+        doc(db, `restaurants/${name}/reviews`, `${(reviews.length + 1)}`),
+        {
+          id: `${reviews.length + 1}`,
+          star: `${reviewWrite.star}`,
+          statement: `${reviewWrite.review}`,
+          userName: `${session.user.name}`,
+        }
+        );
+
     } else if (status === "unauthenticated") {
-      const result = await fetch(`http://localhost:1337/api/reviews`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: {
-            name: props.name,
-            review: {
-              star: reviewWrite.star,
-              review: reviewWrite.review,
-            },
-            userName: "anonymous",
-          },
-        }),
-      });
+      const docRef = await setDoc(
+        doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
+        {
+          id: `${reviews.length + 1}`,
+          star: `${reviewWrite.star}`,
+          statement: `${reviewWrite.review}`,
+          userName: "anonymous",
+        }
+        );
     }
-    console.log("posted!");
+
+    console.log("created!")
     totalCount = totalCount + 1;
     setHasMore(true);
   };
+
+function deleteReview(id) {
+
+  setReviews(reviews.filter((review)=> {
+    return review.id !== id;
+  }));
+}
 
   return (
     <>
@@ -277,7 +253,7 @@ export default function DetailCard(props) {
               {reviews.map((foundItem, index) => {
                 return (
                   <Review
-                    // id={foundItem.id}
+                    id={foundItem.id}
                     key={index}
                     star={foundItem.star}
                     statement={foundItem.review}
@@ -288,6 +264,8 @@ export default function DetailCard(props) {
                         ? session.user.name
                         : "anonymous"
                     }
+                    name={name}
+                    deleteReview={deleteReview}
                   />
                 );
               })}

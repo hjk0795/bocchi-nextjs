@@ -2,6 +2,9 @@ import styles from "./review.module.css";
 import { useSession } from "next-auth/react";
 import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
+import { doc, deleteDoc, where } from "firebase/firestore";
+import connectFirestore from "../utils/connectFirestore";
+import { useEffect } from "react";
 
 export default function Review(props) {
   function numToStar(num) {
@@ -15,18 +18,23 @@ export default function Review(props) {
   }
 
   async function deleteReview() {
-    const result = await fetch(
-      `http://localhost:1337/api/reviews/${props.id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const [app, db] = await connectFirestore();
 
-    alert("deleted");
+    await deleteDoc(doc(db, `restaurants/${props.name}/reviews`, `${props.id}`));
+
+    alert("Deleted")
+  props.deleteReview(props.id);
   }
+
+  async function editReview() {
+    const [app, db] = await connectFirestore();
+
+  //   await deleteDoc(doc(db, `restaurants/${props.name}/reviews`, `${props.id}`));
+
+  //   alert("Deleted")
+  // props.deleteReview(props.id);
+  }
+
 
   return (
     <>
@@ -59,6 +67,7 @@ export default function Review(props) {
                       <BiEdit
                         className={styles.BiEdit}
                         style={{ marginRight: "5px", cursor: "pointer" }}
+                        onClick={editReview}
                       />
                       <BsTrash
                         className={styles.BsTrash}
