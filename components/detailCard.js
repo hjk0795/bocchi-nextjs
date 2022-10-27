@@ -8,7 +8,6 @@ import Button from "@mui/material/Button";
 import styles from "./detailCard.module.css";
 import Rating from "@mui/material/Rating";
 import { useSession } from "next-auth/react";
-import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import connectFirestore from "../utils/connectFirestore";
 import {
@@ -135,6 +134,10 @@ function deleteReview(id) {
   setReviews(reviews.filter((review)=> {
     return review.id !== id;
   }));
+}
+
+function editReview(id) {
+  
 }
 
   return (
@@ -266,6 +269,7 @@ function deleteReview(id) {
                     }
                     name={name}
                     deleteReview={deleteReview}
+                    editReview={editReview}
                   />
                 );
               })}

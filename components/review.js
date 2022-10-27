@@ -1,12 +1,12 @@
 import styles from "./review.module.css";
-import { useSession } from "next-auth/react";
 import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import { doc, deleteDoc, where } from "firebase/firestore";
 import connectFirestore from "../utils/connectFirestore";
-import { useEffect } from "react";
 
 export default function Review(props) {
+  var isEditing = false;
+
   function numToStar(num) {
     var star = "";
 
@@ -20,21 +20,18 @@ export default function Review(props) {
   async function deleteReview() {
     const [app, db] = await connectFirestore();
 
-    await deleteDoc(doc(db, `restaurants/${props.name}/reviews`, `${props.id}`));
+    await deleteDoc(
+      doc(db, `restaurants/${props.name}/reviews`, `${props.id}`)
+    );
 
-    alert("Deleted")
-  props.deleteReview(props.id);
+    alert("Deleted");
+    props.deleteReview(props.id);
   }
 
   async function editReview() {
-    const [app, db] = await connectFirestore();
-
-  //   await deleteDoc(doc(db, `restaurants/${props.name}/reviews`, `${props.id}`));
-
-  //   alert("Deleted")
-  // props.deleteReview(props.id);
+   
+    props.editReview(props.id);
   }
-
 
   return (
     <>
@@ -78,7 +75,8 @@ export default function Review(props) {
                   )}
               </div>
 
-              <p class={`card-text ${styles.cardText}`}>{props.statement}</p>
+{isEditing?<input type="text" value={props.statement}/>:<p class={`card-text ${styles.cardText}`}>{props.statement}</p>}
+
               <div class="d-flex justify-content-end align-items-center">
                 <small class="text-muted">{props.userName}</small>
               </div>
