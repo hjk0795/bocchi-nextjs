@@ -1,11 +1,13 @@
 import styles from "./review.module.css";
 import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
-import { doc, deleteDoc, where } from "firebase/firestore";
+import { AiOutlineCheckSquare } from "react-icons/Ai";
+import { doc, deleteDoc, where, setDoc } from "firebase/firestore";
 import connectFirestore from "../utils/connectFirestore";
+import { useState } from "react";
 
 export default function Review(props) {
-  var isEditing = false;
+  const [editStatement, setEditStatement] = useState("");
 
   function numToStar(num) {
     var star = "";
@@ -28,9 +30,26 @@ export default function Review(props) {
     props.deleteReview(props.id);
   }
 
-  async function editReview() {
-   
+  function editReview() {
     props.editReview(props.id);
+  }
+
+  async function saveReview() {
+    const [app, db] = await connectFirestore();
+
+    await setDoc(
+      doc(db, `restaurants/${props.name}/reviews`, `${props.id}`),
+      {
+        statement: editStatement,
+      },
+      { merge: true }
+    );
+
+    props.saveReview(props.id, editStatement);
+  }
+
+  function handleChange(e) {
+    setEditStatement(e.target.value);
   }
 
   return (
@@ -61,11 +80,20 @@ export default function Review(props) {
                 {props.isAuthenticated === "authenticated" &&
                   props.userName === props.sessionUserName && (
                     <small>
-                      <BiEdit
-                        className={styles.BiEdit}
-                        style={{ marginRight: "5px", cursor: "pointer" }}
-                        onClick={editReview}
-                      />
+                      {props.isEditing ? (
+                        <AiOutlineCheckSquare
+                          className={styles.AiEdit}
+                          style={{ marginRight: "5px", cursor: "pointer" }}
+                          onClick={saveReview}
+                        />
+                      ) : (
+                        <BiEdit
+                          className={styles.BiEdit}
+                          style={{ marginRight: "5px", cursor: "pointer" }}
+                          onClick={editReview}
+                        />
+                      )}
+
                       <BsTrash
                         className={styles.BsTrash}
                         style={{ cursor: "pointer" }}
@@ -75,7 +103,16 @@ export default function Review(props) {
                   )}
               </div>
 
-{isEditing?<input type="text" value={props.statement}/>:<p class={`card-text ${styles.cardText}`}>{props.statement}</p>}
+              {props.isEditing ? (
+                <input
+                  type="text"
+                  defaultValue={props.statement}
+                  onChange={handleChange}
+                  value={editStatement}
+                />
+              ) : (
+                <p class={`card-text ${styles.cardText}`}>{props.statement}</p>
+              )}
 
               <div class="d-flex justify-content-end align-items-center">
                 <small class="text-muted">{props.userName}</small>

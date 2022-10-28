@@ -47,6 +47,7 @@ export default function DetailCard(props) {
     id: "",
   });
   const [isChecked, setIsChecked] = useState(false);
+  const [editingID, setEditingID] = useState("-1");
 
   async function getMoreReviews() {
     const [app, db] = await connectFirestore();
@@ -103,15 +104,14 @@ export default function DetailCard(props) {
 
     if (status === "authenticated") {
       const docRef = await setDoc(
-        doc(db, `restaurants/${name}/reviews`, `${(reviews.length + 1)}`),
+        doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
         {
           id: `${reviews.length + 1}`,
           star: `${reviewWrite.star}`,
           statement: `${reviewWrite.review}`,
           userName: `${session.user.name}`,
         }
-        );
-
+      );
     } else if (status === "unauthenticated") {
       const docRef = await setDoc(
         doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
@@ -121,24 +121,35 @@ export default function DetailCard(props) {
           statement: `${reviewWrite.review}`,
           userName: "anonymous",
         }
-        );
+      );
     }
 
-    console.log("created!")
+    console.log("created!");
     totalCount = totalCount + 1;
     setHasMore(true);
   };
 
-function deleteReview(id) {
+  function deleteReview(id) {
+    setReviews(
+      reviews.filter((review) => {
+        return review.id !== id;
+      })
+    );
+  }
 
-  setReviews(reviews.filter((review)=> {
-    return review.id !== id;
-  }));
-}
+  function editReview(id) {
+    setEditingID(id);
+  }
 
-function editReview(id) {
-  
-}
+  function saveReview(id, editStatement) {
+    for (let i = 0; i < reviews.length; i++) {
+      if (reviews[i].id === id) {
+        reviews[i].review = editStatement;
+      }
+    }
+
+    setEditingID("-1");
+  }
 
   return (
     <>
@@ -270,6 +281,8 @@ function editReview(id) {
                     name={name}
                     deleteReview={deleteReview}
                     editReview={editReview}
+                    isEditing={foundItem.id === editingID ? true : false}
+                    saveReview={saveReview}
                   />
                 );
               })}
