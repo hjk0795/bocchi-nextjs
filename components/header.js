@@ -18,6 +18,9 @@ export default function Header() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
+            <Nav.Link as="div" className="me-auto">
+            <Link href="/chat">chat</Link>
+            </Nav.Link>
               <Nav.Link as="div" className="me-auto">
                 {session === null ? (
                   <Link href="/login">Log in</Link>
@@ -38,18 +41,3 @@ export default function Header() {
     </>
   );
 }
-
-// {session && (
-//   <>
-//     <p>
-//       Welcome, {session.user.name ?? session.user.email}
-//     </p>
-//     <br />
-//     <img src={session.user.image} alt="" />
-//   </>
-// )}
-// {!session && (
-//   <>
-//     <p>Please Sign in</p>
-//   </>
-// )}
