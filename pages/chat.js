@@ -19,51 +19,65 @@ function chat() {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
 
-  const firebaseConfig = {
-    apiKey: process.env.API_KEY_FIREBASE,
-    authDomain: "bocchi-cd32c.firebaseapp.com",
-    databaseURL:
-      "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "bocchi-cd32c",
-    storageBucket: "bocchi-cd32c.appspot.com",
-    messagingSenderId: "429017394127",
-    appId: "1:429017394127:web:97bf9a991af175637340ba",
-    measurementId: "G-HW15LB2E2F",
-  };
+  //   const firebaseConfig = {
+  //     apiKey: process.env.API_KEY_FIREBASE,
+  //     authDomain: "bocchi-cd32c.firebaseapp.com",
+  //     databaseURL:
+  //       "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
+  //     projectId: "bocchi-cd32c",
+  //     storageBucket: "bocchi-cd32c.appspot.com",
+  //     messagingSenderId: "429017394127",
+  //     appId: "1:429017394127:web:97bf9a991af175637340ba",
+  //     measurementId: "G-HW15LB2E2F",
+  //   };
+//   useEffect(() => {
+//     const firebaseConfig = {
+//       apiKey: process.env.API_KEY_FIREBASE,
+//       authDomain: "bocchi-cd32c.firebaseapp.com",
+//       databaseURL:
+//         "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
+//       projectId: "bocchi-cd32c",
+//       storageBucket: "bocchi-cd32c.appspot.com",
+//       messagingSenderId: "429017394127",
+//       appId: "1:429017394127:web:97bf9a991af175637340ba",
+//       measurementId: "G-HW15LB2E2F",
+//     };
 
-  const app = initializeApp(firebaseConfig);
-  // const analytics = getAnalytics(app);
-  const db = getFirestore(app);
+//     const app = initializeApp(firebaseConfig);
+//     // const analytics = getAnalytics(app);
+//     const db = getFirestore(app);
 
-    useEffect(() => {
-      const firebaseConfig = {
-        apiKey: process.env.API_KEY_FIREBASE,
-        authDomain: "bocchi-cd32c.firebaseapp.com",
-        databaseURL:
-          "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "bocchi-cd32c",
-        storageBucket: "bocchi-cd32c.appspot.com",
-        messagingSenderId: "429017394127",
-        appId: "1:429017394127:web:97bf9a991af175637340ba",
-        measurementId: "G-HW15LB2E2F",
-      };
+//     const q = query(collection(db, "messages"));
+//     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+//       const temp = [];
+//       querySnapshot.forEach((doc) => {
+//         temp.push(doc.data().text);
+//       });
+//       chatMessages = temp;
 
-      const app = initializeApp(firebaseConfig);
-      // const analytics = getAnalytics(app);
-      const db = getFirestore(app);
+//       console.log(chatMessages);
+      
+//     });
 
-      const q = query(collection(db, "messages"));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        //   const temp = [];
-        querySnapshot.forEach((doc) => {
-          chatMessages.push(doc.data().text);
-        });
-        //   chatMessages.push(temp);
-        console.log(chatMessages);
-      setChatMessages(chatMessages);
-      });
 
-    }, []);
+//     setChatMessages(["test", "test2"]);
+
+//   }, []);
+
+  //   const app = initializeApp(firebaseConfig);
+  //   // const analytics = getAnalytics(app);
+  //   const db = getFirestore(app);
+
+  //   const q = query(collection(db, "messages"));
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //       const temp = [];
+  //     querySnapshot.forEach((doc) => {
+  //       chatMessages.push(doc.data().text);
+  //     });
+  //       chatMessages.push(temp);
+  //     setChatMessages(chatMessages);
+  //  console.log(chatMessages)
+  //   });
 
   function handleChange(event) {
     setMessage(event.target.value);
@@ -82,6 +96,7 @@ function chat() {
       <Card style={{ width: "100%", color: "black", marginTop: "80px" }}>
         <Card.Body>
           <Card.Text style={{ height: "400px" }}>
+            {console.log("test")}
             {chatMessages.map((chat, index) => {
               <ChatBox key={index} text={chat} />;
             })}
