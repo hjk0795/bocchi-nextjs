@@ -17,67 +17,45 @@ import { initializeApp } from "firebase/app";
 
 function chat() {
   const [message, setMessage] = useState("");
-  const [chatMessages, setChatMessages] = useState([]);
+  var [chatMessages, setChatMessages] = useState([]);
+  var [isExecuted, setIsExecuted] = useState(false);
 
-  //   const firebaseConfig = {
-  //     apiKey: process.env.API_KEY_FIREBASE,
-  //     authDomain: "bocchi-cd32c.firebaseapp.com",
-  //     databaseURL:
-  //       "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
-  //     projectId: "bocchi-cd32c",
-  //     storageBucket: "bocchi-cd32c.appspot.com",
-  //     messagingSenderId: "429017394127",
-  //     appId: "1:429017394127:web:97bf9a991af175637340ba",
-  //     measurementId: "G-HW15LB2E2F",
-  //   };
-//   useEffect(() => {
-//     const firebaseConfig = {
-//       apiKey: process.env.API_KEY_FIREBASE,
-//       authDomain: "bocchi-cd32c.firebaseapp.com",
-//       databaseURL:
-//         "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
-//       projectId: "bocchi-cd32c",
-//       storageBucket: "bocchi-cd32c.appspot.com",
-//       messagingSenderId: "429017394127",
-//       appId: "1:429017394127:web:97bf9a991af175637340ba",
-//       measurementId: "G-HW15LB2E2F",
-//     };
+  const firebaseConfig = {
+    apiKey: process.env.API_KEY_FIREBASE,
+    authDomain: "bocchi-cd32c.firebaseapp.com",
+    databaseURL:
+      "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "bocchi-cd32c",
+    storageBucket: "bocchi-cd32c.appspot.com",
+    messagingSenderId: "429017394127",
+    appId: "1:429017394127:web:97bf9a991af175637340ba",
+    measurementId: "G-HW15LB2E2F",
+  };
 
-//     const app = initializeApp(firebaseConfig);
-//     // const analytics = getAnalytics(app);
-//     const db = getFirestore(app);
-
-//     const q = query(collection(db, "messages"));
-//     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-//       const temp = [];
-//       querySnapshot.forEach((doc) => {
-//         temp.push(doc.data().text);
-//       });
-//       chatMessages = temp;
-
-//       console.log(chatMessages);
-      
-//     });
+  if (isExecuted === false) {
+    const app = initializeApp(firebaseConfig);
+    // const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+    const q = query(collection(db, "messages"));
 
 
-//     setChatMessages(["test", "test2"]);
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const temp = [];
+      querySnapshot.forEach((doc) => {
+        temp.push(doc.data().text);
+      });
+      chatMessages = temp;
 
-//   }, []);
+      console.log("Triggered")
+      isExecuted = true;
+    //   setChatMessages(chatMessages);
+    });
 
-  //   const app = initializeApp(firebaseConfig);
-  //   // const analytics = getAnalytics(app);
-  //   const db = getFirestore(app);
+  }
 
-  //   const q = query(collection(db, "messages"));
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //       const temp = [];
-  //     querySnapshot.forEach((doc) => {
-  //       chatMessages.push(doc.data().text);
-  //     });
-  //       chatMessages.push(temp);
-  //     setChatMessages(chatMessages);
-  //  console.log(chatMessages)
-  //   });
+  console.log(isExecuted);
+  console.log(chatMessages);
+  
 
   function handleChange(event) {
     setMessage(event.target.value);
