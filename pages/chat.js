@@ -46,15 +46,18 @@ function chat() {
       });
       chatMessages = temp;
 
-      console.log("Triggered")
-      isExecuted = true;
+      console.log("Triggered");
+      
+    //   setIsExecuted(true);
     //   setChatMessages(chatMessages);
+    
     });
 
   }
 
   console.log(isExecuted);
-  console.log(chatMessages);
+  isExecuted = true;
+  console.log(isExecuted);
   
 
   function handleChange(event) {
