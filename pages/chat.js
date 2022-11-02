@@ -17,7 +17,7 @@ import {
 // import connectFirestore from "../utils/connectFirestore";
 import { initializeApp } from "firebase/app";
 
-function chat() {
+function Chat() {
   const [message, setMessage] = useState("");
   var [chatMessages, setChatMessages] = useState([]);
   var [isExecuted, setIsExecuted] = useState(false);
@@ -61,9 +61,6 @@ function chat() {
         tempObject.day = doc.data().day;
         temp.push(tempObject);
       });
-
-      console.log("Triggered");
-      console.log(temp);
       setChatMessages(temp);
       setIsExecuted(true);
     });
@@ -96,22 +93,26 @@ function chat() {
         <Card.Body>
           <Card.Text style={{ height: "400px" }}>
             {chatMessages.map((foundItem, index) => {
-                var flag = 0;
-                if (index !== 0){
-                    var lastDate = chatMessages[index-1].day;
-                } else if (index===0){
-                    var lastDate = foundItem.day;
-                }
-                lastDate===foundItem.day?flag=1:flag=0
+              var flag = 0;
+              if (index !== 0) {
+                var lastDate = chatMessages[index - 1].day;
+              } else if (index === 0) {
+                var lastDate = foundItem.day;
+              }
+              lastDate === foundItem.day ? (flag = 1) : (flag = 0);
               return (
                 <>
-                {flag==0 || index==0?<div>{`${foundItem.year}-${foundItem.month+1}-${foundItem.day}`}</div>:null}
-                <ChatBox
-                  key={index}
-                  text={foundItem.text}
-                  hour={foundItem.hour}
-                  minute={foundItem.minute}
-                />
+                  {flag == 0 || index == 0 ? (
+                    <div>{`${foundItem.year}-${foundItem.month + 1}-${
+                      foundItem.day
+                    }`}</div>
+                  ) : null}
+                  <ChatBox
+                    key={index}
+                    text={foundItem.text}
+                    hour={foundItem.hour}
+                    minute={foundItem.minute}
+                  />
                 </>
               );
             })}
@@ -133,4 +134,4 @@ function chat() {
   );
 }
 
-export default chat;
+export default Chat;
