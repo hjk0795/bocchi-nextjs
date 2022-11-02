@@ -29,7 +29,7 @@ export default function DetailCard(props) {
   const reviewPropArray = props.review.map((foundItem, index) => {
     return {
       star: foundItem.star,
-      review: foundItem.statement,
+      statement: foundItem.statement,
       userName: foundItem.userName,
       id: foundItem.id,
     };
@@ -42,9 +42,9 @@ export default function DetailCard(props) {
   var [reviews, setReviews] = useState(reviewPropArray);
   const [reviewWrite, setReviewWrite] = useState({
     star: null,
-    review: "",
+    statement: "",
     userName: "",
-    id: "",
+    id: 0,
   });
   const [isChecked, setIsChecked] = useState(false);
   const [editingID, setEditingID] = useState("-1");
@@ -55,7 +55,7 @@ export default function DetailCard(props) {
     const next = query(
       collection(db, `restaurants/${name}/reviews`),
       orderBy("id"),
-      startAfter(`${reviews.length}`),
+      startAfter(reviews.length),
       limit(1)
     );
 
@@ -68,7 +68,7 @@ export default function DetailCard(props) {
       {
         id: nextReview.data().id,
         star: nextReview.data().star,
-        review: nextReview.data().statement,
+        statement: nextReview.data().statement,
         userName: nextReview.data().userName,
       },
     ];
@@ -84,12 +84,12 @@ export default function DetailCard(props) {
       if (name === "reviewStar") {
         return {
           star: Number(value),
-          review: prevReviewWrite.text,
+          statement: prevReviewWrite.statement,
         };
       } else {
         return {
           star: prevReviewWrite.star,
-          review: value,
+          statement: value,
         };
       }
     });
@@ -106,9 +106,9 @@ export default function DetailCard(props) {
       const docRef = await setDoc(
         doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
         {
-          id: `${reviews.length + 1}`,
+          id: reviews.length + 1,
           star: `${reviewWrite.star}`,
-          statement: `${reviewWrite.review}`,
+          statement: `${reviewWrite.statement}`,
           userName: `${session.user.name}`,
         }
       );
@@ -116,9 +116,9 @@ export default function DetailCard(props) {
       const docRef = await setDoc(
         doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
         {
-          id: `${reviews.length + 1}`,
+          id: reviews.length + 1,
           star: `${reviewWrite.star}`,
-          statement: `${reviewWrite.review}`,
+          statement: `${reviewWrite.statement}`,
           userName: "anonymous",
         }
       );
@@ -144,7 +144,7 @@ export default function DetailCard(props) {
   function saveReview(id, editStatement) {
     for (let i = 0; i < reviews.length; i++) {
       if (reviews[i].id === id) {
-        reviews[i].review = editStatement;
+        reviews[i].statement = editStatement;
       }
     }
 
@@ -240,7 +240,7 @@ export default function DetailCard(props) {
                       name="reviewText"
                       placeholder="Write a review"
                       onChange={handleChange}
-                      value={reviewWrite.review}
+                      value={reviewWrite.statement}
                       onClick={toggleHidden}
                     ></textarea>
                     <Button
@@ -270,7 +270,7 @@ export default function DetailCard(props) {
                     id={foundItem.id}
                     key={index}
                     star={foundItem.star}
-                    statement={foundItem.review}
+                    statement={foundItem.statement}
                     userName={foundItem.userName}
                     isAuthenticated={status}
                     sessionUserName={
