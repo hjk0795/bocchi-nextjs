@@ -1,7 +1,7 @@
 import styles from "./review.module.css";
 import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
-import { AiOutlineCheckSquare } from "react-icons/Ai";
+import { AiOutlineCheckSquare } from "react-icons/ai";
 import { doc, deleteDoc, where, setDoc } from "firebase/firestore";
 import connectFirestore from "../utils/connectFirestore";
 import { useState } from "react";
