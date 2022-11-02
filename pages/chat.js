@@ -11,6 +11,8 @@ import {
   where,
   onSnapshot,
   getFirestore,
+  serverTimestamp,
+  orderBy,
 } from "firebase/firestore";
 // import connectFirestore from "../utils/connectFirestore";
 import { initializeApp } from "firebase/app";
@@ -36,29 +38,28 @@ function chat() {
     const app = initializeApp(firebaseConfig);
     // const analytics = getAnalytics(app);
     const db = getFirestore(app);
-    const q = query(collection(db, "messages"));
-
+    const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const temp = [];
+      
       querySnapshot.forEach((doc) => {
-        temp.push(doc.data().text);
+        var tempObject = {
+            text: "",
+            timestamp: ""
+          };
+
+        tempObject.text = doc.data().text,
+        tempObject.timestamp = doc.data().timestamp.toString()
+        temp.push(tempObject);
       });
-      chatMessages = temp;
 
       console.log("Triggered");
-      
-    //   setIsExecuted(true);
-    //   setChatMessages(chatMessages);
-    
+      console.log(temp);
+      setChatMessages(temp);
+      setIsExecuted(true);
     });
-
   }
-
-  console.log(isExecuted);
-  isExecuted = true;
-  console.log(isExecuted);
-  
 
   function handleChange(event) {
     setMessage(event.target.value);
@@ -66,8 +67,12 @@ function chat() {
 
   async function saveMessage() {
     // const [app, db] = await connectFirestore();
+    const app = initializeApp(firebaseConfig);
+    // const analytics = getAnalytics(app);
+    const db = getFirestore(app);
     const docRef = await addDoc(collection(db, "messages"), {
       text: `${message}`,
+      timestamp: serverTimestamp(),
     });
     console.log("Document written with ID: ", docRef.id);
   }
@@ -77,9 +82,8 @@ function chat() {
       <Card style={{ width: "100%", color: "black", marginTop: "80px" }}>
         <Card.Body>
           <Card.Text style={{ height: "400px" }}>
-            {console.log("test")}
-            {chatMessages.map((chat, index) => {
-              <ChatBox key={index} text={chat} />;
+            {chatMessages.map((foundItem, index) => {
+              return <ChatBox key={index} text={foundItem.text} timestamp={foundItem.timestamp} />;
             })}
           </Card.Text>
           <div className={styles.sendContainer}>
