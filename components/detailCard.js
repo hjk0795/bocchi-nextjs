@@ -155,7 +155,7 @@ export default function DetailCard(props) {
     <>
       <h1>{name}</h1>
       <main>
-        <section class="py-5 text-center container">
+        <section className="py-5 text-center container">
           {MyImage()}
           <br></br>
           <span>
@@ -169,12 +169,12 @@ export default function DetailCard(props) {
           </span>
         </section>
 
-        <div class="album py-5 bg-light">
-          <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3">
-              <div class="col">
-                <div class="card shadow-sm" style={{ height: "100%" }}>
-                  <div class="card-body">
+        <div className="album py-5 bg-light">
+          <div className="container">
+            <div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3">
+              <div className="col">
+                <div className="card shadow-sm" style={{ height: "100%" }}>
+                  <div className="card-body">
                     Google map
                     {/* <iframe
                       width="100%"
@@ -188,9 +188,9 @@ export default function DetailCard(props) {
                 </div>
               </div>
 
-              <div class="col">
-                <div class="card shadow-sm" style={{ height: "100%" }}>
-                  <div class="card-body">
+              <div className="col">
+                <div className="card shadow-sm" style={{ height: "100%" }}>
+                  <div className="card-body">
                     <Carousel style={{ filter: "invert(100%)" }}>
                       <Carousel.Item>
                         <img
@@ -221,8 +221,8 @@ export default function DetailCard(props) {
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-3 d-flex justify-content-between align-items-center">
+            <div className="row">
+              <div className="col-3 d-flex justify-content-between align-items-center">
                 <Rating
                   name="reviewStar"
                   value={reviewWrite.star}
@@ -231,11 +231,11 @@ export default function DetailCard(props) {
                   onChange={handleChange}
                 />
               </div>
-              <div class="col-9">
-                <div class="mt-3">
+              <div className="col-9">
+                <div className="mt-3">
                   <div className={styles.textareaContainer}>
                     <textarea
-                      class="form-control"
+                      className="form-control"
                       rows={isChecked ? "3" : "1"}
                       name="reviewText"
                       placeholder="Write a review"
@@ -291,9 +291,9 @@ export default function DetailCard(props) {
         </div>
       </main>
 
-      <footer class="text-muted py-5">
-        <div class="container">
-          <p class="float-end mb-1">
+      <footer className="text-muted py-5">
+        <div className="container">
+          <p className="float-end mb-1">
             <a href="#">Back to top</a>
           </p>
         </div>

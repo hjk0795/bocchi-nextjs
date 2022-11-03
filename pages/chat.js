@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 // import connectFirestore from "../utils/connectFirestore";
 import { initializeApp } from "firebase/app";
+import YearMonthDay from "../components/yearMonthDay";
 
 function Chat() {
   const [message, setMessage] = useState("");
@@ -91,29 +92,25 @@ function Chat() {
     <>
       <Card style={{ width: "100%", color: "black", marginTop: "80px" }}>
         <Card.Body>
-          <Card.Text style={{ height: "400px" }}>
+          <Card.Text style={{ height: "400px" }} as="div">
             {chatMessages.map((foundItem, index) => {
-              var flag = 0;
-              if (index !== 0) {
-                var lastDate = chatMessages[index - 1].day;
-              } else if (index === 0) {
-                var lastDate = foundItem.day;
-              }
-              lastDate === foundItem.day ? (flag = 1) : (flag = 0);
               return (
-                <>
-                  {flag == 0 || index == 0 ? (
-                    <div>{`${foundItem.year}-${foundItem.month + 1}-${
-                      foundItem.day
-                    }`}</div>
-                  ) : null}
+                <div key={index}>
+                  <YearMonthDay
+                    key={`${foundItem.year}${foundItem.month}${foundItem.day}`}
+                    year={foundItem.year}
+                    month={foundItem.month}
+                    day={foundItem.day}
+                    chatMessages={chatMessages}
+                    index={index}
+                  />
                   <ChatBox
-                    key={index}
+                    key={`${index}${foundItem.year}${foundItem.month}${foundItem.day}`}
                     text={foundItem.text}
                     hour={foundItem.hour}
                     minute={foundItem.minute}
                   />
-                </>
+                </div>
               );
             })}
           </Card.Text>

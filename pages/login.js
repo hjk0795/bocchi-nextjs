@@ -21,7 +21,7 @@ export default function Login({}) {
         <div>
           <button
             style={{ marginTop: "2rem" }}
-            class="btn btn-outline-dark"
+            className="btn btn-outline-dark"
             onClick={() => {
               signIn("google", {
                 callbackUrl: "http://localhost:3000/dashboard",

@@ -52,7 +52,7 @@ export default function Login() {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Group className="mb-3">
           <Form.Label>Password</Form.Label>
           <Form.Control
             name="password"
@@ -66,7 +66,6 @@ export default function Login() {
 
         <Form.Group
           className="mb-3"
-          controlId="formBasicPassword"
           style={isRegistered ? { display: "none" } : { display: "block" }}
         >
           <Form.Label>Confirm Password</Form.Label>
@@ -84,7 +83,11 @@ export default function Login() {
             variant="primary"
             type="submit"
             name={isRegistered ? "Login" : "Signup"}
-            disabled={((logInDetail.password===confirmPassword) || isRegistered===true)?false:true}
+            disabled={
+              logInDetail.password === confirmPassword || isRegistered === true
+                ? false
+                : true
+            }
           >
             {isRegistered ? "Login" : "Signup"}
           </Button>
