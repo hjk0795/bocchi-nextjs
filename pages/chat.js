@@ -17,11 +17,13 @@ import {
 // import connectFirestore from "../utils/connectFirestore";
 import { initializeApp } from "firebase/app";
 import YearMonthDay from "../components/yearMonthDay";
+import { useSession } from "next-auth/react";
 
 function Chat() {
   const [message, setMessage] = useState("");
   var [chatMessages, setChatMessages] = useState([]);
   var [isExecuted, setIsExecuted] = useState(false);
+  const { data: session, status } = useSession();
 
   const firebaseConfig = {
     apiKey: process.env.API_KEY_FIREBASE,
@@ -52,6 +54,8 @@ function Chat() {
           year: 0,
           month: 0,
           day: 0,
+          userName: "",
+          userImage: "",
         };
 
         tempObject.text = doc.data().text;
@@ -60,12 +64,15 @@ function Chat() {
         tempObject.year = doc.data().year;
         tempObject.month = doc.data().month;
         tempObject.day = doc.data().day;
+        tempObject.userName = doc.data().userName;
+        tempObject.userImage = doc.data().userImage;
         temp.push(tempObject);
       });
       setChatMessages(temp);
       setIsExecuted(true);
     });
   }
+
 
   function handleChange(event) {
     setMessage(event.target.value);
@@ -84,6 +91,8 @@ function Chat() {
       year: new Date().getFullYear(),
       month: new Date().getMonth(),
       day: new Date().getDate(),
+      userName: status === "authenticated" ? session.user.name : "anonymous",
+      userImage: status === "authenticated" ? session.user.image : "anonymous",
     });
     console.log("Document written with ID: ", docRef.id);
   }
@@ -109,6 +118,13 @@ function Chat() {
                     text={foundItem.text}
                     hour={foundItem.hour}
                     minute={foundItem.minute}
+                    userName={foundItem.userName}
+                    userImage={foundItem.userImage}
+                    sessionName={
+                      status === "authenticated"
+                        ? session.user.name
+                        : "anonymous"
+                    }
                   />
                 </div>
               );

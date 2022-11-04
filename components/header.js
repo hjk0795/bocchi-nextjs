@@ -18,14 +18,15 @@ export default function Header() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-            <Nav.Link as="div" className="me-auto">
-            <Link href="/chat">chat</Link>
-            </Nav.Link>
+              <Nav.Link as="div" className="me-auto">
+                <Link href="/chat">Chat</Link>
+              </Nav.Link>
               <Nav.Link as="div" className="me-auto">
                 {session === null ? (
-                  <Link href="/login">Log in</Link>
+                  <Link href="/login">Login</Link>
                 ) : (
-                  <div style={{cursor: "pointer"}}
+                  <div
+                    style={{ cursor: "pointer" }}
                     onClick={() => {
                       signOut({ callbackUrl: "http://localhost:3000/login" });
                     }}
