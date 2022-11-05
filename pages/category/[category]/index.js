@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import connectFirestore from "../../../utils/connectFirestore";
+import {db} from "../../../firebase-config";
 
 export async function getStaticPaths() {
   const categoryNames = ["sushi", "donburi", "ramen", "burger"];
@@ -25,7 +25,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const [app, db] = await connectFirestore();
 
   const q = query(
     collection(db, "restaurants"),

@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-async function connectFirestore() {
+export default function Test() {
   const firebaseConfig = {
     apiKey: process.env.API_KEY_FIREBASE,
     authDomain: "bocchi-cd32c.firebaseapp.com",
@@ -18,7 +19,7 @@ async function connectFirestore() {
   // const analytics = getAnalytics(app);
   const db = getFirestore(app);
 
-  return [app, db];
-}
+  const auth = getAuth(app);
 
-export default connectFirestore;
+  return <h1>test page</h1>;
+}

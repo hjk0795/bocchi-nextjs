@@ -9,7 +9,7 @@ import styles from "./detailCard.module.css";
 import Rating from "@mui/material/Rating";
 import { useSession } from "next-auth/react";
 // import { getAnalytics } from "firebase/analytics";
-import connectFirestore from "../utils/connectFirestore";
+import {db} from "../firebase-config";
 import {
   collection,
   query,
@@ -50,8 +50,7 @@ export default function DetailCard(props) {
   const [editingID, setEditingID] = useState("-1");
 
   async function getMoreReviews() {
-    const [app, db] = await connectFirestore();
-
+  
     const next = query(
       collection(db, `restaurants/${name}/reviews`),
       orderBy("id"),
@@ -100,7 +99,6 @@ export default function DetailCard(props) {
   }
 
   const addReview = async (reviewWrite) => {
-    const [app, db] = await connectFirestore();
 
     if (status === "authenticated") {
       const docRef = await setDoc(

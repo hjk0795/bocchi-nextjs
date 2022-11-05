@@ -3,7 +3,7 @@ import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import { AiOutlineCheckSquare } from "react-icons/ai";
 import { doc, deleteDoc, where, setDoc } from "firebase/firestore";
-import connectFirestore from "../utils/connectFirestore";
+import {db} from "../firebase-config";
 import { useState } from "react";
 
 export default function Review(props) {
@@ -20,7 +20,6 @@ export default function Review(props) {
   }
 
   async function deleteReview() {
-    const [app, db] = await connectFirestore();
 
     await deleteDoc(
       doc(db, `restaurants/${props.name}/reviews`, `${props.id}`)
@@ -35,7 +34,6 @@ export default function Review(props) {
   }
 
   async function saveReview() {
-    const [app, db] = await connectFirestore();
 
     await setDoc(
       doc(db, `restaurants/${props.name}/reviews`, `${props.id}`),

@@ -1,4 +1,4 @@
-import connectFirestore from "../../../utils/connectFirestore";
+import {db} from "../../../firebase-config";
 import DetailCard from "../../../components/detailCard";
 import { initializeApp } from "firebase/app";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
@@ -15,7 +15,6 @@ import {
 
 export async function getStaticPaths() {
   const categoryNames = ["sushi", "donburi", "ramen", "burger"];
-  const [app, db] = await connectFirestore();
 
   const q = query(collection(db, "restaurants"));
 
@@ -49,7 +48,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const [app, db] = await connectFirestore();
 
   const q = query(
     collection(db, "restaurants"),

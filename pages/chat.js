@@ -18,6 +18,7 @@ import {
 import { initializeApp } from "firebase/app";
 import YearMonthDay from "../components/yearMonthDay";
 import { useSession } from "next-auth/react";
+import {db} from "../firebase-config";
 
 function Chat() {
   const [message, setMessage] = useState("");
@@ -25,22 +26,7 @@ function Chat() {
   var [isExecuted, setIsExecuted] = useState(false);
   const { data: session, status } = useSession();
 
-  const firebaseConfig = {
-    apiKey: process.env.API_KEY_FIREBASE,
-    authDomain: "bocchi-cd32c.firebaseapp.com",
-    databaseURL:
-      "https://bocchi-cd32c-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "bocchi-cd32c",
-    storageBucket: "bocchi-cd32c.appspot.com",
-    messagingSenderId: "429017394127",
-    appId: "1:429017394127:web:97bf9a991af175637340ba",
-    measurementId: "G-HW15LB2E2F",
-  };
-
   if (isExecuted === false) {
-    const app = initializeApp(firebaseConfig);
-    // const analytics = getAnalytics(app);
-    const db = getFirestore(app);
     const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -56,6 +42,7 @@ function Chat() {
           day: 0,
           userName: "",
           userImage: "",
+          timestamp: 0
         };
 
         tempObject.text = doc.data().text;
@@ -66,6 +53,7 @@ function Chat() {
         tempObject.day = doc.data().day;
         tempObject.userName = doc.data().userName;
         tempObject.userImage = doc.data().userImage;
+        tempObject.timestamp = doc.data().timestamp;
         temp.push(tempObject);
       });
       setChatMessages(temp);
@@ -79,10 +67,6 @@ function Chat() {
   }
 
   async function saveMessage() {
-    // const [app, db] = await connectFirestore();
-    const app = initializeApp(firebaseConfig);
-    // const analytics = getAnalytics(app);
-    const db = getFirestore(app);
     const docRef = await addDoc(collection(db, "messages"), {
       text: `${message}`,
       timestamp: Date.now(),
@@ -113,6 +97,7 @@ function Chat() {
                     chatMessages={chatMessages}
                     index={index}
                   />
+               
                   <ChatBox
                     key={`${index}${foundItem.year}${foundItem.month}${foundItem.day}`}
                     text={foundItem.text}
@@ -125,6 +110,9 @@ function Chat() {
                         ? session.user.name
                         : "anonymous"
                     }
+                    timestamp={foundItem.timestamp}
+                    index={index}
+                    chatMessages={chatMessages}
                   />
                 </div>
               );

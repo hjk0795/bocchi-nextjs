@@ -1,19 +1,10 @@
 import LoginForm from "../components/loginForm";
-import { useSession, signIn, signOut } from "next-auth/react";
 import styles from "../styles/login.module.css";
 import { BsGithub } from "react-icons/bs";
 import { BsGoogle } from "react-icons/bs";
 
 export default function Login({}) {
-  const { data: session } = useSession();
 
-  if (session) {
-    return (
-      <>
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    );
-  }
   return (
     <>
       <div className={styles.container}>

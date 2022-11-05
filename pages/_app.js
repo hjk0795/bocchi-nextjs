@@ -3,21 +3,31 @@ import Header from "../components/header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.css";
 import Layout from "../components/layout";
-import { SessionProvider } from "next-auth/react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase-config";
+import { useState } from "react";
 
+function MyApp({ Component, pageProps: { ...pageProps } }) {
+const [userGlobal, setUserGlobal] = useState({});
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-  
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+     setUserGlobal(user);
+    } else {
+      setUserGlobal();
+    }
+  });
+
   return (
     <>
-      <SessionProvider session={session}>
-        <Head></Head>
+      <Head></Head>
 
-        <Header />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </SessionProvider>
+      <Header 
+        userGlobal={userGlobal}
+      />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </>
   );
 }

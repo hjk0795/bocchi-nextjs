@@ -2,6 +2,9 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import styles from "./loginForm.module.css";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase-config";
+import { useRouter } from 'next/router'
 
 export default function Login() {
   const [isRegistered, setIsRegistered] = useState(true);
@@ -10,6 +13,7 @@ export default function Login() {
     password: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter()
 
   function updateIsRegistered() {
     return setIsRegistered(!isRegistered);
@@ -37,9 +41,30 @@ export default function Login() {
     setConfirmPassword(event.target.value);
   }
 
+  async function handleClick(email, password) {
+    if (isRegistered) {
+      try {
+        const user = await signInWithEmailAndPassword(auth, email, password);
+        router.push("/dashboard")
+      } catch (error) {
+        console.log(error.message);
+      }
+    } else {
+      try {
+        const user = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+  }
+
   return (
     <div>
-      <Form action={isRegistered ? "/api/login" : "/api/signup"} method="post">
+      <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -81,13 +106,16 @@ export default function Login() {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Button
             variant="primary"
-            type="submit"
+            type="button"
             name={isRegistered ? "Login" : "Signup"}
             disabled={
               logInDetail.password === confirmPassword || isRegistered === true
                 ? false
                 : true
             }
+            onClick={() => {
+              handleClick(logInDetail.email, logInDetail.password);
+            }}
           >
             {isRegistered ? "Login" : "Signup"}
           </Button>

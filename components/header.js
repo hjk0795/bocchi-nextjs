@@ -3,10 +3,21 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Link from "next/link";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { auth } from "../firebase-config";
+import { signOut } from "firebase/auth";
+import { useRouter } from "next/router";
 
-export default function Header() {
-  const { data: session } = useSession();
+export default function Header(props) {
+  const router = useRouter();
+
+  async function signout() {
+    try {
+      await signOut(auth);
+      router.push("/login");
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   return (
     <>
@@ -19,20 +30,15 @@ export default function Header() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <Nav.Link as="div" className="me-auto">
-                <Link href="/chat">Chat</Link>
+                <Link href="/chat"><div style={{cursor: "pointer"}}>Chat</div></Link>
               </Nav.Link>
               <Nav.Link as="div" className="me-auto">
-                {session === null ? (
+                {props.userGlobal == null ? (
                   <Link href="/login">Login</Link>
                 ) : (
-                  <div
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      signOut({ callbackUrl: "http://localhost:3000/login" });
-                    }}
-                  >
-                    Sign out
-                  </div>
+                  <Link href="/login">
+                    <div onClick={signout} style={{cursor: "pointer"}}>Sign out</div>
+                  </Link>
                 )}
               </Nav.Link>
             </Nav>
