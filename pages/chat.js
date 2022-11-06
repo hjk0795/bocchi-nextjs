@@ -17,14 +17,13 @@ import {
 // import connectFirestore from "../utils/connectFirestore";
 import { initializeApp } from "firebase/app";
 import YearMonthDay from "../components/yearMonthDay";
-import { useSession } from "next-auth/react";
-import {db} from "../firebase-config";
+import {db, auth} from "../firebase-config";
 
-function Chat() {
+function Chat(props) {
   const [message, setMessage] = useState("");
   var [chatMessages, setChatMessages] = useState([]);
   var [isExecuted, setIsExecuted] = useState(false);
-  const { data: session, status } = useSession();
+  
 
   if (isExecuted === false) {
     const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
@@ -75,7 +74,7 @@ function Chat() {
       year: new Date().getFullYear(),
       month: new Date().getMonth(),
       day: new Date().getDate(),
-      userName: status === "authenticated" ? session.user.name : "anonymous",
+      userName: props.userGlobal !== null ? props.userGlobal.email : "anonymous",
       userImage: status === "authenticated" ? session.user.image : "anonymous",
     });
     console.log("Document written with ID: ", docRef.id);
