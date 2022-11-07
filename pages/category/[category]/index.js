@@ -1,11 +1,8 @@
 import RestaurantCard from "../../../components/restaurantCard";
 import Row from "react-bootstrap/Row";
 import _ from "lodash";
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {db} from "../../../firebase-config";
+import { db } from "../../../firebase-config";
 
 export async function getStaticPaths() {
   const categoryNames = ["sushi", "donburi", "ramen", "burger"];
@@ -25,7 +22,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-
   const q = query(
     collection(db, "restaurants"),
     where("category", "==", `${params.category}`)

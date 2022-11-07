@@ -3,7 +3,7 @@ import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import { AiOutlineCheckSquare } from "react-icons/ai";
 import { doc, deleteDoc, where, setDoc } from "firebase/firestore";
-import {db} from "../firebase-config";
+import { db } from "../firebase-config";
 import { useState } from "react";
 
 export default function Review(props) {
@@ -20,7 +20,6 @@ export default function Review(props) {
   }
 
   async function deleteReview() {
-
     await deleteDoc(
       doc(db, `restaurants/${props.name}/reviews`, `${props.id}`)
     );
@@ -34,7 +33,6 @@ export default function Review(props) {
   }
 
   async function saveReview() {
-
     await setDoc(
       doc(db, `restaurants/${props.name}/reviews`, `${props.id}`),
       {
@@ -109,7 +107,9 @@ export default function Review(props) {
                   value={editStatement}
                 />
               ) : (
-                <p className={`card-text ${styles.cardText}`}>{props.statement}</p>
+                <p className={`card-text ${styles.cardText}`}>
+                  {props.statement}
+                </p>
               )}
 
               <div className="d-flex justify-content-end align-items-center">

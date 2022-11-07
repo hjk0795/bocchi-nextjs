@@ -1,7 +1,5 @@
-import {db} from "../../../firebase-config";
+import { db } from "../../../firebase-config";
 import DetailCard from "../../../components/detailCard";
-import { initializeApp } from "firebase/app";
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 // import { getAnalytics } from "firebase/analytics";
 import {
   collection,
@@ -48,7 +46,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-
   const q = query(
     collection(db, "restaurants"),
     where("name", "==", `${params.restaurant}`)

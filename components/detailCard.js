@@ -19,7 +19,6 @@ import {
   startAfter,
   getDocs,
   getCountFromServer,
-  getFirestore,
   doc,
   setDoc,
   addDoc,
