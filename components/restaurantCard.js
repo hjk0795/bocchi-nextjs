@@ -7,16 +7,16 @@ import _ from "lodash";
 
 export default function RestaurantCard(props) {
 
-  // var sum = 0;
-  // var count = 0;
+  var sum = 0;
+  var count = 0;
 
-  // for (const element of props.review) {
-  //   sum = sum + parseInt(element.star);
-  //   count = count + 1;
-  // }
+  for (const element of props.review) {
+    sum = sum + parseInt(element.star);
+    count = count + 1;
+  }
 
-  // const averageStar = sum / count;
-  const averageStar = 3;
+  const averageStar = sum / count;
+  // const averageStar = 3;
 
 
   return (

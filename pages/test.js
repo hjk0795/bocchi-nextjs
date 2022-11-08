@@ -19,7 +19,18 @@ export default function Test() {
   // const analytics = getAnalytics(app);
   const db = getFirestore(app);
 
-  const auth = getAuth(app);
+  const auth = getAuth();
+createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
 
   return <h1>test page</h1>;
 }
