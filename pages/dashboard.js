@@ -1,16 +1,19 @@
-import { AiOutlineSearch } from "react-icons/ai";
-import Form from "react-bootstrap/Form";
-import styles from "../styles/dashboard.module.css";
-import Button from "react-bootstrap/Button";
-import {auth} from "../firebase-config"
-
 export default function Dashboard(props) {
-
-  // console.log(props.userGlobal);
+  const displayName =
+    props.userGlobal != null ? props.userGlobal.displayName : "signed out";
+  const photoURL =
+    props.userGlobal != null ? props.userGlobal.photoURL : "signed out";
 
   return (
     <>
-      <h1>dashboard page</h1>
+      {props.userGlobal !== null ? (
+        <>
+          <h6>{displayName}</h6>
+          <img width="100px" height="100px" src={photoURL}></img>
+        </>
+      ) : (
+        <h1>Logged out</h1>
+      )}
     </>
   );
 }

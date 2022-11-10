@@ -10,10 +10,11 @@ import { useState } from "react";
 function MyApp({ Component, pageProps: { ...pageProps } }) {
   const [userGlobal, setUserGlobal] = useState({});
 
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUserGlobal(user);
-
+      console.log(user);
     } else {
       setUserGlobal();
     }
