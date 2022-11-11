@@ -34,20 +34,9 @@ export async function getStaticProps({ params }) {
     return doc.data();
   });
 
-  // const q2 = query(
-  //   collection(db, `restaurants/${params.category}/reviews`),
-  // );
-
-  // const querySnapshotReviews = await getDocs(q2);
-  // const querySnapshotReviewsDocs = querySnapshotReviews.docs;
-
-
-
-
   return {
     props: {
       docArray,
-      // querySnapshotReviewsDocs
     },
   };
 }
@@ -62,7 +51,6 @@ export default function RestaurantList({ docArray }) {
             name={foundItem.name}
             category={foundItem.category}
             brandImg={foundItem.brandImg}
-            // review={querySnapshotReviewsDocs}
           />
         );
       })}
