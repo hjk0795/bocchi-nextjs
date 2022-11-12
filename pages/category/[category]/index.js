@@ -1,6 +1,5 @@
 import RestaurantCard from "../../../components/restaurantCard";
 import Row from "react-bootstrap/Row";
-import _ from "lodash";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
