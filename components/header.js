@@ -3,11 +3,24 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Link from "next/link";
 import { auth } from "../firebase-config";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
-export default function Header(props) {
+export default function Header() {
   const router = useRouter();
+  const [currentUser, setCurrentUser] = useState(null);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // setCurrentUser(user.name);
+      console.log("user loaded")
+    } else {
+      // User is signed out
+      // ...
+      console.log("user not loaded")
+    }
+  });
 
   async function signout() {
     try {
@@ -32,7 +45,7 @@ export default function Header(props) {
                 <Link href="/chat"><div style={{cursor: "pointer"}}>Chat</div></Link>
               </Nav.Link>
               <Nav.Link as="div" className="me-auto">
-                {props.userGlobal == null ? (
+                {currentUser == null ? (
                   <Link href="/login">Login</Link>
                 ) : (
                   <Link href="/login">

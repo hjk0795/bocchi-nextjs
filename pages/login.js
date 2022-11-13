@@ -1,6 +1,6 @@
 import LoginForm from "../components/loginForm";
 import styles from "../styles/login.module.css";
-import { BsGithub, BsGoogle, BsTwitter} from "react-icons/bs";
+import { BsGithub, BsGoogle, BsTwitter } from "react-icons/bs";
 import {
   GoogleAuthProvider,
   GithubAuthProvider,
@@ -10,40 +10,13 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 export default function Login(props) {
   const providerGoogle = new GoogleAuthProvider();
   const providerTwitter = new TwitterAuthProvider();
   const router = useRouter();
   const githubClientID = process.env.NEXT_PUBLIC_GITHUB_ID;
-
-  useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const codeParam = urlParams.get("code");
-
-    if (codeParam) {
-      async function getAccessToken() {
-        await fetch(
-          "http://localhost:3000/api/github/getAccessToken?code=" + codeParam,
-          {
-            method: "GET",
-          }
-        )
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            const credential = GithubAuthProvider.credential(data.access_token);
-            signInWithCredential(auth, credential);
-            router.push("/dashboard");
-          });
-      }
-
-      getAccessToken();
-    }
-  }, []);
+  const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
 
   async function handleSignIn(provider) {
     try {
@@ -55,7 +28,10 @@ export default function Login(props) {
 
   function signInWithGithub() {
     window.location.assign(
-      "https://github.com/login/oauth/authorize?client_id=" + githubClientID
+      "https://github.com/login/oauth/authorize?client_id=" +
+        githubClientID +
+        "&state=" +
+        requestState
     );
   }
 
