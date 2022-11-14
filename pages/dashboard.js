@@ -1,18 +1,32 @@
-export default function Dashboard(props) {
-  const displayName =
-    props.userGlobal != null ? props.userGlobal.displayName : "signed out";
-  const photoURL =
-    props.userGlobal != null ? props.userGlobal.photoURL : "signed out";
+import { auth } from "../firebase-config";
+import { onAuthStateChanged } from "firebase/auth";
+import { useState } from "react";
+import { useRouter } from "next/router";
+
+export default function Dashboard() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const router = useRouter();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurrentUser(user);
+    } else {
+      setCurrentUser(null);
+    }
+  });
+
+  const displayName = currentUser != null ? currentUser.displayName : "Loading";
+  const photoURL = currentUser != null ? currentUser.photoURL : "";
 
   return (
     <>
-      {props.userGlobal !== null ? (
+      {currentUser !== null ? (
         <>
           <h6>{displayName}</h6>
           <img width="100px" height="100px" src={photoURL}></img>
         </>
       ) : (
-        <h1>Logged out</h1>
+        <h1>Loading..</h1>
       )}
     </>
   );

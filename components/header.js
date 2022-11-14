@@ -11,17 +11,6 @@ export default function Header() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState(null);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // setCurrentUser(user.name);
-      console.log("user loaded")
-    } else {
-      // User is signed out
-      // ...
-      console.log("user not loaded")
-    }
-  });
-
   async function signout() {
     try {
       await signOut(auth);
@@ -30,6 +19,14 @@ export default function Header() {
       console.log(error.message);
     }
   }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurrentUser(user);
+    } else {
+      setCurrentUser(null);
+    }
+  });
 
   return (
     <>
@@ -42,15 +39,19 @@ export default function Header() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <Nav.Link as="div" className="me-auto">
-                <Link href="/chat"><div style={{cursor: "pointer"}}>Chat</div></Link>
+                <Link href="/chat">
+                  <div style={{ cursor: "pointer" }}>Chat</div>
+                </Link>
               </Nav.Link>
               <Nav.Link as="div" className="me-auto">
-                {currentUser == null ? (
-                  <Link href="/login">Login</Link>
-                ) : (
+                {currentUser ? (
                   <Link href="/login">
-                    <div onClick={signout} style={{cursor: "pointer"}}>Sign out</div>
+                    <div onClick={signout} style={{ cursor: "pointer" }}>
+                      Sign out
+                    </div>
                   </Link>
+                ) : (
+                  <Link href="/login">Login</Link>
                 )}
               </Nav.Link>
             </Nav>

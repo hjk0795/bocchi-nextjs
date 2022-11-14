@@ -7,7 +7,6 @@ import { useState } from "react";
 import Button from "@mui/material/Button";
 import styles from "./detailCard.module.css";
 import Rating from "@mui/material/Rating";
-import { useSession } from "next-auth/react";
 // import { getAnalytics } from "firebase/analytics";
 import {db} from "../firebase-config";
 import {
@@ -34,7 +33,6 @@ export default function DetailCard(props) {
     };
   });
 
-  const { data: session, status } = useSession();
   const name = props.name;
   const [totalCount, setTotalCount] = useState(props.totalCount);
   const [hasMore, setHasMore] = useState(true);
