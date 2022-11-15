@@ -15,7 +15,7 @@ export default async function getAccessToken(req, res) {
     headers: {
       Accept: "application/json",
     },
-    mode: "no-cors",
+    // mode: "no-cors",
   })
     .then((response) => {
       return response.json();

@@ -25,12 +25,15 @@ export default function CallbackEndpoint() {
               return response.json();
             })
             .then((data) => {
+              document.cookie = `isAuthenticated=true`;
+              
               const credential = GithubAuthProvider.credential(
                 data.access_token
               );
               signInWithCredential(auth, credential);
-              router.push("/dashboard");
-            });
+
+            })
+            .then(router.push("/redirect"))
         }
 
         getAccessToken();

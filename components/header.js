@@ -14,6 +14,7 @@ export default function Header() {
   async function signout() {
     try {
       await signOut(auth);
+      document.cookie = `isAuthenticated=false`;
       router.push("/login");
     } catch (error) {
       console.log(error.message);

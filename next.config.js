@@ -16,5 +16,8 @@ module.exports = {
       "cdn-icons-png.flaticon.com",
     ],
   },
+  experimental: {
+    allowMiddlewareResponseBody: true,
+  },
 };
 

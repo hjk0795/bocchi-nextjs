@@ -1,12 +1,24 @@
-// middleware.ts
-import { NextResponse, NextRequest } from 'next/server'
+import { NextResponse, NextRequest } from "next/server";
 
-// This function can be marked `async` if using `await` inside
-export function middleware(NextRequest) {
-  return NextResponse.redirect(new URL('/about-2', request.url))
+export function middleware(req, res) {
+  console.log("triggered")
+  if (req.cookies.has("isAuthenticated")) {
+    if (req.cookies.get("isAuthenticated").value === "true") {
+      return NextResponse.next();
+    } else if (req.cookies.get("isAuthenticated").value === "false") {
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          message: "Access denied (unauthorized)",
+        }),
+        { status: 401, headers: { "content-type": "application/json" } }
+      );
+    }
+  } else {
+    return NextResponse.next();
+  }
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: '/about/:path*',
-}
+  matcher: "/dashboard",
+};
