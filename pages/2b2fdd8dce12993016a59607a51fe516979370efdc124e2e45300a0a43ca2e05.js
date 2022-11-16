@@ -1,10 +1,10 @@
-import { GithubAuthProvider, signInWithCredential } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function CallbackEndpoint() {
+export default function CallbackEndpointTwitter() {
   const router = useRouter();
+
   useEffect(() => {
     const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
     const queryString = window.location.search;
@@ -16,7 +16,8 @@ export default function CallbackEndpoint() {
       if (codeParam) {
         async function getAccessToken() {
           await fetch(
-            "http://localhost:3000/api/github/getAccessToken?code=" + codeParam,
+            "http://localhost:3000/api/twitter/getAccessToken?code=" +
+              codeParam,
             {
               method: "GET",
             }
@@ -25,13 +26,8 @@ export default function CallbackEndpoint() {
               return response.json();
             })
             .then((data) => {
-              console.log(data);
               document.cookie = `isAuthenticated=true`;
-
-              const credential = GithubAuthProvider.credential(
-                data.access_token
-              );
-              signInWithCredential(auth, credential);
+              console.log(data);
             })
             .then(router.push("/redirect"));
         }

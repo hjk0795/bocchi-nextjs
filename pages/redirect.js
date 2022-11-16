@@ -1,8 +1,17 @@
-
+import { useRouter } from "next/router";
 
 export default function Redirect() {
-    setTimeout(() => {
-        console.log("Delayed for 1 second.");
-        console.log(document.cookie);
-      }, "1000")
+  const router = useRouter();
+
+  setTimeout(() => {
+    console.log("Delayed for 1 second.");
+
+    router.push("/dashboard");
+  }, "1000");
+
+  return (
+    <>
+      <h1>Redirecting...</h1>
+    </>
+  );
 }

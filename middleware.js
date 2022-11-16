@@ -1,7 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 
 export function middleware(req, res) {
-  console.log("triggered")
   if (req.cookies.has("isAuthenticated")) {
     if (req.cookies.get("isAuthenticated").value === "true") {
       return NextResponse.next();
