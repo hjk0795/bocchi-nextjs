@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from "next/router";
+import { authorizeRequest } from "../utils/authorizeRequest";
 
 export default function Login(props) {
   const providerGoogle = new GoogleAuthProvider();
@@ -19,6 +20,10 @@ export default function Login(props) {
   const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
   const twitterClientID = process.env.NEXT_PUBLIC_TWITTER_ID;
   const codeVerifier = process.env.NEXT_PUBLIC_CODE_VERIFIER;
+  const twitterAPIKEY = process.env.NEXT_PUBLIC_TWITTER_CONSUMER_KEY;
+  const encodedCallBackURI = encodeURIComponent("http://localhost:3000/2b2fdd8dce12993016a59607a51fe516979370efdc124e2e45300a0a43ca2e05");
+
+  console.log((authorizeRequest()));
 
   async function handleSignIn(provider) {
     try {
@@ -38,21 +43,27 @@ export default function Login(props) {
   }
 
   async function signInWithTwitter() {
-    const params =
-      "?response_type=code" +
-      "&client_id=" +
-      twitterClientID +
-      "&redirect_uri=" +
-      "http://localhost:3000/2b2fdd8dce12993016a59607a51fe516979370efdc124e2e45300a0a43ca2e05" +
-      "&scope=" +
-      "tweet.read%20users.read%20follows.read%20follows.write" +
-      "&state=" +
-      requestState +
-      "&code_challenge=" +
-      codeVerifier +
-      "&code_challenge_method=plain";
+    const headerParams = authorizeRequest();
 
-    window.location.assign("https://twitter.com/i/oauth2/authorize" + params);
+    try{
+    await fetch(`https://api.twitter.com/oauth/request_token?oauth_callback=${encodedCallBackURI}`, {
+    method: "POST",
+    Accept: "application/json",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": headerParams
+    },
+    mode: "no-cors",
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      res.json(data);
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
   }
 
   return (
