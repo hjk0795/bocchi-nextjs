@@ -23,8 +23,8 @@ export default function Login(props) {
   const twitterAPIKEY = process.env.NEXT_PUBLIC_TWITTER_CONSUMER_KEY;
   const encodedCallBackURI = encodeURIComponent("http://localhost:3000/2b2fdd8dce12993016a59607a51fe516979370efdc124e2e45300a0a43ca2e05");
 
-  console.log((authorizeRequest()));
-
+console.log(authorizeRequest());
+  
   async function handleSignIn(provider) {
     try {
       await signInWithRedirect(auth, provider).then(router.push("/dashboard"));
@@ -46,23 +46,25 @@ export default function Login(props) {
     const headerParams = authorizeRequest();
 
     try{
-    await fetch(`https://api.twitter.com/oauth/request_token?oauth_callback=${encodedCallBackURI}`, {
+    await fetch(`https://api.twitter.com/oauth/request_token?oauth_callback=http%3A%2F%2Flocalhost%3A3000%2F2b2fdd8dce12993016a59607a51fe516979370efdc124e2e45300a0a43ca2e05`, {
     method: "POST",
-    Accept: "application/json",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": headerParams
+      // "Authorization": headerParams,
+      "Authorization": "OAuth oauth_consumer_key=\"MlIGLJXXsCsBcsV5MAm1GZxLC\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1668734061\", oauth_nonce=\"XEsHnIIrkBN\", oauth_version=\"1.0\", oauth_signature=\"0kOkmFgtCR6lADFYRjSPD8C2IQc%3D\"",
+      "Host": "api.twitter.com",
     },
-    mode: "no-cors",
+    mode: "cors",
   })
     .then((response) => {
-      return response.json();
+      return response.text();
     })
     .then((data) => {
-      res.json(data);
+      alert(data);
     });
   } catch (error) {
-    console.log(error.message);
+    if (error.message === "Unexpected end of input") {
+      console.log("No response from the server");
+    }
   }
   }
 
