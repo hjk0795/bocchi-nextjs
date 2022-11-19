@@ -33,14 +33,33 @@ export async function getStaticProps({ params }) {
     return doc.data();
   });
 
+  const averageStarArray = docArray.map(async (foundItem, index) => {
+    const q = query(collection(db, `restaurants/${foundItem.name}/reviews`));
+    const querySnapshot = await getDocs(q);
+    const querySnapshotDocs = querySnapshot.docs;
+    const docArray = querySnapshotDocs.map((doc, index) => {
+      return doc.data().star;
+    });
+    const docArrayNumber = docArray.map((i) => {
+      Number(i);
+    });
+    var sum = 0;
+    docArrayNumber.map((i) => {
+      return (sum = sum + i);
+    });
+
+    return sum / docArrayNumber.length;
+  });
+
   return {
     props: {
       docArray,
+      averageStarArray
     },
   };
 }
 
-export default function RestaurantList({ docArray }) {
+export default function RestaurantList({ docArray, averageStarArray }) {
   return (
     <Row xs={1} md={2} lg={3} className="g-2">
       {docArray.map((foundItem, index) => {
@@ -50,6 +69,7 @@ export default function RestaurantList({ docArray }) {
             name={foundItem.name}
             category={foundItem.category}
             brandImg={foundItem.brandImg}
+            averageStar={averageStarArray[index]}
           />
         );
       })}

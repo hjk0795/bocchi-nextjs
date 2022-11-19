@@ -5,15 +5,19 @@ import { useRouter } from "next/router";
 
 export default function Dashboard() {
   const [currentUser, setCurrentUser] = useState(null);
+  var [isExecuted, setIsExecuted] = useState(false);
   const router = useRouter();
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrentUser(user);
-    } else {
-      setCurrentUser(null);
-    }
-  });
+  if (isExecuted === false) {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsExecuted(true);
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+  }
 
   const displayName = currentUser != null ? currentUser.displayName : "Loading";
   const photoURL = currentUser != null ? currentUser.photoURL : "";

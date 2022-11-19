@@ -6,19 +6,6 @@ import Link from "next/link";
 import _ from "lodash";
 
 export default function RestaurantCard(props) {
-
-  // var sum = 0;
-  // var count = 0;
-
-  // for (const element of props.review) {
-  //   sum = sum + parseInt(element.star);
-  //   count = count + 1;
-  // }
-
-  // const averageStar = sum / count;
-  const averageStar = 3;
-
-
   return (
     <>
       <Col>
@@ -33,7 +20,7 @@ export default function RestaurantCard(props) {
             <Card.Body className={styles.cardBody}>
               <Card.Title className={styles.title}>
                 <span>{props.name}</span>
-                <span>{averageStar}</span>
+                <span>{props.averageStar}</span>
               </Card.Title>
             </Card.Body>
           </Card>

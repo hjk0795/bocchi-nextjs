@@ -10,7 +10,6 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from "next/router";
-import { authorizeRequest } from "../utils/authorizeRequest";
 
 export default function Login(props) {
   const providerGoogle = new GoogleAuthProvider();
@@ -21,10 +20,10 @@ export default function Login(props) {
   const twitterClientID = process.env.NEXT_PUBLIC_TWITTER_ID;
   const codeVerifier = process.env.NEXT_PUBLIC_CODE_VERIFIER;
   const twitterAPIKEY = process.env.NEXT_PUBLIC_TWITTER_CONSUMER_KEY;
-  const encodedCallBackURI = encodeURIComponent("http://localhost:3000/2b2fdd8dce12993016a59607a51fe516979370efdc124e2e45300a0a43ca2e05");
+  const encodedCallBackURI = encodeURIComponent(
+    "http://localhost:3000/2b2fdd8dce12993016a59607a51fe516979370efdc124e2e45300a0a43ca2e05"
+  );
 
-console.log(authorizeRequest());
-  
   async function handleSignIn(provider) {
     try {
       await signInWithRedirect(auth, provider).then(router.push("/dashboard"));
@@ -42,31 +41,30 @@ console.log(authorizeRequest());
     );
   }
 
-  async function signInWithTwitter() {
-    const headerParams = authorizeRequest();
+  // async function signInWithTwitter() {
+  //   var tempArray;
+  //   var requestToken;
+  //   var requestTokenSecret;
 
-    try{
-    await fetch(`https://api.twitter.com/oauth/request_token?oauth_callback=http%3A%2F%2Flocalhost%3A3000%2F2b2fdd8dce12993016a59607a51fe516979370efdc124e2e45300a0a43ca2e05`, {
-    method: "POST",
-    headers: {
-      // "Authorization": headerParams,
-      "Authorization": "OAuth oauth_consumer_key=\"MlIGLJXXsCsBcsV5MAm1GZxLC\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1668734061\", oauth_nonce=\"XEsHnIIrkBN\", oauth_version=\"1.0\", oauth_signature=\"0kOkmFgtCR6lADFYRjSPD8C2IQc%3D\"",
-      "Host": "api.twitter.com",
-    },
-    mode: "cors",
-  })
-    .then((response) => {
-      return response.text();
-    })
-    .then((data) => {
-      alert(data);
-    });
-  } catch (error) {
-    if (error.message === "Unexpected end of input") {
-      console.log("No response from the server");
-    }
-  }
-  }
+  //   async function getRequestToken() {
+  //     await fetch("http://localhost:3000/api/twitter/getRequestToken", {
+  //       method: "GET",
+  //     })
+  //       .then((response) => {
+  //         return response.text();
+  //       })
+  //       .then((data) => {
+  //         tempArray = data.split("&");
+  //         requestToken = tempArray[0].split("=")[1];
+  //         requestTokenSecret = tempArray[1].split("=")[1];
+  //       });
+  //   }
+
+  //   await getRequestToken();
+  //   window.location.assign(
+  //     "https://api.twitter.com/oauth/authenticate?oauth_token=" + requestToken
+  //   );
+  // }
 
   return (
     <>
@@ -103,7 +101,7 @@ console.log(authorizeRequest());
           </button>
         </div>
 
-        <div>
+        {/* <div>
           <button
             style={{ marginTop: "0.1rem", width: "200px" }}
             className="btn btn-outline-dark"
@@ -116,7 +114,7 @@ console.log(authorizeRequest());
               <span style={{ marginRight: "2px" }}>Sign in with Twitter</span>
             </div>
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   );

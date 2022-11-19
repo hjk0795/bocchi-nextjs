@@ -10,6 +10,7 @@ import { useState } from "react";
 export default function Header() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState(null);
+  var [isExecuted, setIsExecuted] = useState(false);
 
   async function signout() {
     try {
@@ -21,13 +22,17 @@ export default function Header() {
     }
   }
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrentUser(user);
-    } else {
-      setCurrentUser(null);
-    }
-  });
+  if (isExecuted === false) {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    setIsExecuted(true);
+  }
+  
 
   return (
     <>

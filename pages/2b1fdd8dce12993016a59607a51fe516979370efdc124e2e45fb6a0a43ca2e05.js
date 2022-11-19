@@ -25,7 +25,6 @@ export default function CallbackEndpoint() {
               return response.json();
             })
             .then((data) => {
-              console.log(data);
               document.cookie = `isAuthenticated=true`;
 
               const credential = GithubAuthProvider.credential(
