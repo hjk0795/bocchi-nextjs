@@ -74,8 +74,8 @@ function Chat() {
     const docRef = await addDoc(collection(db, "messages"), {
       text: `${message}`,
       timestamp: Date.now(),
-      hour: parseInt(("0" + new Date().getHours()).slice(-2)),
-      minute: parseInt(("0" + new Date().getMinutes()).slice(-2)),
+      hour: (("0" + new Date().getHours()).slice(-2)),
+      minute: (("0" + new Date().getMinutes()).slice(-2)),
       year: new Date().getFullYear(),
       month: new Date().getMonth(),
       day: new Date().getDate(),

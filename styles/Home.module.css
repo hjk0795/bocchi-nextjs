@@ -1,7 +1,15 @@
+.contents {
+  margin-top: 300px;
+}
+
+.buttonLink {
+    text-decoration: none;
+}
+
+/* dark mode setting */
 @media (prefers-color-scheme: dark) {
-    .startButton {
-        color: white;
-        border-color: white;
-    }
+  .startButton {
+    color: white;
+    border-color: white;
   }
-  
+}

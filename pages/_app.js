@@ -5,14 +5,13 @@ import "../styles/globals.css";
 import Layout from "../components/layout";
 
 function MyApp({ Component, pageProps: { ...pageProps } }) {
-
   return (
     <>
       <Head></Head>
 
-      <Header/>
+      <Header />
       <Layout>
-        <Component {...pageProps}/>
+        <Component {...pageProps} />
       </Layout>
     </>
   );

@@ -21,6 +21,8 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  var averageStarArray;
+
   const q = query(
     collection(db, "restaurants"),
     where("category", "==", `${params.category}`)
@@ -33,16 +35,16 @@ export async function getStaticProps({ params }) {
     return doc.data();
   });
 
-  const averageStarArray = docArray.map(async (foundItem, index) => {
+  const averageStarArrayPromise = docArray.map(async (foundItem, index) => {
     const q = query(collection(db, `restaurants/${foundItem.name}/reviews`));
     const querySnapshot = await getDocs(q);
     const querySnapshotDocs = querySnapshot.docs;
     const docArray = querySnapshotDocs.map((doc, index) => {
       return doc.data().star;
     });
-    const docArrayNumber = docArray.map((i) => {
-      Number(i);
-    });
+
+    const docArrayNumber = docArray.map(Number);
+
     var sum = 0;
     docArrayNumber.map((i) => {
       return (sum = sum + i);
@@ -51,10 +53,14 @@ export async function getStaticProps({ params }) {
     return sum / docArrayNumber.length;
   });
 
+  await Promise.all(averageStarArrayPromise).then((data) => {
+    averageStarArray = data;
+  });
+
   return {
     props: {
       docArray,
-      averageStarArray
+      averageStarArray,
     },
   };
 }

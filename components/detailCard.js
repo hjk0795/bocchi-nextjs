@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import styles from "./detailCard.module.css";
 import Rating from "@mui/material/Rating";
 // import { getAnalytics } from "firebase/analytics";
-import {db} from "../firebase-config";
+import {db, auth} from "../firebase-config";
 import {
   collection,
   query,
@@ -22,8 +22,10 @@ import {
   setDoc,
   addDoc,
 } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function DetailCard(props) {
+  
   const reviewPropArray = props.review.map((foundItem, index) => {
     return {
       star: foundItem.star,
@@ -34,7 +36,7 @@ export default function DetailCard(props) {
   });
 
   const name = props.name;
-  const [totalCount, setTotalCount] = useState(props.totalCount);
+  var [totalCount, setTotalCount] = useState(props.totalCount);
   const [hasMore, setHasMore] = useState(true);
   var [reviews, setReviews] = useState(reviewPropArray);
   const [reviewWrite, setReviewWrite] = useState({
@@ -45,6 +47,20 @@ export default function DetailCard(props) {
   });
   const [isChecked, setIsChecked] = useState(false);
   const [editingID, setEditingID] = useState("-1");
+  var [isExecuted, setIsExecuted] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  if (isExecuted === false) {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    setIsExecuted(true);
+  }
+  
 
   async function getMoreReviews() {
   
@@ -97,7 +113,7 @@ export default function DetailCard(props) {
 
   const addReview = async (reviewWrite) => {
 
-    if (status === "authenticated") {
+    if (currentUser !== null) {
       const docRef = await setDoc(
         doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
         {
@@ -107,7 +123,7 @@ export default function DetailCard(props) {
           userName: `${session.user.name}`,
         }
       );
-    } else if (status === "unauthenticated") {
+    } else if (currentUser === null) {
       const docRef = await setDoc(
         doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
         {
@@ -267,10 +283,10 @@ export default function DetailCard(props) {
                     star={foundItem.star}
                     statement={foundItem.statement}
                     userName={foundItem.userName}
-                    isAuthenticated={status}
+                    isAuthenticated={currentUser !== null?"true":"false"}
                     sessionUserName={
-                      status === "authenticated"
-                        ? session.user.name
+                      currentUser !== null
+                        ? currentUser.displayName
                         : "anonymous"
                     }
                     name={name}

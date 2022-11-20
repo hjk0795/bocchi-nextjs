@@ -73,7 +73,7 @@ export default function Review(props) {
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
                 <small className="text-muted">{numToStar(props.star)}</small>
-                {props.isAuthenticated === "authenticated" &&
+                {props.isAuthenticated === "true" &&
                   props.userName === props.sessionUserName && (
                     <small>
                       {props.isEditing ? (
