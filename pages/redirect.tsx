@@ -7,7 +7,7 @@ export default function Redirect() {
     console.log("Delayed for 1 second.");
 
     router.push("/dashboard");
-  }, "1000");
+  }, 1000);
 
   return (
     <>

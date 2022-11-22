@@ -1,11 +1,7 @@
 import LoginForm from "../components/loginForm";
 import styles from "../styles/login.module.css";
 import { BsGithub, BsGoogle } from "react-icons/bs";
-import {
-  GoogleAuthProvider,
-  signInWithRedirect,
-
-} from "firebase/auth";
+import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from "next/router";
 
@@ -15,7 +11,7 @@ export default function Login() {
   const githubClientID = process.env.NEXT_PUBLIC_GITHUB_ID;
   const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
 
-  async function handleSignIn(provider: String) {
+  async function handleSignIn(provider) {
     try {
       await signInWithRedirect(auth, provider).then(router.push("/dashboard"));
     } catch (error) {
@@ -26,9 +22,9 @@ export default function Login() {
   function signInWithGithub() {
     window.location.assign(
       "https://github.com/login/oauth/authorize?client_id=" +
-      githubClientID +
-      "&state=" +
-      requestState
+        githubClientID +
+        "&state=" +
+        requestState
     );
   }
 
