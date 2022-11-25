@@ -1,3 +1,4 @@
+import { GetStaticProps } from 'next'
 import RestaurantCard from "../../../components/restaurantCard";
 import Row from "react-bootstrap/Row";
 import { collection, query, where, getDocs } from "firebase/firestore";
