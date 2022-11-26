@@ -1,4 +1,3 @@
-import { GetStaticProps } from 'next'
 import RestaurantCard from "../../../components/restaurantCard";
 import Row from "react-bootstrap/Row";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -22,7 +21,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  var averageStarArray;
+  var averageStarArray: Array<any>;
 
   const q = query(
     collection(db, "restaurants"),
@@ -32,15 +31,15 @@ export async function getStaticProps({ params }) {
   const querySnapshot = await getDocs(q);
   const querySnapshotDocs = querySnapshot.docs;
 
-  const docArray = querySnapshotDocs.map((doc, index) => {
+  const docArray = querySnapshotDocs.map((doc) => {
     return doc.data();
   });
 
-  const averageStarArrayPromise = docArray.map(async (foundItem, index) => {
+  const averageStarArrayPromise = docArray.map(async (foundItem) => {
     const q = query(collection(db, `restaurants/${foundItem.name}/reviews`));
     const querySnapshot = await getDocs(q);
     const querySnapshotDocs = querySnapshot.docs;
-    const docArray = querySnapshotDocs.map((doc, index) => {
+    const docArray = querySnapshotDocs.map((doc) => {
       return doc.data().star;
     });
 

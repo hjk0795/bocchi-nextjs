@@ -13,7 +13,8 @@ export default function Login() {
 
   async function handleSignIn(provider) {
     try {
-      await signInWithRedirect(auth, provider).then(router.push("/dashboard"));
+      await signInWithRedirect(auth, provider);
+      router.push("/dashboard");
     } catch (error) {
       console.log(error.message);
     }
@@ -22,9 +23,9 @@ export default function Login() {
   function signInWithGithub() {
     window.location.assign(
       "https://github.com/login/oauth/authorize?client_id=" +
-        githubClientID +
-        "&state=" +
-        requestState
+      githubClientID +
+      "&state=" +
+      requestState
     );
   }
 
