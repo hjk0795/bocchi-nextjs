@@ -1,12 +1,14 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import styles from "./loginForm.module.css";
+import styles from "./loginInternal.module.css";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from 'next/router'
 
-export default function Login() {
+export default function LoginInternal() {
+
+
   const [isRegistered, setIsRegistered] = useState(true);
   const [logInDetail, setLogInDetail] = useState({
     email: "",
@@ -19,8 +21,8 @@ export default function Login() {
     return setIsRegistered(!isRegistered);
   }
 
-  function updateLogInDetail(event) {
-    const { name, value } = event.target;
+  function updateLogInDetail(event: KeyboardEvent): void {
+    const { name, value } = event.target as HTMLInputElement;
 
     setLogInDetail((prevLogInDetail) => {
       if (name === "email") {
@@ -63,7 +65,7 @@ export default function Login() {
   }
 
   return (
-    <div>
+    <>
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
@@ -127,6 +129,6 @@ export default function Login() {
           </Form.Text>
         </div>
       </Form>
-    </div>
+    </>
   );
 }

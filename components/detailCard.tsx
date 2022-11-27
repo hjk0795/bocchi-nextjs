@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import styles from "./detailCard.module.css";
 import Rating from "@mui/material/Rating";
 // import { getAnalytics } from "firebase/analytics";
-import {db, auth} from "../firebase-config";
+import { db, auth } from "../firebase-config";
 import {
   collection,
   query,
@@ -25,7 +25,7 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 
 export default function DetailCard(props) {
-  
+
   const reviewPropArray = props.review.map((foundItem, index) => {
     return {
       star: foundItem.star,
@@ -40,7 +40,7 @@ export default function DetailCard(props) {
   const [hasMore, setHasMore] = useState(true);
   var [reviews, setReviews] = useState(reviewPropArray);
   const [reviewWrite, setReviewWrite] = useState({
-    star: null,
+    star: 0,
     statement: "",
     userName: "",
     id: 0,
@@ -60,10 +60,10 @@ export default function DetailCard(props) {
     });
     setIsExecuted(true);
   }
-  
+
 
   async function getMoreReviews() {
-  
+
     const next = query(
       collection(db, `restaurants/${name}/reviews`),
       orderBy("id"),
@@ -96,12 +96,16 @@ export default function DetailCard(props) {
       if (name === "reviewStar") {
         return {
           star: Number(value),
-          statement: prevReviewWrite.statement,
+          statement: String(prevReviewWrite.statement),
+          userName: String(prevReviewWrite.userName),
+          id: Number(prevReviewWrite.id),
         };
       } else {
         return {
-          star: prevReviewWrite.star,
-          statement: value,
+          star: Number(prevReviewWrite.star),
+          statement: String(value),
+          userName: String(prevReviewWrite.userName),
+          id: Number(prevReviewWrite.id),
         };
       }
     });
@@ -120,7 +124,7 @@ export default function DetailCard(props) {
           id: reviews.length + 1,
           star: `${reviewWrite.star}`,
           statement: `${reviewWrite.statement}`,
-          userName: `${session.user.name}`,
+          userName: `${currentUser.displayName}`,
         }
       );
     } else if (currentUser === null) {
@@ -247,7 +251,7 @@ export default function DetailCard(props) {
                   <div className={styles.textareaContainer}>
                     <textarea
                       className="form-control"
-                      rows={isChecked ? "3" : "1"}
+                      rows={isChecked ? 3 : 1}
                       name="reviewText"
                       placeholder="Write a review"
                       onChange={handleChange}
@@ -283,7 +287,7 @@ export default function DetailCard(props) {
                     star={foundItem.star}
                     statement={foundItem.statement}
                     userName={foundItem.userName}
-                    isAuthenticated={currentUser !== null?"true":"false"}
+                    isAuthenticated={currentUser !== null ? "true" : "false"}
                     sessionUserName={
                       currentUser !== null
                         ? currentUser.displayName

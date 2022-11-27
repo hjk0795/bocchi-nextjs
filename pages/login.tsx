@@ -1,4 +1,4 @@
-import LoginForm from "../components/loginForm";
+import LoginInternal from "../components/loginInternal";
 import styles from "../styles/login.module.css";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
@@ -6,20 +6,24 @@ import { auth } from "../firebase-config";
 import { useRouter } from "next/router";
 
 export default function Login() {
-  const providerGoogle = new GoogleAuthProvider();
-  const router = useRouter();
   const githubClientID = process.env.NEXT_PUBLIC_GITHUB_ID;
   const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
+  const providerGoogle = new GoogleAuthProvider();
+  const router = useRouter();
 
-  async function handleSignIn(provider) {
+  //Login by using authentication module in Firebase
+  function signInWithGoogle() {
     try {
-      await signInWithRedirect(auth, provider);
+      signInWithRedirect(auth, providerGoogle);
+      document.cookie = `isAuthenticated=true`;
       router.push("/dashboard");
     } catch (error) {
-      console.log(error.message);
+      console.error(`${error.name}: ${error.message}`);
     }
   }
 
+  //Direct to the Github page requesting the user to authorize
+  //If authorized, redirected to /callbackEndpointGithub by Github server
   function signInWithGithub() {
     window.location.assign(
       "https://github.com/login/oauth/authorize?client_id=" +
@@ -32,14 +36,14 @@ export default function Login() {
   return (
     <>
       <div className={styles.container}>
-        <LoginForm />
+        <LoginInternal />
 
         <div>
           <button
             style={{ marginTop: "2rem", width: "200px" }}
             className="btn btn-outline-dark"
             onClick={() => {
-              return handleSignIn(providerGoogle);
+              return signInWithGoogle();
             }}
           >
             <div className="d-flex justify-content-between align-items-center">
