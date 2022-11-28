@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import styles from "./loginInternal.module.css";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from 'next/router'
+import FormLabelControl from "./formLabelControl";
 
 export default function LoginInternal() {
 
@@ -21,7 +22,7 @@ export default function LoginInternal() {
     return setIsRegistered(!isRegistered);
   }
 
-  function updateLogInDetail(event: KeyboardEvent): void {
+  function updateLogInDetail(event: ChangeEvent) {
     const { name, value } = event.target as HTMLInputElement;
 
     setLogInDetail((prevLogInDetail) => {
@@ -67,29 +68,22 @@ export default function LoginInternal() {
   return (
     <>
       <Form>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            name="email"
-            type="email"
-            placeholder="Enter email"
-            onChange={updateLogInDetail}
-            value={logInDetail.email}
-            required
-          />
-        </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            name="password"
-            type="password"
-            placeholder="Password"
-            onChange={updateLogInDetail}
-            value={logInDetail.password}
-            required
-          />
-        </Form.Group>
+        <FormLabelControl
+          label="Email"
+          onChange={updateLogInDetail}
+        />
+
+        <FormLabelControl
+          label="Password"
+          onChange={updateLogInDetail}
+        />
+
+
+
+
+
+
 
         <Form.Group
           className="mb-3"
