@@ -1,26 +1,20 @@
 import { ChangeEvent, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import styles from "./loginInternal.module.css";
+import styles from "../styles/loginInternal.module.css";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from 'next/router'
 import FormLabelControl from "./formLabelControl";
 
 export default function LoginInternal() {
-
-
-  const [isRegistered, setIsRegistered] = useState(true);
   const [logInDetail, setLogInDetail] = useState({
     email: "",
     password: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isRegistered, setIsRegistered] = useState(true);
   const router = useRouter()
-
-  function updateIsRegistered() {
-    return setIsRegistered(!isRegistered);
-  }
 
   function updateLogInDetail(event: ChangeEvent) {
     const { name, value } = event.target as HTMLInputElement;
@@ -40,64 +34,55 @@ export default function LoginInternal() {
     });
   }
 
-  function updateConfirmPassword(event) {
-    setConfirmPassword(event.target.value);
+  function updateConfirmPassword(event: ChangeEvent) {
+    const { value } = event.target as HTMLInputElement;
+
+    setConfirmPassword(value);
   }
 
-  async function handleClick(email, password) {
+  async function signInOrCreateAccount(event: React.MouseEvent) {
     if (isRegistered) {
       try {
-        const user = await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, logInDetail.email, logInDetail.password);
         router.push("/dashboard")
       } catch (error) {
-        console.log(error.message);
+        console.error(`${error.name}: ${error.message}`);
       }
     } else {
       try {
-        const user = await createUserWithEmailAndPassword(
+        await createUserWithEmailAndPassword(
           auth,
-          email,
-          password
+          logInDetail.email,
+          logInDetail.password
         );
       } catch (error) {
-        console.log(error.message);
+        console.error(`${error.name}: ${error.message}`);
       }
     }
+  }
+
+  function updateIsRegistered(event: React.MouseEvent) {
+    return setIsRegistered(!isRegistered);
   }
 
   return (
     <>
       <Form>
-
         <FormLabelControl
           label="Email"
           onChange={updateLogInDetail}
         />
-
         <FormLabelControl
           label="Password"
           onChange={updateLogInDetail}
         />
-
-
-
-
-
-
-
-        <Form.Group
-          className="mb-3"
-          style={isRegistered ? { display: "none" } : { display: "block" }}
-        >
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            name="confirmPassword"
+        <div style={isRegistered ? { display: "none" } : { display: "block" }}>
+          <FormLabelControl
+            label="Confirm Password"
             type="password"
-            placeholder="Confirm Password"
             onChange={updateConfirmPassword}
-            value={confirmPassword}
           />
-        </Form.Group>
+        </div>
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Button
@@ -109,9 +94,7 @@ export default function LoginInternal() {
                 ? false
                 : true
             }
-            onClick={() => {
-              handleClick(logInDetail.email, logInDetail.password);
-            }}
+            onClick={signInOrCreateAccount}
           >
             {isRegistered ? "Login" : "Signup"}
           </Button>

@@ -2,17 +2,31 @@ import { ChangeEvent, useState } from "react";
 import Form from "react-bootstrap/Form";
 import _ from "lodash";
 
-export default function FormLabelControl(props) {
-   
+type Props = {
+    label: string;
+    type?: string,
+    onChange?: (event: ChangeEvent) => void;
+}
+
+export default function FormLabelControl({ label, type, onChange }: Props) {
+    const [controlValue, setControlValue] = useState("");
+
+    function handleChange(event: ChangeEvent) {
+        const { value } = event.target as HTMLInputElement;
+
+        setControlValue(value);
+        onChange && onChange(event);
+    }
 
     return <>
         <Form.Group className="mb-3">
-            <Form.Label>{props.label}</Form.Label>
+            <Form.Label>{label}</Form.Label>
             <Form.Control
-                name={_.lowerCase(props.label)}
-                // type={props.label}
-                placeholder={props.label}
-                onChange={props.onChange}
+                name={_.lowerCase(label)}
+                type={type ? type : _.lowerCase(label)}
+                placeholder={label}
+                onChange={handleChange}
+                value={controlValue}
                 required
             />
         </Form.Group>
