@@ -1,5 +1,3 @@
-//This component is applied to every page
-
 import Header from "../components/header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.css";

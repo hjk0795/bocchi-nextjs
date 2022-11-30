@@ -24,6 +24,7 @@ export default function Header() {
 
   if (isExecuted === false) {
     onAuthStateChanged(auth, (user) => {
+
       if (user) {
         setCurrentUser(user);
       } else {
@@ -32,7 +33,7 @@ export default function Header() {
     });
     setIsExecuted(true);
   }
-  
+
 
   return (
     <>

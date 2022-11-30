@@ -14,24 +14,24 @@ export default function CallbackEndpoint() {
     const stateParam = urlParams.get("state");
 
     async function getAccessToken() {
-      await fetch(
-        "http://localhost:3000/api/github/getAccessToken?code=" + codeParam,
-        {
-          method: "GET",
-        }
-      )
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          document.cookie = `isAuthenticated=true`;
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/github/getAccessToken?code=" + codeParam,
+          {
+            method: "GET",
+          }
+        )
+        const data = await response.json();
+        const credential = GithubAuthProvider.credential(
+          data.access_token
+        );
 
-          const credential = GithubAuthProvider.credential(
-            data.access_token
-          );
-          signInWithCredential(auth, credential);
-        })
-      router.push("/redirect")
+        await signInWithCredential(auth, credential);
+        document.cookie = `isAuthenticated=true`;
+        router.push("/dashboard");
+      } catch (error) {
+        console.error(`${error.name}: ${error.message}`);
+      }
     }
 
     if (stateParam === requestState) {
