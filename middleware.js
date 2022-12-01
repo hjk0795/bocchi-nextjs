@@ -13,5 +13,5 @@ export function middleware(req, res) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/callbackEndpoint"]
+  matcher: ["/dashboard"]
 };

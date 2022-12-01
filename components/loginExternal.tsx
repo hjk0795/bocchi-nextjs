@@ -13,7 +13,7 @@ export default function LoginExternal() {
 
     async function signInWithGoogle() {
         try {
-            await signInWithRedirect(auth, providerGoogle);
+            signInWithRedirect(auth, providerGoogle);
             document.cookie = `isAuthenticated=true`;
             router.push("/dashboard");
         } catch (error) {
