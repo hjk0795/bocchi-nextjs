@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function CallbackEndpoint() {
-  const [reRender, setReRender] = useState(false);
+  const [queryString, setQueryString] = useState(null);
   const router = useRouter();
 
   async function getAccessToken(codeParam: string): Promise<string> {
@@ -39,23 +39,28 @@ export default function CallbackEndpoint() {
     }
   }
 
- if (reRender === true) {
-    const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
-    const queryString = globalThis.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const codeParam = urlParams.get("code");
-    const stateParam = urlParams.get("state");
-
-    if (stateParam === requestState) {
-      if (codeParam) {
-        handleCallback(codeParam);
-      }
-    }
-    else {
-    }
-  } else {
-    setReRender(true);
+  function* getQueryString() {
+    yield null;
+    return window.location.search;
   }
+
+
+
+  const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
+  const generator = getQueryString();
+  !queryString && setQueryString(generator.next().value);
+  const urlParams = new URLSearchParams(queryString);
+  const codeParam = urlParams.get("code");
+  const stateParam = urlParams.get("state");
+
+  if (stateParam === requestState) {
+    if (codeParam) {
+      handleCallback(codeParam);
+    }
+  }
+  else {
+  }
+
 
 
   return (
