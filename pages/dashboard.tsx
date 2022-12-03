@@ -8,17 +8,21 @@ export default function Dashboard() {
   var [isExecuted, setIsExecuted] = useState(false);
   const router = useRouter();
 
+  console.log(isExecuted);
   if (isExecuted === false) {
     onAuthStateChanged(auth, (user) => {
+      console.log("A");
       if (user) {
         setIsExecuted(true);
         setCurrentUser(user);
+        console.log("B");
       } else {
         setCurrentUser(null);
+        console.log("C");
       }
     });
   }
-
+  console.log("D");
   const displayName = currentUser != null ? currentUser.displayName : "Loading";
   const photoURL = currentUser != null ? currentUser.photoURL : "";
 
