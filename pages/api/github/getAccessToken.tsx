@@ -29,6 +29,6 @@ export default async function getAccessToken(req: NextApiRequest, res: NextApiRe
 
         return res.json({ "accessToken": accessToken });
     } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
+        return res.json({ "error": "Request from the backend server to Github API server is not fulfilled because of a network error" });
     }
 }

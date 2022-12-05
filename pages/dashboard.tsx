@@ -4,23 +4,29 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 export default function Dashboard() {
-  const [currentUser, setCurrentUser] = useState<User>(null);
-  var [isExecuted, setIsExecuted] = useState(false);
-  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<User>(auth.currentUser);
+  // var [isExecuted, setIsExecuted] = useState(false);
+  // const router = useRouter();
 
-  if (isExecuted === false) {
-    onAuthStateChanged(auth, (user) => {
- 
-      if (user) {
-        setIsExecuted(true);
-        setCurrentUser(user);
-      
-      } else {
-        setCurrentUser(null);
+  console.log("A");
+  // if (isExecuted === false) {
+    // onAuthStateChanged(auth, (user) => {
+    //   console.log("B");
+    //   if (user) {
+        // setIsExecuted(true);
+        // setCurrentUser(user);
+        // console.log("C");
        
-      }
-    });
-  }
+        
+      // } else {
+   
+      //   console.log("D");
+        // setCurrentUser(null);
+       
+    //   }
+    // });
+  // }
+  console.log("E");
 
   const displayName = currentUser != null ? currentUser.displayName : "Loading";
   const photoURL = currentUser != null ? currentUser.photoURL : "";
@@ -37,4 +43,6 @@ export default function Dashboard() {
       )}
     </>
   );
+
+  
 }
