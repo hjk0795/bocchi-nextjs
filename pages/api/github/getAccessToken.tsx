@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { handleHttpError } from "../../../utils/handleHttpError";
 
 export default async function getAccessToken(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== "GET") {
+        return res.json(handleHttpError("Use \"GET\" for the request method"));
+    }
+
     const githubClientID = process.env.GITHUB_ID;
     const githubClientSecret = process.env.GITHUB_SECRET;
     const authGrantCode = req.query.code as string;
@@ -20,37 +25,17 @@ export default async function getAccessToken(req: NextApiRequest, res: NextApiRe
                 Accept: "application/json",
             },
         })
-        const responseBody = await response.json();
-        const statusCode = response.status;
 
         if (response.ok) {
-            // if (responseBody.hasOwnProperty("access_token")) {
-            //     return res.status(200).json({ "accessToken": responseBody.access_token });
-            // } else if (responseBody.hasOwnProperty("error")) {
-            //     switch (responseBody.error) {
-            //         case "incorrect_client_credentials":
-            //             return res.status(200).json({ "error": "The client_id and/or client_secret passed are incorrect" });
-            //         case "redirect_uri_mismatch":
-            //             return res.status(200).json({ "error": "The redirect_uri MUST match the registered callback URL for this application" });
-            //         case "bad_verification_code":
-            //             return res.status(200).json({ "error": "The code passed is incorrect or expired" });
-            //     }
-            // }
-            return res.status(200).json(responseBody);
+            return res.json(await response.json());
         } else {
-            switch (statusCode) {
-                case 404:
-                    return res.status(200).json({ "error": "Request query is not valid. Check typos in URI query parameters and fragments" });
-                case 422:
-                    return res.status(200).json({ "error": "Request base URI is not valid. Check typos in the base URI" });
-                default:
-                    return res.status(200).json({ "error": `Unexpected error occurred. Error code: ${statusCode}` });
-            }
+            return res.json(handleHttpError(response.status));
         }
-
-
-
     } catch (error) {
-        return res.status(500).json({ "error": "Request from the backend server didn't reach Github API server because of a network error" });
+        if (error instanceof TypeError) {
+            return res.json(handleHttpError(error.message));
+        } else {
+            return res.json(handleHttpError("Unexpected error thrown from fetch API"));
+        }
     }
 }
