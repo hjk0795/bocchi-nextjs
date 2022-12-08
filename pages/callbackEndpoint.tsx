@@ -2,17 +2,19 @@ import { GithubAuthProvider, signInWithCredential } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { generateRandomString } from "../utils/generateRandomString";
 
 export default function CallbackEndpoint() {
   const router = useRouter();
 
   useEffect(() => {
-    const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
+    // const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
     let params = new URLSearchParams(document.location.search);
     const codeParam = params.get("code")
-    const stateParam = params.get("state")
+    // const stateParam = params.get("state")
+    history.pushState({}, null, "newUrl");
 
-    if (stateParam === requestState) {
+    if (1 === 1) {
       if (codeParam) {
         try {
           handleCallback(codeParam);
@@ -26,10 +28,10 @@ export default function CallbackEndpoint() {
 
     async function getAccessToken(codeParam: string): Promise<string> {
       const response = await fetch("http://localhost:3000/api/github/getAccessToken?code=" + codeParam, {
-        method: "GET",
+        method: "POST",
       })
       const data = await response.json();
-      const accessToken = data.accessToken as string;
+      const accessToken = data.access_token as string;
 
       return accessToken;
     }
@@ -46,14 +48,16 @@ export default function CallbackEndpoint() {
     async function handleCallback(codeParam: string) {
       const accessToken = await getAccessToken(codeParam);
       await signIn(accessToken);
-      router.push("./dashboard");
+      // router.push("./dashboard");
+      router.push("/dashboard");
     }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      <h1>Redirecting..</h1>
+      <h1>Signing in..</h1>
     </>
   );
 }

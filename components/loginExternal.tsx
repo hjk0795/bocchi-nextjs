@@ -7,7 +7,7 @@ import { BsGithub, BsGoogle } from "react-icons/bs";
 
 export default function LoginExternal() {
     const githubClientID = process.env.NEXT_PUBLIC_GITHUB_ID;
-    const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
+    // const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
     const providerGoogle = new GoogleAuthProvider();
     const router = useRouter();
 
@@ -24,9 +24,10 @@ export default function LoginExternal() {
     function signInWithGithub() {
         window.location.assign(
             "https://github.com/login/oauth/authorize?client_id=" +
-            githubClientID +
-            "&state=" +
-            requestState
+            githubClientID 
+            // +
+            // "&state=" +
+            // requestState
         );
     }
     return <>
