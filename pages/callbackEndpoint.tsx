@@ -1,23 +1,23 @@
-import { GithubAuthProvider, signInWithCredential } from "firebase/auth";
-import { auth } from "../firebase-config";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { generateRandomString } from "../utils/generateRandomString";
+import { useRouter } from "next/router";
+import { auth } from "../firebase-config";
+import { GithubAuthProvider, signInWithCredential } from "firebase/auth";
 
 export default function CallbackEndpoint() {
   const router = useRouter();
 
   useEffect(() => {
-    // const requestState = process.env.NEXT_PUBLIC_GITHUB_REQUEST_STATE;
-    let params = new URLSearchParams(document.location.search);
-    const codeParam = params.get("code")
-    // const stateParam = params.get("state")
-    history.pushState({}, null, "newUrl");
+    const params = new URLSearchParams(document.location.search);
+    const paramsCodeValue = params.get("code")
+    const paramsStateValue = params.get("state")
+    const antiCsrfToken = sessionStorage.getItem("antiCsrfToken");
 
-    if (1 === 1) {
-      if (codeParam) {
+    sessionStorage.removeItem("antiCsrfToken");
+
+    if (paramsStateValue === antiCsrfToken) {
+      if (paramsCodeValue) {
         try {
-          handleCallback(codeParam);
+          handleCallback(paramsCodeValue);
         } catch (error) {
           console.error(`${error.name}: ${error.message}`);
         }
@@ -48,11 +48,11 @@ export default function CallbackEndpoint() {
     async function handleCallback(codeParam: string) {
       const accessToken = await getAccessToken(codeParam);
       await signIn(accessToken);
-      // router.push("./dashboard");
-      router.push("/dashboard");
+
+      router.push("./dashboard");
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
