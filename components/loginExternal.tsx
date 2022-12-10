@@ -1,19 +1,14 @@
 import styles from "../styles/loginExternal.module.css";
 import LoginButtonOAuth from "./loginButtonOAuth";
-import Redirection from "./redirection";
 import { generateRandomString } from "../utils/generateRandomString";
-import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
-import { GoogleAuthProvider, signInWithRedirect, onAuthStateChanged } from "firebase/auth";
+import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 
 export default function LoginExternal() {
-    const router = useRouter();
-
     function signInWithGoogle() {
-        signInWithRedirect(auth, new GoogleAuthProvider())
-        .then(()=>{console.log("then")})
-        .catch(()=>{console.log("catch")});
+        signInWithRedirect(auth, new GoogleAuthProvider());
+        document.cookie = "signInWithRedirect=true";
     }
 
     function signInWithGithub() {
@@ -25,6 +20,7 @@ export default function LoginExternal() {
         sessionStorage.setItem("antiCsrfToken", antiCsrfToken);
         window.location.assign(baseURI + paramClientID + paramState);
     }
+
     return <>
         <div className={styles.container}>
             <LoginButtonOAuth

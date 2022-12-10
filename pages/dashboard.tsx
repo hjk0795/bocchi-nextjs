@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 export default function Dashboard() {
   const [currentUser, setCurrentUser] = useState<User>();
+  const router = useRouter();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
