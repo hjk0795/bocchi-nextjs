@@ -13,8 +13,14 @@ export default function SignInRedirectResult() {
                 document.cookie = "signInWithRedirect=true" + ";max-age=0";
                 router.push("/dashboard");
             }).catch((error) => {
-                document.cookie = "errorMessage=" + error.message;
-                document.cookie = "pageToRedirect=" + "/login";
+                const propsForRedirection = {
+                    title: error.code,
+                    message: error.message,
+                    pageToRedirect: "/login",
+                }
+
+                document.cookie = 'propsForRedirection=' + JSON.stringify(propsForRedirection);
+
                 router.push("/error");
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
