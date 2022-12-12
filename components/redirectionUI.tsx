@@ -1,16 +1,16 @@
-import styles from "../styles/redirection.module.css"
+import styles from "../styles/redirectionUI.module.css"
 import Button from 'react-bootstrap/Button';
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-type Props = {
+export type RedirectionUIProps = {
   title: string,
   message?: string,
   pageToRedirect?: string,
   isAutoRedirect?: boolean
 }
 
-export default function Redirection({ title, message = null, pageToRedirect = "previous", isAutoRedirect = false }: Props) {
+export default function RedirectionUI({ title, message = null, pageToRedirect = "previous", isAutoRedirect = false }: RedirectionUIProps) {
   const [remainingSeconds, setRemainingSeconds] = useState(5);
   const router = useRouter();
   const autoRedirectMessage = `This page will be redirected to the ${pageToRedirect} page within ${remainingSeconds} seconds.`;

@@ -1,25 +1,32 @@
+import Link from "next/link";
+import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Link from "next/link";
-import { auth } from "../firebase-config";
-import { signOut, onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "next/router";
+import { setCookieRedirection } from "../utils/setCookieRedirection";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import { auth } from "../firebase-config";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Header() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState(null);
   var [isExecuted, setIsExecuted] = useState(false);
 
-  async function signout() {
-    try {
-      await signOut(auth);
-      document.cookie = `isAuthenticated=false`;
-      router.push("/login");
-    } catch (error) {
-      console.log(error.message);
-    }
+  function handleSignOut() {
+    // try {
+    //    signOut(auth);
+    //   document.cookie = `isAuthenticated=false`;
+    //   router.push("/login");
+    // } catch (error) {
+    //   console.log(error.message);
+    // }
+    signOut(auth).then(() => {
+      setCookieRedirection("Signed out successfully.", "/");
+    }).catch((error) => {
+      const currentURI = document.location.href;
+      setCookieRedirection(error, currentURI);
+    });
   }
 
   if (isExecuted === false) {
@@ -47,13 +54,13 @@ export default function Header() {
             <Nav className="ms-auto">
               <Nav.Link as="div" className="me-auto">
                 <Link href="/chat">
-                  <div style={{ cursor: "pointer" }}>Chat</div>
+                  Chat
                 </Link>
               </Nav.Link>
               <Nav.Link as="div" className="me-auto">
                 {currentUser ? (
                   <Link href="/login">
-                    <div onClick={signout} style={{ cursor: "pointer" }}>
+                    <div onClick={handleSignOut}>
                       Sign out
                     </div>
                   </Link>

@@ -1,7 +1,5 @@
-//route page
-
-import Link from "next/link";
 import styles from "../styles/home.module.css";
+import Link from "next/link";
 
 export default function Home() {
   return (
