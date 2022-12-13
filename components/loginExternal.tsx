@@ -1,14 +1,21 @@
 import styles from "../styles/loginExternal.module.css";
 import LoginButtonOAuth from "./loginButtonOAuth";
+import { SetStateAction, Dispatch } from "react";
 import { generateRandomString } from "../utils/generateRandomString";
 import { auth } from "../firebase-config";
 import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 
-export default function LoginExternal() {
+type Props = {
+    setModalShow: Dispatch<SetStateAction<boolean>>
+};
+
+export default function LoginExternal({ setModalShow }: Props) {
+
     function signInWithGoogle() {
-        signInWithRedirect(auth, new GoogleAuthProvider());
         document.cookie = "signInWithRedirect=true";
+        setModalShow(true);
+        signInWithRedirect(auth, new GoogleAuthProvider());
     }
 
     function signInWithGithub() {
@@ -17,6 +24,7 @@ export default function LoginExternal() {
         const paramClientID = "?client_id=" + process.env.NEXT_PUBLIC_GITHUB_ID
         const paramState = "&state=" + antiCsrfToken;
 
+        setModalShow(true);
         sessionStorage.setItem("antiCsrfToken", antiCsrfToken);
         window.location.assign(baseURI + paramClientID + paramState);
     }
@@ -33,6 +41,10 @@ export default function LoginExternal() {
                 signInWithProvider={signInWithGithub}
                 icon={<BsGithub size={25} />}
             />
+
+            <button
+            onClick={()=>{setModalShow(true)}}
+            >TEST</button>
         </div>
     </>
 }

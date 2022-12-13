@@ -11,6 +11,8 @@ export type RedirectionUIProps = {
 }
 
 export default function RedirectionUI({ title, message = null, pageToRedirect = "previous", isAutoRedirect = false }: RedirectionUIProps) {
+  (pageToRedirect === "/") && (pageToRedirect = "main");
+
   const [remainingSeconds, setRemainingSeconds] = useState(5);
   const router = useRouter();
   const autoRedirectMessage = `This page will be redirected to the ${pageToRedirect} page within ${remainingSeconds} seconds.`;
@@ -18,6 +20,7 @@ export default function RedirectionUI({ title, message = null, pageToRedirect = 
     if (pageToRedirect === "previous") {
       return router.back();
     } else {
+      (pageToRedirect === "main") && (pageToRedirect = "/");
       return router.push(pageToRedirect);
     }
   }

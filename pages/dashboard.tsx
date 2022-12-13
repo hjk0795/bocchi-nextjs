@@ -1,3 +1,5 @@
+import Image from 'next/image'
+import { RedirectionUIProps } from "../components/redirectionUI";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
@@ -12,17 +14,26 @@ export default function Dashboard() {
       if (user) {
         setCurrentUser(user);
       } else {
-        setCurrentUser(null);
+        const redirectionUIProps: RedirectionUIProps = { title: "Please login first", pageToRedirect: "/login", isAutoRedirect: true }
+        document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
+        router.push("/redirection");
       }
     });
   }, []);
 
   return (
     <>
-      {currentUser === undefined ? <h1>Loading..</h1> : currentUser !== null ? <>
+      {currentUser === undefined ? <h1>Loading..</h1> : currentUser !== null && <>
         <h6>{currentUser.displayName}</h6>
-        <img width="100px" height="100px" src={currentUser.photoURL}></img>
-      </> : <h1>Please login first</h1>}
+        {/* <img width="100px" height="100px" src={currentUser.photoURL}></img> */}
+        <Image
+          src={currentUser.photoURL}
+          alt="Profile image"
+          width={100}
+          height={100}
+          priority
+        />
+      </>}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { setCookieRedirection } from "../utils/setCookieRedirection";
+import { RedirectionUIProps } from "../components/redirectionUI";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
@@ -11,7 +11,8 @@ export default function SignInRedirectResult() {
         getRedirectResult(auth)
             .then(() => { router.push("/dashboard"); })
             .catch((error) => {
-                setCookieRedirection(error, "/login");
+                const redirectionUIProps: RedirectionUIProps = { title: error.code, message: error.message, pageToRedirect: "/login" }
+                document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
                 router.push("/redirection");
             })
             .finally(() => { document.cookie = "signInWithRedirect=true" + ";max-age=0"; });

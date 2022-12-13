@@ -2,8 +2,8 @@ import Link from "next/link";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
-import { setCookieRedirection } from "../utils/setCookieRedirection";
 import { useState } from "react";
+import { RedirectionUIProps } from "./redirectionUI";
 import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -12,6 +12,7 @@ export default function Header() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState(null);
   var [isExecuted, setIsExecuted] = useState(false);
+  let redirectionUIProps: RedirectionUIProps;
 
   function handleSignOut() {
     // try {
@@ -22,11 +23,15 @@ export default function Header() {
     //   console.log(error.message);
     // }
     signOut(auth).then(() => {
-      setCookieRedirection("Signed out successfully.", "/");
+      redirectionUIProps = { title: "Signed out successfully.", pageToRedirect: "/", isAutoRedirect: true }
     }).catch((error) => {
       const currentURI = document.location.href;
-      setCookieRedirection(error, currentURI);
-    });
+      //currentURI - PARAMS = baseURI ?? => Test with JS fiddle (String - String)
+      redirectionUIProps = { title: error.code, message: error.message, pageToRedirect: currentURI }
+    }).finally(() => {
+      document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
+      router.push("/redirection");
+    })
   }
 
   if (isExecuted === false) {
