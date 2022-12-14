@@ -14,7 +14,8 @@ module.exports = {
       "images.freeimages.com",
       "img.freepik.com",
       "cdn-icons-png.flaticon.com",
-      "lh3.googleusercontent.com"
+      "lh3.googleusercontent.com",
+      "avatars.githubusercontent.com"
     ],
   },
   experimental: {

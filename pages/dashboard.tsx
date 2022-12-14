@@ -25,7 +25,6 @@ export default function Dashboard() {
     <>
       {currentUser === undefined ? <h1>Loading..</h1> : currentUser !== null && <>
         <h6>{currentUser.displayName}</h6>
-        {/* <img width="100px" height="100px" src={currentUser.photoURL}></img> */}
         <Image
           src={currentUser.photoURL}
           alt="Profile image"

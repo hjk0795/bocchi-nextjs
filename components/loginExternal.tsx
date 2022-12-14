@@ -41,10 +41,6 @@ export default function LoginExternal({ setModalShow }: Props) {
                 signInWithProvider={signInWithGithub}
                 icon={<BsGithub size={25} />}
             />
-
-            <button
-            onClick={()=>{setModalShow(true)}}
-            >TEST</button>
         </div>
     </>
 }

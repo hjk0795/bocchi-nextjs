@@ -1,33 +1,38 @@
-import { ChangeEvent, useState } from "react";
+import styles from "../styles/loginInternal.module.css";
+import FormLabelControl from "./formLabelControl";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import styles from "../styles/loginInternal.module.css";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase-config";
+import { RedirectionUIProps } from "./redirectionUI";
+import { useState, ChangeEvent } from "react";
 import { useRouter } from 'next/router'
-import FormLabelControl from "./formLabelControl";
+import { auth } from "../firebase-config";
+import { FirebaseError } from "firebase/app";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+
+type LoginInfo = {
+  email: string,
+  password: string
+};
 
 export default function LoginInternal() {
-  const [logInDetail, setLogInDetail] = useState({
-    email: "",
-    password: "",
-  });
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isRegistered, setIsRegistered] = useState(true);
+  const [logInInfo, setLogInInfo] = useState<LoginInfo>(null);
+  const [confirmPassword, setConfirmPassword] = useState<string>(null);
+  const [logInOrSignUp, setLogInOrSignUp] = useState<"Login" | "Signup">("Login");
+  const [errorMessage, setErrorMessage] = useState<string>(null);
   const router = useRouter()
 
-  function updateLogInDetail(event: ChangeEvent) {
+  function updateLogInInfo(event: ChangeEvent) {
     const { name, value } = event.target as HTMLInputElement;
 
-    setLogInDetail((prevLogInDetail) => {
+    setLogInInfo((prevLogInInfo) => {
       if (name === "email") {
         return {
           email: value,
-          password: prevLogInDetail.password,
+          password: prevLogInInfo?.password,
         };
       } else if (name === "password") {
         return {
-          email: prevLogInDetail.email,
+          email: prevLogInInfo?.email,
           password: value,
         };
       }
@@ -40,70 +45,75 @@ export default function LoginInternal() {
     setConfirmPassword(value);
   }
 
-  async function signInOrCreateAccount(event: React.MouseEvent) {
-    if (isRegistered) {
-      try {
-        await signInWithEmailAndPassword(auth, logInDetail.email, logInDetail.password);
+  function signInOrCreateUser() {
+    getSignInOrCreateUser()(auth, logInInfo?.email, logInInfo?.password)
+      .then(() => {
         router.push("/dashboard")
-      } catch (error) {
-        console.error(`${error.name}: ${error.message}`);
+      })
+      .catch((error) => {
+        renderErrorOrRedirect(error);
+      });
+
+    function getSignInOrCreateUser() {
+      if (logInOrSignUp === "Login") {
+        return signInWithEmailAndPassword;
+      } else {
+        return createUserWithEmailAndPassword;
       }
-    } else {
-      try {
-        await createUserWithEmailAndPassword(
-          auth,
-          logInDetail.email,
-          logInDetail.password
-        );
-      } catch (error) {
-        console.error(`${error.name}: ${error.message}`);
+    }
+
+    function renderErrorOrRedirect(error: FirebaseError) {
+      const frequentErrorSet = new Set(["auth/missing-email", "auth/invalid-email", "auth/wrong-password", "auth/weak-password"]);
+
+      if (frequentErrorSet.has(error.code)) {
+        setErrorMessage(error.message);
+      } else {
+        const redirectionUIProps: RedirectionUIProps = { title: error.code, message: error.message, pageToRedirect: "/login" }
+        document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
+        router.push("/redirection");
       }
     }
   }
 
-  function updateIsRegistered(event: React.MouseEvent) {
-    return setIsRegistered(!isRegistered);
-  }
-
   return (
     <>
+      {errorMessage && <small className={styles.errorMessage}>{errorMessage}</small>}
       <Form>
         <FormLabelControl
           label="Email"
-          onChange={updateLogInDetail}
+          onChange={updateLogInInfo}
         />
         <FormLabelControl
           label="Password"
-          onChange={updateLogInDetail}
+          onChange={updateLogInInfo}
         />
-        <div style={isRegistered ? { display: "none" } : { display: "block" }}>
-          <FormLabelControl
-            label="Confirm Password"
-            type="password"
-            onChange={updateConfirmPassword}
-          />
-        </div>
+        {logInOrSignUp === "Signup" && <FormLabelControl
+          label="Confirm Password"
+          type="password"
+          onChange={updateConfirmPassword}
+        />}
 
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div className={styles.bottomContainer}>
           <Button
             variant="primary"
             type="button"
-            name={isRegistered ? "Login" : "Signup"}
             disabled={
-              logInDetail.password === confirmPassword || isRegistered === true
+              logInInfo?.password === confirmPassword || logInOrSignUp === "Login"
                 ? false
                 : true
             }
-            onClick={signInOrCreateAccount}
+            onClick={signInOrCreateUser}
           >
-            {isRegistered ? "Login" : "Signup"}
+            {logInOrSignUp}
           </Button>
-          <Form.Text
-            className={`text-muted ${styles.notRegistered}`}
-            onClick={updateIsRegistered}
+          {(logInOrSignUp === "Login") && <Form.Text
+            className={styles.notRegistered}
+            onClick={() => {
+              setLogInOrSignUp("Signup");
+            }}
           >
             Not registered?
-          </Form.Text>
+          </Form.Text>}
         </div>
       </Form>
     </>

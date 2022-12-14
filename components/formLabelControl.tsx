@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useState, ChangeEvent } from "react";
 import Form from "react-bootstrap/Form";
 import _ from "lodash";
 
@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default function FormLabelControl({ label, type, onChange }: Props) {
-    const [controlValue, setControlValue] = useState("");
+    const [controlValue, setControlValue] = useState<string>("");
 
     function handleChange(event: ChangeEvent) {
         const { value } = event.target as HTMLInputElement;
