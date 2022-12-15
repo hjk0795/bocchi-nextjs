@@ -16,18 +16,12 @@ export default function Redirection() {
       document.cookie = 'redirectionProps=' + redirectionPropsValue + ";max-age=0";
       setRedirectionUIProps(JSON.parse(redirectionPropsValue));
     } else {
-      setRedirectionUIProps({ title: "redirectionProps Not Exist" });
+      setRedirectionUIProps({ title: "Invalid Access", pageToRedirect: "/", isAutoRedirect: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (redirectionUIProps === null) {
-    return (
-      <>
-        <h1>Redirecting...</h1>
-      </>
-    );
-  } else {
+  if (redirectionUIProps !== null) {
     return (
       <>
         <RedirectionUI

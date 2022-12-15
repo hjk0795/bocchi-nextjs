@@ -1,12 +1,12 @@
 import Image from 'next/image'
 import { RedirectionUIProps } from "../components/redirectionUI";
 import { auth } from "../firebase-config";
-import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 export default function Dashboard() {
-  const [currentUser, setCurrentUser] = useState<User>();
+  const [currentUser, setCurrentUser] = useState<User>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -19,11 +19,12 @@ export default function Dashboard() {
         router.push("/redirection");
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      {currentUser === undefined ? <h1>Loading..</h1> : currentUser !== null && <>
+      {currentUser !== null && <>
         <h6>{currentUser.displayName}</h6>
         <Image
           src={currentUser.photoURL}

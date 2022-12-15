@@ -9,7 +9,7 @@ export default async function getAccessToken(req: NextApiRequest, res: NextApiRe
     const clientInfo = {
         client_id: process.env.NEXT_PUBLIC_GITHUB_ID,
         client_secret: process.env.GITHUB_SECRET,
-        code: req.query.code as string
+        code: req.body.code as string
     }
     Object.freeze(clientInfo);
 

@@ -2,6 +2,7 @@ import styles from "../styles/loginInternal.module.css";
 import FormLabelControl from "./formLabelControl";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { LoadingModalProps } from "./loadingModal";
 import { RedirectionUIProps } from "./redirectionUI";
 import { useState, ChangeEvent } from "react";
 import { useRouter } from 'next/router'
@@ -14,7 +15,7 @@ type LoginInfo = {
   password: string
 };
 
-export default function LoginInternal() {
+export default function LoginInternal({ setModalShow }: LoadingModalProps) {
   const [logInInfo, setLogInInfo] = useState<LoginInfo>(null);
   const [confirmPassword, setConfirmPassword] = useState<string>(null);
   const [logInOrSignUp, setLogInOrSignUp] = useState<"Login" | "Signup">("Login");
@@ -46,12 +47,14 @@ export default function LoginInternal() {
   }
 
   function signInOrCreateUser() {
+    setModalShow(true);
     getSignInOrCreateUser()(auth, logInInfo?.email, logInInfo?.password)
       .then(() => {
         router.push("/dashboard")
       })
       .catch((error) => {
         renderErrorOrRedirect(error);
+        setModalShow(false);
       });
 
     function getSignInOrCreateUser() {

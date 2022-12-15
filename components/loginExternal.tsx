@@ -1,16 +1,12 @@
 import styles from "../styles/loginExternal.module.css";
 import LoginButtonOAuth from "./loginButtonOAuth";
-import { SetStateAction, Dispatch } from "react";
+import { LoadingModalProps } from "./loadingModal";
 import { generateRandomString } from "../utils/generateRandomString";
 import { auth } from "../firebase-config";
 import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 
-type Props = {
-    setModalShow: Dispatch<SetStateAction<boolean>>
-};
-
-export default function LoginExternal({ setModalShow }: Props) {
+export default function LoginExternal({ setModalShow }: LoadingModalProps) {
 
     function signInWithGoogle() {
         document.cookie = "signInWithRedirect=true";
@@ -25,7 +21,7 @@ export default function LoginExternal({ setModalShow }: Props) {
         const paramState = "&state=" + antiCsrfToken;
 
         setModalShow(true);
-        sessionStorage.setItem("antiCsrfToken", antiCsrfToken);
+        document.cookie = "antiCsrfToken=" + antiCsrfToken;
         window.location.assign(baseURI + paramClientID + paramState);
     }
 

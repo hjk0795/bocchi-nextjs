@@ -3,14 +3,21 @@ import { NextResponse } from 'next/server'
 
 export function middleware(request: NextRequest) {
     if (request.nextUrl.pathname.startsWith('/login')) {
-        const isSignInWithRedirect = request.cookies.get('signInWithRedirect')?.value;
-
-        if (isSignInWithRedirect === "true") {
+        if (request.cookies.has("signInWithRedirect")) {
             return NextResponse.redirect(new URL('/signInRedirectResult', request.url))
+        }
+    } else if (request.nextUrl.pathname.startsWith('/signInRedirectResult')) {
+        if (!request.cookies.has("signInWithRedirect")) {
+            return NextResponse.redirect(new URL('/redirection', request.url));
+        }
+    }
+    else if (request.nextUrl.pathname.startsWith('/callbackEndpoint')) {
+        if (!request.cookies.has("antiCsrfToken")) {
+            return NextResponse.redirect(new URL('/redirection', request.url));
         }
     }
 }
 
 export const config = {
-    matcher: '/login',
+    matcher: ['/login', '/signInRedirectResult', '/callbackEndpoint']
 }

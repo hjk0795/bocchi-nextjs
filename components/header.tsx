@@ -1,51 +1,48 @@
+import styles from "../styles/header.module.css";
+import AlertToast from "./alertToast";
 import Link from "next/link";
-import Navbar from "react-bootstrap/Navbar";
-import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
-import { useState } from "react";
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
 import { RedirectionUIProps } from "./redirectionUI";
-import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { User, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Header() {
+  const [currentUser, setCurrentUser] = useState<User>(null);
+  const [alertToast, setAlertToast] = useState(false);
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState(null);
-  var [isExecuted, setIsExecuted] = useState(false);
-  let redirectionUIProps: RedirectionUIProps;
 
-  function handleSignOut() {
-    // try {
-    //    signOut(auth);
-    //   document.cookie = `isAuthenticated=false`;
-    //   router.push("/login");
-    // } catch (error) {
-    //   console.log(error.message);
-    // }
-    signOut(auth).then(() => {
-      redirectionUIProps = { title: "Signed out successfully.", pageToRedirect: "/", isAutoRedirect: true }
-    }).catch((error) => {
-      const currentURI = document.location.href;
-      //currentURI - PARAMS = baseURI ?? => Test with JS fiddle (String - String)
-      redirectionUIProps = { title: error.code, message: error.message, pageToRedirect: currentURI }
-    }).finally(() => {
-      document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
-      router.push("/redirection");
-    })
-  }
-
-  if (isExecuted === false) {
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-
       if (user) {
         setCurrentUser(user);
       } else {
         setCurrentUser(null);
       }
     });
-    setIsExecuted(true);
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  function signOutAndRedirect() {
+    // signOut(auth).then(() => {
+    //   setCurrentUser(null);
+    //   document.cookie = "isAuthenticated=true" + ";max-age=0";
+
+    //   const redirectionUIProps: RedirectionUIProps = { title: "Signed out successfully.", pageToRedirect: "/", isAutoRedirect: true };
+    //   document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
+    //   router.push("/redirection");
+    // }).catch((error) => {
+
+    // })
+    try {
+      throw new Error("test");
+    } catch (error) {
+      setAlertToast(true);
+    }
+  }
 
   return (
     <>
@@ -63,16 +60,12 @@ export default function Header() {
                 </Link>
               </Nav.Link>
               <Nav.Link as="div" className="me-auto">
-                {currentUser ? (
-                  <Link href="/login">
-                    <div onClick={handleSignOut}>
-                      Sign out
-                    </div>
-                  </Link>
-                ) : (
-                  <Link href="/login">Login</Link>
-                )}
+                {currentUser ? <Link href="/#sign-out" onClick={signOutAndRedirect}>Sign Out</Link> :
+                  <Link href="/login">Login</Link>}
               </Nav.Link>
+              <div className={styles.alertToast}>
+                <AlertToast />
+              </div>
             </Nav>
           </Navbar.Collapse>
         </Container>

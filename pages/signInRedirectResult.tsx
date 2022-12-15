@@ -1,13 +1,16 @@
+import LoadingModal from "../components/loadingModal";
 import { RedirectionUIProps } from "../components/redirectionUI";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
 import { getRedirectResult } from "firebase/auth";
 
 export default function SignInRedirectResult() {
+    const [modalShow, setModalShow] = useState<boolean>(false);
     const router = useRouter();
 
     useEffect(() => {
+        setModalShow(true);
         getRedirectResult(auth)
             .then(() => { router.push("/dashboard"); })
             .catch((error) => {
@@ -21,7 +24,10 @@ export default function SignInRedirectResult() {
 
     return (
         <>
-            <h1>Getting the sign-in result from Google...</h1>
+            <h1>Signing in..</h1>
+            {modalShow && <LoadingModal
+                modalShow={modalShow}
+            />}
         </>
     );
 }
