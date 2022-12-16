@@ -38,7 +38,7 @@ export default function LoadingModal({ modalShow }: LoadingModalProps) {
                 <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>
                 </Spinner> <br />
-                {(elapsedSeconds >= 3) && <small>Taking longer than usual..</small>}
+                {(elapsedSeconds >= 5) && <small>Taking longer than usual..</small>}
             </Modal.Body>
         </Modal>
     );

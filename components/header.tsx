@@ -8,11 +8,18 @@ import { RedirectionUIProps } from "./redirectionUI";
 import { auth } from "../firebase-config";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { FirebaseError } from "firebase/app";
 import { User, onAuthStateChanged, signOut } from "firebase/auth";
+
+type AlertToastError = {
+  title: string,
+  message: string
+}
 
 export default function Header() {
   const [currentUser, setCurrentUser] = useState<User>(null);
-  const [alertToast, setAlertToast] = useState(false);
+  const [alertToast, setAlertToast] = useState<boolean>(false);
+  const [alertToastError, setAlertToastError] = useState<AlertToastError>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -27,21 +34,18 @@ export default function Header() {
   }, []);
 
   function signOutAndRedirect() {
-    // signOut(auth).then(() => {
-    //   setCurrentUser(null);
-    //   document.cookie = "isAuthenticated=true" + ";max-age=0";
+    signOut(auth)
+    .then(() => {
+      // setCurrentUser(null);
+      document.cookie = "isAuthenticated=true" + ";max-age=0";
 
-    //   const redirectionUIProps: RedirectionUIProps = { title: "Signed out successfully.", pageToRedirect: "/", isAutoRedirect: true };
-    //   document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
-    //   router.push("/redirection");
-    // }).catch((error) => {
-
-    // })
-    try {
-      throw new Error("test");
-    } catch (error) {
+      const redirectionUIProps: RedirectionUIProps = { title: "Signed out successfully.", pageToRedirect: "/", isAutoRedirect: true };
+      document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
+      router.push("/redirection");
+    }).catch((error: FirebaseError) => {
       setAlertToast(true);
-    }
+      setAlertToastError({title: error.code, message: error.message});
+    })
   }
 
   return (
@@ -64,7 +68,12 @@ export default function Header() {
                   <Link href="/login">Login</Link>}
               </Nav.Link>
               <div className={styles.alertToast}>
-                <AlertToast />
+                <AlertToast
+                title={alertToastError?.title}
+                message={alertToastError?.message}
+                show={alertToast}
+                setShow={setAlertToast}
+                />
               </div>
             </Nav>
           </Navbar.Collapse>

@@ -1,7 +1,9 @@
+import styles from "../styles/category.module.css";
 import GridCards from "../components/gridCards";
 import Head from "next/head";
 import Link from "next/link";
 import Row from "react-bootstrap/Row";
+import FlaticonAttribution from "../components/flaticonAttribution";
 
 export default function Category() {
   var categoryList = [
@@ -41,41 +43,25 @@ export default function Category() {
         })}
       </Row>
 
-      <Link
-        href="https://www.flaticon.com/free-icons/sushi"
-        title="sushi icons"
-        passHref={true}
-      >
-        Sushi icons created by Freepik - Flaticon
-      </Link>
-      <Link
-        href="https://www.flaticon.com/free-icons/food-and-restaurant"
-        title="food and restaurant icons"
-        passHref={true}
-      >
-        Food and restaurant icons created by Freepik - Flaticon
-      </Link>
-      <Link
-        href="https://www.flaticon.com/free-icons/ramen"
-        title="ramen icons"
-        passHref={true}
-      >
-        Ramen icons created by Freepik - Flaticon
-      </Link>
-      <Link
-        href="https://www.flaticon.com/free-icons/burger"
-        title="burger icons"
-        passHref={true}
-      >
-        Burger icons created by Freepik - Flaticon
-      </Link>
-      <Link
-        href="https://www.flaticon.com/free-icons/question-mark"
-        title="question mark icons"
-        passHref={true}
-      >
-        Question mark icons created by Freepik - Flaticon
-      </Link>
+      <footer className={styles.attribution}>
+      Icons are created by Freepik - Flaticon. Links:
+        <FlaticonAttribution
+        name="sushi"
+        />
+        <FlaticonAttribution
+        name="food-and-restaurant"
+        alias="donburi"
+        />
+        <FlaticonAttribution
+        name="ramen"
+        />
+        <FlaticonAttribution
+        name="burger"
+        />
+        <FlaticonAttribution
+        name="question-mark"
+        />
+      </footer>
     </>
   );
 }
