@@ -1,3 +1,4 @@
+import styles from "../styles/flaticonAttribution.module.css";
 import Link from "next/link";
 
 type FlaticonAttributionProps = {
@@ -5,15 +6,15 @@ type FlaticonAttributionProps = {
   alias?: string
 };
 
-export default function FlaticonAttribution({ name, alias }: FlaticonAttributionProps) {
+export default function FlaticonAttribution({ name, alias = null }: FlaticonAttributionProps) {
   return (
     <>
       <Link
-        href={`https://www.flaticon.com/free-icons/${name}`}
+        className={styles.flaticonAttribution}
+        href={`https://www.flaticon.com/free-icons/${alias ? alias : name}`}
         title={`${name} icons`}
-        passHref={true}
       >
-        {alias?alias:name}
+        {name}
       </Link>
     </>
   );

@@ -1,16 +1,23 @@
-import RestaurantCard from "../../../components/restaurantCard";
+import GridCard from "../../../components/gridCard";
 import Row from "react-bootstrap/Row";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import _ from "lodash"
+import { getCategoryList } from "../../../utils/getCategoryList";
+import { getDocumentArray } from "../../../utils/getDocumentArray";
 import { db } from "../../../firebase-config";
+import { DocumentData, query, collection, where } from "firebase/firestore";
 
-export async function getStaticPaths() {
-  const categoryNames = ["sushi", "donburi", "ramen", "burger"];
+type StaticProps = {
+  restaurantDocs: DocumentData[],
+  avgRatingScoreArray: number[]
+}
 
-  const paths = categoryNames.map((categoryName) => {
+export function getStaticPaths() {
+  const categoryList = getCategoryList();
+  const paths = categoryList.map((category) => {
     return {
       params: {
-        category: categoryName,
-      },
+        category: _.lowerCase(category.name)
+      }
     };
   });
 
@@ -21,61 +28,42 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  var averageStarArray: Array<any>;
-
-  const q = query(
+  const q1 = query(
     collection(db, "restaurants"),
     where("category", "==", `${params.category}`)
   );
-
-  const querySnapshot = await getDocs(q);
-  const querySnapshotDocs = querySnapshot.docs;
-
-  const docArray = querySnapshotDocs.map((doc) => {
-    return doc.data();
-  });
-
-  const averageStarArrayPromise = docArray.map(async (foundItem) => {
-    const q = query(collection(db, `restaurants/${foundItem.name}/reviews`));
-    const querySnapshot = await getDocs(q);
-    const querySnapshotDocs = querySnapshot.docs;
-    const docArray = querySnapshotDocs.map((doc) => {
-      return doc.data().star;
+  const restaurantDocs = await getDocumentArray(q1);
+  const avgRatingScorePromiseArray = restaurantDocs.map(async (doc) => {
+    const q2 = query(collection(db, `restaurants/${doc.name}/reviews`));
+    const reviewDocs = await getDocumentArray(q2);
+    let sumRatingScore = 0;
+    reviewDocs.map((doc) => {
+      sumRatingScore += doc.ratingScore;
     });
 
-    const docArrayNumber = docArray.map(Number);
-
-    var sum = 0;
-    docArrayNumber.map((i) => {
-      return (sum = sum + i);
-    });
-
-    return sum / docArrayNumber.length;
+    return sumRatingScore / reviewDocs.length;
   });
-
-  await Promise.all(averageStarArrayPromise).then((data) => {
-    averageStarArray = data;
-  });
+  const avgRatingScoreArray = await Promise.all(avgRatingScorePromiseArray);
 
   return {
     props: {
-      docArray,
-      averageStarArray,
+      restaurantDocs,
+      avgRatingScoreArray,
     },
   };
 }
 
-export default function RestaurantList({ docArray, averageStarArray }) {
+export default function RestaurantList({ restaurantDocs, avgRatingScoreArray }: StaticProps) {
   return (
-    <Row xs={1} md={2} lg={3} className="g-2">
-      {docArray.map((foundItem, index) => {
+    <Row className="g-2" xs={1} sm={2} md={3} lg={4}>
+      {restaurantDocs.map((doc, index) => {
         return (
-          <RestaurantCard
+          <GridCard
             key={index}
-            name={foundItem.name}
-            category={foundItem.category}
-            brandImg={foundItem.brandImg}
-            averageStar={averageStarArray[index]}
+            imgSrc={doc.brandImg}
+            title={doc.name}
+            subTitle={avgRatingScoreArray[index].toString()}
+            linkHref={`/category/${_.lowerCase(doc.category)}/${doc.name}`}
           />
         );
       })}

@@ -53,7 +53,8 @@ export default function Header() {
       <Navbar bg="light" expand="lg">
         <Container>
           <Navbar.Brand>
-            <Link href="/">bocchimeshi</Link>
+          <Link href="/">Brand</Link>
+            {/* <Link href="/">bocchimeshi</Link> */}
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">

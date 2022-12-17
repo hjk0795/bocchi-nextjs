@@ -1,6 +1,5 @@
 import { db } from "../../../firebase-config";
 import DetailCard from "../../../components/detailCard";
-// import { getAnalytics } from "firebase/analytics";
 import {
   collection,
   query,
@@ -10,34 +9,21 @@ import {
   limit,
   orderBy,
 } from "firebase/firestore";
+import { getDocumentArray } from "../../../utils/getDocumentArray";
 
 export async function getStaticPaths() {
-  const categoryNames = ["sushi", "donburi", "ramen", "burger"];
-
   const q = query(collection(db, "restaurants"));
+  const restaurantDocs = await getDocumentArray(q);
+  const paths = [];
 
-  const querySnapshot = await getDocs(q);
-  const querySnapshotDocs = querySnapshot.docs;
-  const docArray = querySnapshotDocs.map((doc, index) => {
-    return doc.data();
-  });
-
-  var temp = [];
-
-  categoryNames.map((categoryName) => {
-    for (const element of docArray) {
-      if (element.category === categoryName) {
-        temp.push({
-          params: {
-            category: categoryName,
-            restaurant: element.name,
-          },
-        });
-      }
-    }
-  });
-
-  const paths = temp;
+  for (const doc of restaurantDocs) {
+    paths.push({
+      params: {
+        category: doc.category,
+        restaurant: doc.name,
+      },
+    });
+  }
 
   return {
     paths,

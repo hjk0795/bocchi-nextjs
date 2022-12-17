@@ -1,66 +1,41 @@
 import styles from "../styles/category.module.css";
-import GridCards from "../components/gridCards";
-import Head from "next/head";
-import Link from "next/link";
-import Row from "react-bootstrap/Row";
+import GridCard from "../components/gridCard";
 import FlaticonAttribution from "../components/flaticonAttribution";
+import Row from "react-bootstrap/Row";
+import _ from "lodash";
+import { getCategoryList } from "../utils/getCategoryList";
+
+export type CategoryObject = {
+  name: string,
+  src: string,
+  alias?: string
+}
 
 export default function Category() {
-  var categoryList = [
-    {
-      title: "Sushi",
-      src: "https://cdn-icons-png.flaticon.com/512/1539/1539701.png",
-    },
-    {
-      title: "Donburi",
-      src: "https://cdn-icons-png.flaticon.com/512/3978/3978700.png",
-    },
-    {
-      title: "Ramen",
-      src: "https://cdn-icons-png.flaticon.com/512/1046/1046850.png",
-    },
-    {
-      title: "Burger",
-      src: "https://cdn-icons-png.flaticon.com/512/3075/3075935.png",
-    },
-    {
-      title: "?",
-      src: "https://cdn-icons-png.flaticon.com/512/84/84042.png",
-    },
-  ];
+  const categoryList = getCategoryList();
 
   return (
     <>
-      <Head>
-        <title>bocchi</title>
-      </Head>
-
-      <Row xs={1} md={2} lg={4} className="g-2">
+      <Row xs={1} sm={2} md={3} lg={4} className="g-2">
         {categoryList.map((category, index) => {
           return (
-            <GridCards key={index} title={category.title} src={category.src} />
+            <GridCard
+              key={index}
+              imgSrc={category.src}
+              title={category.name}
+              linkHref={`/category/${_.lowerCase(category.name)}`}
+            />
           );
         })}
       </Row>
 
       <footer className={styles.attribution}>
-      Icons are created by Freepik - Flaticon. Links:
-        <FlaticonAttribution
-        name="sushi"
-        />
-        <FlaticonAttribution
-        name="food-and-restaurant"
-        alias="donburi"
-        />
-        <FlaticonAttribution
-        name="ramen"
-        />
-        <FlaticonAttribution
-        name="burger"
-        />
-        <FlaticonAttribution
-        name="question-mark"
-        />
+        Icons are created by Freepik - Flaticon. <br /> Links:
+        {categoryList.map((category, index) => {
+          return (
+            <FlaticonAttribution key={"flaticon" + index} name={_.lowerCase(category.name)} alias={category.alias} />
+          );
+        })}
       </footer>
     </>
   );

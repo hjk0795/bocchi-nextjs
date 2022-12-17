@@ -1,0 +1,31 @@
+.card {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.cardButton {
+  border: 0;
+  background: 0;
+}
+
+.cardImg {
+  height: 200px;
+  padding: 1rem;
+}
+
+.cardTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 576px) {
+  .card {
+    width: 13rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .cardTitle {
+    color: black;
+  }
+}
