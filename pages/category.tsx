@@ -3,7 +3,7 @@ import GridCard from "../components/gridCard";
 import FlaticonAttribution from "../components/flaticonAttribution";
 import Row from "react-bootstrap/Row";
 import _ from "lodash";
-import { getCategoryList } from "../utils/getCategoryList";
+import { getCategoryArray } from "../utils/getCategoryArray";
 
 export type CategoryObject = {
   name: string,
@@ -12,12 +12,12 @@ export type CategoryObject = {
 }
 
 export default function Category() {
-  const categoryList = getCategoryList();
+  const categoryArray = getCategoryArray();
 
   return (
     <>
       <Row xs={1} sm={2} md={3} lg={4} className="g-2">
-        {categoryList.map((category, index) => {
+        {categoryArray.map((category, index) => {
           return (
             <GridCard
               key={index}
@@ -31,9 +31,9 @@ export default function Category() {
 
       <footer className={styles.attribution}>
         Icons are created by Freepik - Flaticon. <br /> Links:
-        {categoryList.map((category, index) => {
+        {categoryArray.map((category, index) => {
           return (
-            <FlaticonAttribution key={"flaticon" + index} name={_.lowerCase(category.name)} alias={category.alias} />
+            <FlaticonAttribution key={"flaticon" + index} name={category.name === "?" ? "question-mark" : _.lowerCase(category.name)} alias={category.alias} />
           );
         })}
       </footer>

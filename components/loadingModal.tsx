@@ -34,7 +34,7 @@ export default function LoadingModal({ modalShow }: LoadingModalProps) {
             centered
             dialogClassName={styles.modalDialog}>
 
-            <Modal.Body>
+            <Modal.Body className={styles.modalBody}>
                 <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>
                 </Spinner> <br />

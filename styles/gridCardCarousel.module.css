@@ -1,0 +1,15 @@
+.card {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.cardImg {
+  height: 200px;
+  padding: 1rem;
+}
+
+@media only screen and (max-width: 576px) {
+  .card {
+    width: 13rem;
+  }
+}

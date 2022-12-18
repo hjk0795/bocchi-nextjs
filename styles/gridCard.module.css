@@ -4,6 +4,7 @@
 }
 
 .cardButton {
+  padding: 0;
   border: 0;
   background: 0;
 }
@@ -13,7 +14,7 @@
   padding: 1rem;
 }
 
-.cardTitle {
+.cardTitleSubTitle {
   display: flex;
   justify-content: space-between;
 }
@@ -25,7 +26,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .cardTitle {
+  .cardTitleOnly,
+  .cardTitleSubTitle {
     color: black;
   }
 }

@@ -1,22 +1,30 @@
-import { db } from "../../../firebase-config";
 import DetailCard from "../../../components/detailCard";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  getCountFromServer,
-  limit,
-  orderBy,
-} from "firebase/firestore";
 import { getDocumentArray } from "../../../utils/getDocumentArray";
+import { db, storage } from "../../../firebase-config";
+import {
+  DocumentData,
+  query,
+  collection,
+  where,
+  orderBy,
+  limit,
+  getCountFromServer,
+} from "firebase/firestore";
+import { StorageReference, ref, listAll, getDownloadURL } from "firebase/storage";
+
+type StaticProps = {
+  restaurantData: DocumentData,
+  reviewDataArray: DocumentData[],
+  reviewTotalCount: number,
+  imgURLArray: string[]
+}
 
 export async function getStaticPaths() {
   const q = query(collection(db, "restaurants"));
-  const restaurantDocs = await getDocumentArray(q);
+  const restaurantDataArray = await getDocumentArray(q);
   const paths = [];
 
-  for (const doc of restaurantDocs) {
+  for (const doc of restaurantDataArray) {
     paths.push({
       params: {
         category: doc.category,
@@ -32,51 +40,55 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const q = query(
+  const q1 = query(
     collection(db, "restaurants"),
     where("name", "==", `${params.restaurant}`)
   );
-  const reviewQ = query(
-    collection(db, `restaurants/${params.restaurant}/reviews`),
+  const q2Collection = collection(db, `restaurants/${params.restaurant}/reviews`);
+  const q2 = query(
+    q2Collection,
     orderBy("id"),
     limit(2)
   );
 
-  const querySnapshot = await getDocs(q);
-  const reviewSnapshot = await getDocs(reviewQ);
-  const querySnapshotDocs = querySnapshot.docs;
-  const reviewSnapshotDocs = reviewSnapshot.docs;
-  const selectedDoc = querySnapshotDocs[0].data();
+  const restaurantDataArray = await getDocumentArray(q1);
+  const restaurantData = restaurantDataArray[0];
+  const reviewDataArray = await getDocumentArray(q2);
+  const q2CountSnapshot = await getCountFromServer(q2Collection);
+  const reviewTotalCount = q2CountSnapshot.data().count;
 
-  const reviewArray = reviewSnapshotDocs.map((doc, index) => {
-    return doc.data();
-  });
+  const imgURLArray = [];
+  const tableImgListRef = ref(storage, 'images/sushi1/table');
+  const listResult = await listAll(tableImgListRef);
 
-  const coll = collection(db, `restaurants/${params.restaurant}/reviews`);
-  const snapshot = await getCountFromServer(coll);
-
-  const totalCount = snapshot.data().count;
+  await Promise.all(listResult.items.map(async (item) => {
+    const url = await getDownloadURL(ref(storage, 'images/sushi1/table/' + item.name));
+    imgURLArray.push(url);
+  }));
 
   return {
     props: {
-      selectedDoc,
-      reviewArray,
-      totalCount,
-    },
+      restaurantData,
+      reviewDataArray,
+      reviewTotalCount,
+      imgURLArray
+    }
   };
 }
 
 export default function RestaurantList({
-  selectedDoc,
-  reviewArray,
-  totalCount,
-}) {
+  restaurantData,
+  reviewDataArray,
+  reviewTotalCount,
+  imgURLArray
+}: StaticProps) {
   return (
     <>
       <DetailCard
-        name={selectedDoc.name}
-        review={reviewArray}
-        totalCount={totalCount}
+        name={restaurantData.name}
+        review={reviewDataArray}
+        totalCount={reviewTotalCount}
+        imgURLArray={imgURLArray}
       />
     </>
   );

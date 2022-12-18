@@ -1,8 +1,15 @@
 .loginButton {
-    margin-top: 0.1rem;
-    width: 200px;
+  margin-top: 0.1rem;
+  width: 200px;
 }
 
 .github {
-    margin-right: 2px;
+  margin-right: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .loginButton {
+    color: white;
+    border-color: white;
+  }
 }
