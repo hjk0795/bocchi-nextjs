@@ -1,59 +1,50 @@
 import Review from "./review";
-import Carousel from "react-bootstrap/Carousel";
 import Link from "next/link";
-import MyImage from "../utils/imageLoader";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import styles from "./detailCard.module.css";
 import Rating from "@mui/material/Rating";
-// import { getAnalytics } from "firebase/analytics";
-import { db, auth, storage } from "../firebase-config";
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  limit,
-  startAfter,
-  getDocs,
-  getCountFromServer,
-  doc,
-  setDoc,
-  addDoc,
-  DocumentData,
-} from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import GridCard from "./gridCard";
 import GridCardCarousel from "./gridCardCarousel";
-import { getDownloadURL, listAll, ref, StorageReference } from "firebase/storage";
-import { fill } from "lodash";
-import FlaticonAttribution from "./flaticonAttribution";
+import { ChangeEvent, useEffect, useState } from "react";
 import { getDocDataArray } from "../utils/getDocDataArray";
+import { onAuthStateChanged } from "firebase/auth";
+import { db, auth } from "../firebase-config";
+import {
+  collection,
+  query,
+  orderBy,
+  limit,
+  startAfter,
+  doc,
+  setDoc,
+  DocumentData,
+  addDoc,
+} from "firebase/firestore";
 
 type DetailCardProps = {
   restaurantName: string,
   reviewDataArray: DocumentData[],
-  reviewTotalCount: number,
+  reviewCountFecthed: number,
   imgURLArray: string[]
 }
 
 type Review = {
-  id: number,
   ratingScore: number,
   statement: string,
   userName: string,
+  timestamp: number
 }
 
-export default function DetailCard({ restaurantName, reviewDataArray, reviewTotalCount, imgURLArray }: DetailCardProps) {
-  let [totalCount, setTotalCount] = useState(reviewTotalCount);
+export default function DetailCard({ restaurantName, reviewDataArray, reviewCountFecthed, imgURLArray }: DetailCardProps) {
+  const [reviewCount, setReviewCount] = useState(reviewCountFecthed);
   const [hasMore, setHasMore] = useState(true);
-  let [reviewArray, setReviewArray] = useState<Review[]>(reviewDataArray as Review[]);
-  const [reviewWrite, setReviewWrite] = useState<Review>(null);
-  const [isChecked, setIsChecked] = useState(false);
+  const [reviewArray, setReviewArray] = useState<Review[]>(reviewDataArray as Review[]);
+  const [reviewToBePosted, setReviewToBePosted] = useState<Review>(null);
+  const [isWritingReview, setIsWritingReview] = useState(false);
   const [editingID, setEditingID] = useState(-1);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -72,80 +63,47 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewTota
     const next = query(
       collection(db, `restaurants/${restaurantName}/reviews`),
       orderBy("id"),
-      startAfter(reviewArray.length),
+      startAfter(reviewArray.length - 1),
       limit(1)
     );
     const nextReviewDataArray = await getDocDataArray(next);
     const nextReviewData = nextReviewDataArray[0];
 
-    console.log(nextReviewDataArray);
-
-    reviewArray = [
+    setReviewArray([
       ...reviewArray,
       {
-        id: nextReviewData.id,
         ratingScore: nextReviewData.ratingScore,
         statement: nextReviewData.statement,
         userName: nextReviewData.userName,
+        timestamp: nextReviewData.timestamp
       },
-    ];
-
-    setReviewArray(reviewArray);
-    setHasMore(reviewArray.length < totalCount ? true : false);
+    ]);
+    setHasMore((reviewArray.length + 1) < reviewCount ? true : false);
   }
 
-  function handleChange(event) {
-    const { name, value } = event.target;
+  function syncReviewToBePosted(event: ChangeEvent) {
+    const { name, value } = event.target as HTMLInputElement;
 
-    setReviewWrite((prevReviewWrite) => {
-      if (name === "ratingScore") {
-        return {
-          id: prevReviewWrite.id,
-          ratingScore: value,
-          statement: prevReviewWrite.statement,
-          userName: prevReviewWrite.userName,
-        };
-      } else {
-        return {
-          id: prevReviewWrite.id,
-          ratingScore: prevReviewWrite.ratingScore,
-          statement: value,
-          userName: prevReviewWrite.userName,
-        };
-      }
+    setReviewToBePosted((prevReviewToBePosted) => {
+      return {
+        ratingScore: (name === "reviewRatingScore" ? Number(value) : prevReviewToBePosted?.ratingScore),
+        statement: (name === "reviewTextArea" ? value : prevReviewToBePosted?.statement),
+        userName: prevReviewToBePosted?.userName,
+        timestamp: prevReviewToBePosted?.timestamp
+      };
+    })
+  }
+
+  async function addReview(reviewToBePosted: Review) {
+    const docRef = await addDoc(collection(db, `restaurants/${restaurantName}/reviews`), {
+      ratingScore: reviewToBePosted.ratingScore,
+      statement: reviewToBePosted.statement,
+      userName: currentUser ? currentUser.displayName : "anonymous",
+      timestamp: Date.now()
     });
-  }
+    console.log("Document written with ID: ", docRef.id);
 
-  function toggleHidden() {
-    setIsChecked(!isChecked);
-  }
-
-  const addReview = async (reviewWrite) => {
-
-    if (currentUser !== null) {
-      const docRef = await setDoc(
-        doc(db, `restaurants/${restaurantName}/reviews`, `${reviewArray.length + 1}`),
-        {
-          id: reviewArray.length + 1,
-          ratingScore: `${reviewWrite.ratingScore}`,
-          statement: `${reviewWrite.statement}`,
-          userName: `${currentUser.displayName}`,
-        }
-      );
-    } else if (currentUser === null) {
-      const docRef = await setDoc(
-        doc(db, `restaurants/${restaurantName}/reviews`, `${reviewArray.length + 1}`),
-        {
-          id: reviewArray.length + 1,
-          ratingScore: `${reviewWrite.ratingScore}`,
-          statement: `${reviewWrite.statement}`,
-          userName: "anonymous",
-        }
-      );
-    }
-
-    console.log("created!");
-    totalCount = totalCount + 1;
+    setReviewCount(reviewCount + 1);
     setHasMore(true);
   };
 
@@ -180,8 +138,9 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewTota
             <Image
               src="https://img.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_1361-1507.jpg?w=1480&t=st=1671398684~exp=1671399284~hmac=67377dd8c8074bd5e6dd02824786e9fadc19604b59c03a942685b80e75937af4"
               alt="banner"
-              fill
+              layout="fill"
               objectFit="contain"
+              priority
             />
           </div>
         </Row>
@@ -210,10 +169,10 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewTota
           <Col className="d-flex justify-content-center align-items-center" xs={2}>
             <Rating
               className={styles.rating}
-              name="ratingScore"
-              value={reviewWrite?.ratingScore}
+              name="reviewRatingScore"
+              value={reviewToBePosted ? reviewToBePosted.ratingScore : 0}
               size="small"
-              onChange={handleChange}
+              onChange={syncReviewToBePosted}
             />
           </Col>
 
@@ -223,19 +182,21 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewTota
               <div className={styles.textareaContainer}>
                 <textarea
                   className="form-control"
-                  rows={isChecked ? 3 : 1}
-                  name="reviewText"
+                  rows={isWritingReview ? 3 : 1}
+                  name="reviewTextArea"
                   placeholder="Write a review"
-                  onChange={handleChange}
-                  value={reviewWrite?.statement}
-                  onClick={toggleHidden}
+                  onChange={syncReviewToBePosted}
+                  value={reviewToBePosted?.statement}
+                  onClick={() => {
+                    setIsWritingReview(!isWritingReview);
+                  }}
                 ></textarea>
                 <Button
                   variant="outlined"
                   size="small"
-                  style={{ display: isChecked ? "block" : "none" }}
+                  style={{ display: isWritingReview ? "block" : "none" }}
                   onClick={() => {
-                    return addReview(reviewWrite);
+                    return addReview(reviewToBePosted);
                   }}
                 >
                   Post
@@ -252,14 +213,14 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewTota
           loader={<h4>Loading...</h4>}
           endMessage={<p>You have seen it all</p>}
         >
-          {reviewArray.map((foundItem, index) => {
+          {reviewArray.map((review, index) => {
             return (
               <Review
-                id={foundItem.id}
+                id={review.id}
                 key={index}
-                star={foundItem.ratingScore}
-                statement={foundItem.statement}
-                userName={foundItem.userName}
+                star={review.ratingScore}
+                statement={review.statement}
+                userName={review.userName}
                 isAuthenticated={currentUser !== null ? "true" : "false"}
                 sessionUserName={
                   currentUser !== null
@@ -269,7 +230,7 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewTota
                 name={restaurantName}
                 deleteReview={deleteReview}
                 editReview={editReview}
-                isEditing={foundItem.id === editingID ? true : false}
+                isEditing={review.id === editingID ? true : false}
                 saveReview={saveReview}
               />
             );

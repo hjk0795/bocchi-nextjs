@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from "next/legacy/image";
 
 const myLoader = ({ src, width, quality }) => {
   return `https://img.freepik.com/${src}?w=${width}&q=${quality || 75}`

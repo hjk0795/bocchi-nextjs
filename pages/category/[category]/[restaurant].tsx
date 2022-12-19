@@ -15,7 +15,7 @@ import { StorageReference, ref, listAll, getDownloadURL } from "firebase/storage
 type StaticProps = {
   restaurantData: DocumentData,
   reviewDataArray: DocumentData[],
-  reviewTotalCount: number,
+  reviewCountFecthed: number,
   imgURLArray: string[]
 }
 
@@ -48,14 +48,14 @@ export async function getStaticProps({ params }) {
   const q2 = query(
     q2Collection,
     orderBy("id"),
-    limit(1)
+    limit(2)
   );
 
   const restaurantDataArray = await getDocDataArray(q1);
   const restaurantData = restaurantDataArray[0];
   const reviewDataArray = await getDocDataArray(q2);
   const q2CountSnapshot = await getCountFromServer(q2Collection);
-  const reviewTotalCount = q2CountSnapshot.data().count;
+  const reviewCountFecthed = q2CountSnapshot.data().count;
 
   const imgURLArray = [];
   const tableImgListRef = ref(storage, 'images/sushi1/table');
@@ -70,7 +70,7 @@ export async function getStaticProps({ params }) {
     props: {
       restaurantData,
       reviewDataArray,
-      reviewTotalCount,
+      reviewCountFecthed,
       imgURLArray
     }
   };
@@ -79,7 +79,7 @@ export async function getStaticProps({ params }) {
 export default function RestaurantList({
   restaurantData,
   reviewDataArray,
-  reviewTotalCount,
+  reviewCountFecthed,
   imgURLArray
 }: StaticProps) {
   return (
@@ -87,7 +87,7 @@ export default function RestaurantList({
       <DetailCard
         restaurantName={restaurantData.name}
         reviewDataArray={reviewDataArray}
-        reviewTotalCount={reviewTotalCount}
+        reviewCountFecthed={reviewCountFecthed}
         imgURLArray={imgURLArray}
       />
     </>

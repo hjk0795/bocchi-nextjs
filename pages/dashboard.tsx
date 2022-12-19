@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from "next/legacy/image";
 import { RedirectionUIProps } from "../components/redirectionUI";
 import { auth } from "../firebase-config";
 import { useEffect, useState } from "react";
