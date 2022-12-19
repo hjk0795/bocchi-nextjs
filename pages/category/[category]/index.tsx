@@ -2,7 +2,7 @@ import GridCard from "../../../components/gridCard";
 import Row from "react-bootstrap/Row";
 import _ from "lodash"
 import { getCategoryArray } from "../../../utils/getCategoryArray";
-import { getDocumentArray } from "../../../utils/getDocumentArray";
+import { getDocDataArray } from "../../../utils/getDocDataArray";
 import { db } from "../../../firebase-config";
 import { NextResponse } from "next/server";
 import { DocumentData, query, collection, where } from "firebase/firestore";
@@ -36,10 +36,10 @@ export async function getStaticProps({ params }) {
   );
   let restaurantDataArray: DocumentData[], avgRatingScoreArray: number[];
 
-  restaurantDataArray = await getDocumentArray(q1);
+  restaurantDataArray = await getDocDataArray(q1);
   const avgRatingScorePromiseArray = restaurantDataArray.map(async (doc) => {
     const q2 = query(collection(db, `restaurants/${doc.name}/reviews`));
-    const reviewDataArray = await getDocumentArray(q2);
+    const reviewDataArray = await getDocDataArray(q2);
     let sumRatingScore = 0;
     reviewDataArray.map((doc) => {
       sumRatingScore += doc.ratingScore;

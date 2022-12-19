@@ -8,6 +8,10 @@
   padding: 1rem;
 }
 
+.cardImgBigSize {
+  padding: 1rem;
+}
+
 @media only screen and (max-width: 576px) {
   .card {
     width: 13rem;

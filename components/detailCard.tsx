@@ -3,7 +3,7 @@ import Carousel from "react-bootstrap/Carousel";
 import Link from "next/link";
 import MyImage from "../utils/imageLoader";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import styles from "./detailCard.module.css";
 import Rating from "@mui/material/Rating";
@@ -21,190 +21,182 @@ import {
   doc,
   setDoc,
   addDoc,
+  DocumentData,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/esm/Col";
+import Col from "react-bootstrap/Col";
 import GridCard from "./gridCard";
 import GridCardCarousel from "./gridCardCarousel";
 import { getDownloadURL, listAll, ref, StorageReference } from "firebase/storage";
+import { fill } from "lodash";
+import FlaticonAttribution from "./flaticonAttribution";
+import { getDocDataArray } from "../utils/getDocDataArray";
 
-export default function DetailCard(props) {
-  
-    const reviewPropArray = props.review.map((foundItem, index) => {
-      return {
-        star: foundItem.star,
-        statement: foundItem.statement,
-        userName: foundItem.userName,
-        id: foundItem.id,
-      };
+type DetailCardProps = {
+  restaurantName: string,
+  reviewDataArray: DocumentData[],
+  reviewTotalCount: number,
+  imgURLArray: string[]
+}
+
+type Review = {
+  id: number,
+  ratingScore: number,
+  statement: string,
+  userName: string,
+}
+
+export default function DetailCard({ restaurantName, reviewDataArray, reviewTotalCount, imgURLArray }: DetailCardProps) {
+  let [totalCount, setTotalCount] = useState(reviewTotalCount);
+  const [hasMore, setHasMore] = useState(true);
+  let [reviewArray, setReviewArray] = useState<Review[]>(reviewDataArray as Review[]);
+  const [reviewWrite, setReviewWrite] = useState<Review>(null);
+  const [isChecked, setIsChecked] = useState(false);
+  const [editingID, setEditingID] = useState(-1);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const name = props.name;
-    var [totalCount, setTotalCount] = useState(props.totalCount);
-    const [hasMore, setHasMore] = useState(true);
-    var [reviews, setReviews] = useState(reviewPropArray);
-    const [reviewWrite, setReviewWrite] = useState({
-      star: 0,
-      statement: "",
-      userName: "",
-      id: 0,
+  async function getMoreReviews() {
+    const next = query(
+      collection(db, `restaurants/${restaurantName}/reviews`),
+      orderBy("id"),
+      startAfter(reviewArray.length),
+      limit(1)
+    );
+    const nextReviewDataArray = await getDocDataArray(next);
+    const nextReviewData = nextReviewDataArray[0];
+
+    console.log(nextReviewDataArray);
+
+    reviewArray = [
+      ...reviewArray,
+      {
+        id: nextReviewData.id,
+        ratingScore: nextReviewData.ratingScore,
+        statement: nextReviewData.statement,
+        userName: nextReviewData.userName,
+      },
+    ];
+
+    setReviewArray(reviewArray);
+    setHasMore(reviewArray.length < totalCount ? true : false);
+  }
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setReviewWrite((prevReviewWrite) => {
+      if (name === "ratingScore") {
+        return {
+          id: prevReviewWrite.id,
+          ratingScore: value,
+          statement: prevReviewWrite.statement,
+          userName: prevReviewWrite.userName,
+        };
+      } else {
+        return {
+          id: prevReviewWrite.id,
+          ratingScore: prevReviewWrite.ratingScore,
+          statement: value,
+          userName: prevReviewWrite.userName,
+        };
+      }
     });
-    const [isChecked, setIsChecked] = useState(false);
-    const [editingID, setEditingID] = useState("-1");
-    var [isExecuted, setIsExecuted] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null);
+  }
 
-    if (isExecuted === false) {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setCurrentUser(user);
-        } else {
-          setCurrentUser(null);
-        }
-      });
-      setIsExecuted(true);
-    }
+  function toggleHidden() {
+    setIsChecked(!isChecked);
+  }
 
+  const addReview = async (reviewWrite) => {
 
-    async function getMoreReviews() {
-
-      const next = query(
-        collection(db, `restaurants/${name}/reviews`),
-        orderBy("id"),
-        startAfter(reviews.length),
-        limit(1)
-      );
-
-      const querySnapshot = await getDocs(next);
-
-      const nextReview = querySnapshot.docs[0];
-
-      reviews = [
-        ...reviews,
+    if (currentUser !== null) {
+      const docRef = await setDoc(
+        doc(db, `restaurants/${restaurantName}/reviews`, `${reviewArray.length + 1}`),
         {
-          id: nextReview.data().id,
-          star: nextReview.data().star,
-          statement: nextReview.data().statement,
-          userName: nextReview.data().userName,
-        },
-      ];
-
-      setReviews(reviews);
-      setHasMore(reviews.length < totalCount ? true : false);
-    }
-
-    function handleChange(event) {
-      const { name, value } = event.target;
-
-      setReviewWrite((prevReviewWrite) => {
-        if (name === "reviewStar") {
-          return {
-            star: Number(value),
-            statement: String(prevReviewWrite.statement),
-            userName: String(prevReviewWrite.userName),
-            id: Number(prevReviewWrite.id),
-          };
-        } else {
-          return {
-            star: Number(prevReviewWrite.star),
-            statement: String(value),
-            userName: String(prevReviewWrite.userName),
-            id: Number(prevReviewWrite.id),
-          };
+          id: reviewArray.length + 1,
+          ratingScore: `${reviewWrite.ratingScore}`,
+          statement: `${reviewWrite.statement}`,
+          userName: `${currentUser.displayName}`,
         }
-      });
-    }
-
-    function toggleHidden() {
-      setIsChecked(!isChecked);
-    }
-
-    const addReview = async (reviewWrite) => {
-
-      if (currentUser !== null) {
-        const docRef = await setDoc(
-          doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
-          {
-            id: reviews.length + 1,
-            star: `${reviewWrite.star}`,
-            statement: `${reviewWrite.statement}`,
-            userName: `${currentUser.displayName}`,
-          }
-        );
-      } else if (currentUser === null) {
-        const docRef = await setDoc(
-          doc(db, `restaurants/${name}/reviews`, `${reviews.length + 1}`),
-          {
-            id: reviews.length + 1,
-            star: `${reviewWrite.star}`,
-            statement: `${reviewWrite.statement}`,
-            userName: "anonymous",
-          }
-        );
-      }
-
-      console.log("created!");
-      totalCount = totalCount + 1;
-      setHasMore(true);
-    };
-
-    function deleteReview(id) {
-      setReviews(
-        reviews.filter((review) => {
-          return review.id !== id;
-        })
+      );
+    } else if (currentUser === null) {
+      const docRef = await setDoc(
+        doc(db, `restaurants/${restaurantName}/reviews`, `${reviewArray.length + 1}`),
+        {
+          id: reviewArray.length + 1,
+          ratingScore: `${reviewWrite.ratingScore}`,
+          statement: `${reviewWrite.statement}`,
+          userName: "anonymous",
+        }
       );
     }
 
-    function editReview(id) {
-      setEditingID(id);
-    }
+    console.log("created!");
+    totalCount = totalCount + 1;
+    setHasMore(true);
+  };
 
-    function saveReview(id, editStatement) {
-      for (let i = 0; i < reviews.length; i++) {
-        if (reviews[i].id === id) {
-          reviews[i].statement = editStatement;
-        }
+  function deleteReview(id) {
+    setReviewArray(
+      reviewArray.filter((review) => {
+        return review.id !== id;
+      })
+    );
+  }
+
+  function editReview(id) {
+    setEditingID(id);
+  }
+
+  function saveReview(id, editStatement) {
+    for (let i = 0; i < reviewArray.length; i++) {
+      if (reviewArray[i].id === id) {
+        reviewArray[i].statement = editStatement;
       }
-
-      setEditingID("-1");
     }
 
-    return (
-      <>
-        {/* <h1>{name}</h1> */}
-        <main>
-          {/* <section className="py-5 text-center container">
-          {MyImage()}
-          <br></br>
-          <span>
-            <Link
-              href="https://www.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_5059593.htm#query=food%20menu&position=1&from_view=keyword"
-              passHref={true}
-            >
-              Image by BiZkettE1
-            </Link>{" "}
-            on Freepik
-          </span>
-        </section> */}
+    setEditingID(-1);
+  }
 
-
-
-
-
-          {/* <div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3"> */}
-          <Row className="g-2" lg={2}>
-            <GridCard
-            imgSrc='https://firebasestorage.googleapis.com/v0/b/bocchi-cd32c.appspot.com/o/images%2Fsushi1%2Ftable%2F3.png?alt=media&token=53b00c6d-e9aa-4179-85b4-6bbabb43ba07' 
+  return (
+    <>
+      <h1>{restaurantName}</h1>
+      <main>
+        <Row>
+          <div className={styles.menuImgContainer}>
+            <Image
+              src="https://img.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_1361-1507.jpg?w=1480&t=st=1671398684~exp=1671399284~hmac=67377dd8c8074bd5e6dd02824786e9fadc19604b59c03a942685b80e75937af4"
+              alt="banner"
+              fill
+              objectFit="contain"
             />
-            <GridCardCarousel
-              imgURLArray={props.imgURLArray}
-              imgAlt="table"
-            />
+          </div>
+        </Row>
 
-            {/* <iframe
+        <Row className="g-2" lg={2}>
+          <GridCard
+            imgSrc='https://firebasestorage.googleapis.com/v0/b/bocchi-cd32c.appspot.com/o/images%2Fsushi1%2Ftable%2F3.png?alt=media&token=53b00c6d-e9aa-4179-85b4-6bbabb43ba07'
+            isBigSize={true}
+          />
+          <GridCardCarousel
+            imgURLArray={imgURLArray}
+            imgAlt="table"
+            isBigSize={true}
+          />
+          {/* <iframe
                       width="100%"
                       height="100%"
                       style={{ border: "0" }}
@@ -212,88 +204,93 @@ export default function DetailCard(props) {
                       allowfullscreen
                       src={`https://www.google.com/maps/embed/v1/view?zoom=17&center=-36.8451%2C174.7675&key=${process.env.API_KEY_GOOGLE}`}
                     ></iframe> */}
+        </Row>
+
+        <Row>
+          <Col className="d-flex justify-content-center align-items-center" xs={2}>
+            <Rating
+              className={styles.rating}
+              name="ratingScore"
+              value={reviewWrite?.ratingScore}
+              size="small"
+              onChange={handleChange}
+            />
+          </Col>
 
 
-          </Row>
-
-
-          <div className="row">
-            <div className="col-3 d-flex justify-content-between align-items-center">
-              <Rating
-                name="reviewStar"
-                value={reviewWrite.star}
-                size="small"
-                style={{ padding: "7px 0 0 7px" }}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-9">
-              <div className="mt-3">
-                <div className={styles.textareaContainer}>
-                  <textarea
-                    className="form-control"
-                    rows={isChecked ? 3 : 1}
-                    name="reviewText"
-                    placeholder="Write a review"
-                    onChange={handleChange}
-                    value={reviewWrite.statement}
-                    onClick={toggleHidden}
-                  ></textarea>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    style={{ display: isChecked ? "block" : "none" }}
-                    onClick={() => {
-                      return addReview(reviewWrite);
-                    }}
-                  >
-                    Post
-                  </Button>
-                </div>
+          <Col>
+            <div className="mt-3">
+              <div className={styles.textareaContainer}>
+                <textarea
+                  className="form-control"
+                  rows={isChecked ? 3 : 1}
+                  name="reviewText"
+                  placeholder="Write a review"
+                  onChange={handleChange}
+                  value={reviewWrite?.statement}
+                  onClick={toggleHidden}
+                ></textarea>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  style={{ display: isChecked ? "block" : "none" }}
+                  onClick={() => {
+                    return addReview(reviewWrite);
+                  }}
+                >
+                  Post
+                </Button>
               </div>
             </div>
-          </div>
+          </Col>
+        </Row>
 
-          <InfiniteScroll
-            dataLength={reviews.length}
-            next={getMoreReviews}
-            hasMore={hasMore}
-            loader={<h4>Loading...</h4>}
-            endMessage={<p>You have seen it all</p>}
-          >
-            {reviews.map((foundItem, index) => {
-              return (
-                <Review
-                  id={foundItem.id}
-                  key={index}
-                  star={foundItem.star}
-                  statement={foundItem.statement}
-                  userName={foundItem.userName}
-                  isAuthenticated={currentUser !== null ? "true" : "false"}
-                  sessionUserName={
-                    currentUser !== null
-                      ? currentUser.displayName
-                      : "anonymous"
-                  }
-                  name={name}
-                  deleteReview={deleteReview}
-                  editReview={editReview}
-                  isEditing={foundItem.id === editingID ? true : false}
-                  saveReview={saveReview}
-                />
-              );
-            })}
-          </InfiniteScroll>
+        <InfiniteScroll
+          dataLength={reviewArray.length}
+          next={getMoreReviews}
+          hasMore={hasMore}
+          loader={<h4>Loading...</h4>}
+          endMessage={<p>You have seen it all</p>}
+        >
+          {reviewArray.map((foundItem, index) => {
+            return (
+              <Review
+                id={foundItem.id}
+                key={index}
+                star={foundItem.ratingScore}
+                statement={foundItem.statement}
+                userName={foundItem.userName}
+                isAuthenticated={currentUser !== null ? "true" : "false"}
+                sessionUserName={
+                  currentUser !== null
+                    ? currentUser.displayName
+                    : "anonymous"
+                }
+                name={restaurantName}
+                deleteReview={deleteReview}
+                editReview={editReview}
+                isEditing={foundItem.id === editingID ? true : false}
+                saveReview={saveReview}
+              />
+            );
+          })}
+        </InfiniteScroll>
 
-        </main>
+      </main>
 
-        <footer className="text-muted py-5">
-          <div className="container">
-            <p className="float-end mb-1">
-              <a href="#">Back to top</a>
-            </p>
-          </div>
-        </footer>
-      </>
-    );
-  }
+
+      <footer className="text-muted py-5">
+        <div className={styles.attribution}>
+          <Link href="https://www.freepik.com/free-vector/hot-dog-restaurant-menu-template-with-illustrations_5059593.htm#query=menu&position=5&from_view=search&track=sph">Image by BiZkettE1 on Freepik</Link><br />
+          <Link href="https://www.flaticon.com/free-icons/question-mark" title="question mark icons">Question mark icons created by Freepik - Flaticon</Link>
+        </div>
+
+        <div className="container">
+          <p className="float-end mb-1">
+            <a href="#">Back to top</a>
+          </p>
+        </div>
+      </footer>
+    </>
+  );
+}

@@ -10,9 +10,10 @@ type GridCardProps = {
   title?: string,
   subTitle?: string
   linkHref?: string,
+  isBigSize?: boolean
 }
 
-export default function GridCard({ imgSrc = null, imgAlt = null, title = null, subTitle = null, linkHref = null }: GridCardProps) {
+export default function GridCard({ imgSrc = null, imgAlt = null, title = null, subTitle = null, linkHref = null, isBigSize = false }: GridCardProps) {
   const router = useRouter();
 
   return (
@@ -21,7 +22,7 @@ export default function GridCard({ imgSrc = null, imgAlt = null, title = null, s
         <Card className={styles.card}>
           {imgSrc&&<button className={styles.cardButton} onClick={() => { linkHref && router.push(linkHref) }} style={{ cursor: linkHref ? "pointer" : "default" }}>
             <Card.Img
-              className={styles.cardImg}
+              className={isBigSize?styles.cardImgBigSize:styles.cardImg}
               variant="top"
               src={imgSrc}
               alt={imgAlt ? imgAlt : title ? title : "Image"}

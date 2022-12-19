@@ -6,10 +6,11 @@ import _ from "lodash";
 
 type GridCardCarouselProps = {
     imgURLArray: string[],
-    imgAlt?: string
+    imgAlt?: string,
+    isBigSize?: boolean
 }
 
-export default function GridCardCarousel({ imgURLArray, imgAlt = null }: GridCardCarouselProps) {
+export default function GridCardCarousel({ imgURLArray, imgAlt = null, isBigSize = false }: GridCardCarouselProps) {
     return (
         <>
             <Col>
@@ -19,7 +20,7 @@ export default function GridCardCarousel({ imgURLArray, imgAlt = null }: GridCar
                             return (
                                 <Carousel.Item key={index}>
                                     <Card.Img
-                                        className={`${styles.cardImg} d-block w-100`}
+                                        className={`${isBigSize?styles.cardImgBigSize:styles.cardImg} d-block w-100`}
                                         style={{ filter: "invert(100%)" }}
                                         variant="top"
                                         src={imgURL}

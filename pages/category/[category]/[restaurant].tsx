@@ -1,5 +1,5 @@
 import DetailCard from "../../../components/detailCard";
-import { getDocumentArray } from "../../../utils/getDocumentArray";
+import { getDocDataArray } from "../../../utils/getDocDataArray";
 import { db, storage } from "../../../firebase-config";
 import {
   DocumentData,
@@ -21,7 +21,7 @@ type StaticProps = {
 
 export async function getStaticPaths() {
   const q = query(collection(db, "restaurants"));
-  const restaurantDataArray = await getDocumentArray(q);
+  const restaurantDataArray = await getDocDataArray(q);
   const paths = [];
 
   for (const doc of restaurantDataArray) {
@@ -48,12 +48,12 @@ export async function getStaticProps({ params }) {
   const q2 = query(
     q2Collection,
     orderBy("id"),
-    limit(2)
+    limit(1)
   );
 
-  const restaurantDataArray = await getDocumentArray(q1);
+  const restaurantDataArray = await getDocDataArray(q1);
   const restaurantData = restaurantDataArray[0];
-  const reviewDataArray = await getDocumentArray(q2);
+  const reviewDataArray = await getDocDataArray(q2);
   const q2CountSnapshot = await getCountFromServer(q2Collection);
   const reviewTotalCount = q2CountSnapshot.data().count;
 
@@ -85,9 +85,9 @@ export default function RestaurantList({
   return (
     <>
       <DetailCard
-        name={restaurantData.name}
-        review={reviewDataArray}
-        totalCount={reviewTotalCount}
+        restaurantName={restaurantData.name}
+        reviewDataArray={reviewDataArray}
+        reviewTotalCount={reviewTotalCount}
         imgURLArray={imgURLArray}
       />
     </>
