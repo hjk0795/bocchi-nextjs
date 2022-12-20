@@ -1,15 +1,16 @@
 import GridCard from "../../../components/gridCard";
+import getDocIdDataArray from "../../../utils/getDocIdDataArray";
 import Row from "react-bootstrap/Row";
 import _ from "lodash"
 import { getCategoryArray } from "../../../utils/getCategoryArray";
-import { getDocDataArray } from "../../../utils/getDocDataArray";
+import { DocIdData } from "../../../utils/getDocIdDataArray";
 import { db } from "../../../firebase-config";
 import { NextResponse } from "next/server";
 import { DocumentData, query, collection, where } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 
 type StaticProps = {
-  restaurantDataArray: DocumentData[],
+  restaurantIdDataArray: DocIdData[],
   avgRatingScoreArray: number[]
 }
 
@@ -34,40 +35,40 @@ export async function getStaticProps({ params }) {
     collection(db, "restaurants"),
     where("category", "==", `${params.category}`)
   );
-  let restaurantDataArray: DocumentData[], avgRatingScoreArray: number[];
+  let restaurantIdDataArray: DocIdData[], avgRatingScoreArray: number[];
 
-  restaurantDataArray = await getDocDataArray(q1);
-  const avgRatingScorePromiseArray = restaurantDataArray.map(async (doc) => {
-    const q2 = query(collection(db, `restaurants/${doc.name}/reviews`));
-    const reviewDataArray = await getDocDataArray(q2);
+  restaurantIdDataArray = await getDocIdDataArray(q1);
+  const avgRatingScorePromiseArray = restaurantIdDataArray.map(async (docIdData) => {
+    const q2 = query(collection(db, `restaurants/${docIdData.data.name}/reviews`));
+    const reviewIdDataArray = await getDocIdDataArray(q2);
     let sumRatingScore = 0;
-    reviewDataArray.map((doc) => {
-      sumRatingScore += doc.ratingScore;
+    reviewIdDataArray.map((docIdData) => {
+      sumRatingScore += docIdData.data.ratingScore;
     });
 
-    return sumRatingScore / reviewDataArray.length;
+    return Number((sumRatingScore / reviewIdDataArray.length).toFixed(1));
   });
   avgRatingScoreArray = await Promise.all(avgRatingScorePromiseArray);
 
   return {
     props: {
-      restaurantDataArray,
+      restaurantIdDataArray,
       avgRatingScoreArray,
     },
   };
 }
 
-export default function RestaurantList({ restaurantDataArray, avgRatingScoreArray }: StaticProps) {
+export default function RestaurantList({ restaurantIdDataArray, avgRatingScoreArray }: StaticProps) {
   return (
     <Row className="g-2" xs={1} sm={2} md={3} lg={4}>
-      {restaurantDataArray.map((doc, index) => {
+      {restaurantIdDataArray.map((docIdData, index) => {
         return (
           <GridCard
             key={index}
-            imgSrc={doc.brandImg}
-            title={doc.name}
+            imgSrc={docIdData.data.brandImg}
+            title={docIdData.data.name}
             subTitle={avgRatingScoreArray[index].toString()}
-            linkHref={`/category/${_.lowerCase(doc.category)}/${doc.name}`}
+            linkHref={`/category/${_.lowerCase(docIdData.data.category)}/${docIdData.data.name}`}
           />
         );
       })}

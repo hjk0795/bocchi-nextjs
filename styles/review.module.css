@@ -1,0 +1,21 @@
+.imgContainer {
+  position: relative;
+  width: 100%;
+  height: 100px;
+}
+
+.icon {
+  margin-right: 5px;
+  cursor: pointer;
+  color: black;
+}
+
+.cardText {
+  margin-top: "1rem";
+}
+
+@media (prefers-color-scheme: dark) {
+  .cardText {
+    color: black;
+  }
+}

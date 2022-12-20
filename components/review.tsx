@@ -1,124 +1,111 @@
-import styles from "./review.module.css";
+import styles from "../styles/review.module.css";
 import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import { AiOutlineCheckSquare } from "react-icons/ai";
-import { doc, deleteDoc, where, setDoc } from "firebase/firestore";
-import { db } from "../firebase-config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Image from "next/legacy/image";
+import { style } from "@mui/system";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "../firebase-config";
 
-export default function Review(props) {
-  const [editStatement, setEditStatement] = useState("");
+type ReviewProps = {
+  id: string;
+  ratingScore: number;
+  statement: string;
+  userName: string;
+  currentUser: User,
+  restaurantName: string;
+  deleteReview: (id: string) => void;
+  editReview: (id: string) => void;
+  isEditing: boolean;
+  saveReview: (id: string, newStatement: string) => void;
+}
 
-  function numToStar(num) {
-    var star = "";
+export default function Review({ id, ratingScore, statement, userName, currentUser, restaurantName, deleteReview, editReview, isEditing, saveReview }: ReviewProps) {
+  const [newStatement, setNewStatement] = useState(null);
+
+  function numToStar(num: number) {
+    let star = "";
 
     for (let i = 0; i < num; i++) {
-      star = star + "★";
+      star += "★";
     }
 
     return star;
   }
 
-  async function deleteReview() {
-    await deleteDoc(
-      doc(db, `restaurants/${props.name}/reviews`, `${props.id}`)
-    );
-
-    alert("Deleted");
-    props.deleteReview(props.id);
-  }
-
-  function editReview() {
-    props.editReview(props.id);
-  }
-
-  async function saveReview() {
-    await setDoc(
-      doc(db, `restaurants/${props.name}/reviews`, `${props.id}`),
-      {
-        statement: editStatement,
-      },
-      { merge: true }
-    );
-
-    props.saveReview(props.id, editStatement);
-  }
-
-  function handleChange(e) {
-    setEditStatement(e.target.value);
-  }
-
   return (
     <>
-      <div className="row g-3" style={{ paddingTop: "16px" }}>
-        <div className="col-3">
-          <div className="card-text">
-            <div className="row row-cols-1 g-3">
-              <div className="col">
-                <div className="d-flex justify-content-between align-items-center">
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/84/84042.png"
-                    width="100%"
-                    height="100%"
-                    alt="table image"
-                  />
-                </div>
-              </div>
-            </div>
+      <Row className="g-3" style={{ paddingTop: "16px" }}>
+        <Col xs={3}>
+          <div className={styles.imgContainer}>
+            <Image
+              src="https://cdn-icons-png.flaticon.com/512/84/84042.png"
+              alt="review image"
+              layout="fill"
+              objectFit="contain"
+            />
           </div>
-        </div>
+        </Col>
 
-        <div className="col">
+        <Col>
           <div className="card shadow-sm">
             <div className="card-body">
+
               <div className="d-flex justify-content-between align-items-center">
-                <small className="text-muted">{numToStar(props.star)}</small>
-                {props.isAuthenticated === "true" &&
-                  props.userName === props.sessionUserName && (
+                <small className="text-muted">{numToStar(ratingScore)}</small>
+                {(currentUser?.displayName === userName) && (
                     <small>
-                      {props.isEditing ? (
+                      {isEditing ? (
                         <AiOutlineCheckSquare
-                          className={styles.AiEdit}
-                          style={{ marginRight: "5px", cursor: "pointer" }}
-                          onClick={saveReview}
+                          className={styles.icon}
+                          onClick={() => {
+                            saveReview(id, newStatement);
+                          }}
                         />
                       ) : (
                         <BiEdit
-                          className={styles.BiEdit}
-                          style={{ marginRight: "5px", cursor: "pointer" }}
-                          onClick={editReview}
+                        className={styles.icon}
+                          onClick={() => {
+                            editReview(id);
+                          }}
                         />
                       )}
 
                       <BsTrash
-                        className={styles.BsTrash}
-                        style={{ cursor: "pointer" }}
-                        onClick={deleteReview}
+                        className={styles.icon}
+                        onClick={() => {
+                          deleteReview(id);
+                        }}
                       />
                     </small>
                   )}
               </div>
 
-              {props.isEditing ? (
+              {isEditing ? (
                 <input
                   type="text"
-                  defaultValue={props.statement}
-                  onChange={handleChange}
-                  value={editStatement}
+                  defaultValue={statement}
+                  onChange={(e) => {
+                    setNewStatement(e.target.value);
+                  }}
+                  value={newStatement}
                 />
               ) : (
                 <p className={`card-text ${styles.cardText}`}>
-                  {props.statement}
+                  {statement}
                 </p>
               )}
 
               <div className="d-flex justify-content-end align-items-center">
-                <small className="text-muted">{props.userName}</small>
+                <small className="text-muted">{userName}</small>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </>
   );
 }

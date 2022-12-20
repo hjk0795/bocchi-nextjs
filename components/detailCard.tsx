@@ -1,4 +1,5 @@
 import Review from "./review";
+import getDocIdDataArray from "../utils/getDocIdDataArray";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Button from "@mui/material/Button";
@@ -9,44 +10,47 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import GridCard from "./gridCard";
 import GridCardCarousel from "./gridCardCarousel";
+import { DocIdData } from "../utils/getDocIdDataArray";
 import { ChangeEvent, useEffect, useState } from "react";
-import { getDocDataArray } from "../utils/getDocDataArray";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { db, auth } from "../firebase-config";
 import {
   collection,
   query,
   orderBy,
   limit,
-  startAfter,
+  addDoc,
+  where,
+  deleteDoc,
   doc,
   setDoc,
-  DocumentData,
-  addDoc,
 } from "firebase/firestore";
 
 type DetailCardProps = {
   restaurantName: string,
-  reviewDataArray: DocumentData[],
+  reviewIdDataArray: DocIdData[],
   reviewCountFecthed: number,
   imgURLArray: string[]
 }
 
-type Review = {
-  ratingScore: number,
-  statement: string,
-  userName: string,
-  timestamp: number
+type ReviewIdData = {
+  id: string;
+  data: {
+    ratingScore: number;
+    statement: string;
+    userName: string;
+    timestamp: number;
+  }
 }
 
-export default function DetailCard({ restaurantName, reviewDataArray, reviewCountFecthed, imgURLArray }: DetailCardProps) {
+export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCountFecthed, imgURLArray }: DetailCardProps) {
   const [reviewCount, setReviewCount] = useState(reviewCountFecthed);
   const [hasMore, setHasMore] = useState(true);
-  const [reviewArray, setReviewArray] = useState<Review[]>(reviewDataArray as Review[]);
-  const [reviewToBePosted, setReviewToBePosted] = useState<Review>(null);
+  const [reviewArray, setReviewArray] = useState<ReviewIdData[]>(reviewIdDataArray as ReviewIdData[]);
+  const [reviewToBePosted, setReviewToBePosted] = useState<ReviewIdData>(null);
   const [isWritingReview, setIsWritingReview] = useState(false);
-  const [editingID, setEditingID] = useState(-1);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [editingID, setEditingID] = useState(null);
+  const [currentUser, setCurrentUser] = useState<User>(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -62,20 +66,23 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewCoun
   async function getMoreReviews() {
     const next = query(
       collection(db, `restaurants/${restaurantName}/reviews`),
-      orderBy("id"),
-      startAfter(reviewArray.length - 1),
+      orderBy("timestamp", "desc"),
+      where("timestamp", "<", reviewArray[reviewArray.length - 1].data.timestamp),
       limit(1)
     );
-    const nextReviewDataArray = await getDocDataArray(next);
-    const nextReviewData = nextReviewDataArray[0];
+    const nextReviewIdDataArray = await getDocIdDataArray(next);
+    const nextReviewIdData = nextReviewIdDataArray[0];
 
     setReviewArray([
       ...reviewArray,
       {
-        ratingScore: nextReviewData.ratingScore,
-        statement: nextReviewData.statement,
-        userName: nextReviewData.userName,
-        timestamp: nextReviewData.timestamp
+        id: nextReviewIdData.id,
+        data: {
+          ratingScore: nextReviewIdData.data.ratingScore,
+          statement: nextReviewIdData.data.statement,
+          userName: nextReviewIdData.data.userName,
+          timestamp: nextReviewIdData.data.timestamp
+        }
       },
     ]);
     setHasMore((reviewArray.length + 1) < reviewCount ? true : false);
@@ -86,28 +93,34 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewCoun
 
     setReviewToBePosted((prevReviewToBePosted) => {
       return {
-        ratingScore: (name === "reviewRatingScore" ? Number(value) : prevReviewToBePosted?.ratingScore),
-        statement: (name === "reviewTextArea" ? value : prevReviewToBePosted?.statement),
-        userName: prevReviewToBePosted?.userName,
-        timestamp: prevReviewToBePosted?.timestamp
+        id: prevReviewToBePosted?.id,
+        data: {
+          ratingScore: (name === "reviewRatingScore" ? Number(value) : prevReviewToBePosted?.data.ratingScore),
+          statement: (name === "reviewTextArea" ? value : prevReviewToBePosted?.data.statement),
+          userName: prevReviewToBePosted?.data.userName,
+          timestamp: prevReviewToBePosted?.data.timestamp
+        }
       };
     })
   }
 
-  async function addReview(reviewToBePosted: Review) {
+  async function addReview(reviewToBePosted: ReviewIdData) {
     const docRef = await addDoc(collection(db, `restaurants/${restaurantName}/reviews`), {
-      ratingScore: reviewToBePosted.ratingScore,
-      statement: reviewToBePosted.statement,
+      ratingScore: reviewToBePosted.data.ratingScore,
+      statement: reviewToBePosted.data.statement,
       userName: currentUser ? currentUser.displayName : "anonymous",
       timestamp: Date.now()
     });
     console.log("Document written with ID: ", docRef.id);
-
-    setReviewCount(reviewCount + 1);
-    setHasMore(true);
   };
 
-  function deleteReview(id) {
+  async function deleteReview(id: string) {
+    await deleteDoc(
+      doc(db, `restaurants/${restaurantName}/reviews`, id)
+    );
+
+    alert("Deleted");
+
     setReviewArray(
       reviewArray.filter((review) => {
         return review.id !== id;
@@ -115,18 +128,26 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewCoun
     );
   }
 
-  function editReview(id) {
+  function editReview(id: string) {
     setEditingID(id);
   }
 
-  function saveReview(id, editStatement) {
+  async function saveReview(id: string, newStatement: string) {
+    await setDoc(
+      doc(db, `restaurants/${restaurantName}/reviews`, id),
+      {
+        statement: newStatement,
+      },
+      { merge: true }
+    );
+
     for (let i = 0; i < reviewArray.length; i++) {
       if (reviewArray[i].id === id) {
-        reviewArray[i].statement = editStatement;
+        reviewArray[i].data.statement = newStatement;
       }
     }
 
-    setEditingID(-1);
+    setEditingID(null);
   }
 
   return (
@@ -170,12 +191,11 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewCoun
             <Rating
               className={styles.rating}
               name="reviewRatingScore"
-              value={reviewToBePosted ? reviewToBePosted.ratingScore : 0}
+              value={reviewToBePosted ? reviewToBePosted.data.ratingScore : 0}
               size="small"
               onChange={syncReviewToBePosted}
             />
           </Col>
-
 
           <Col>
             <div className="mt-3">
@@ -186,7 +206,7 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewCoun
                   name="reviewTextArea"
                   placeholder="Write a review"
                   onChange={syncReviewToBePosted}
-                  value={reviewToBePosted?.statement}
+                  value={reviewToBePosted?.data.statement}
                   onClick={() => {
                     setIsWritingReview(!isWritingReview);
                   }}
@@ -216,18 +236,13 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewCoun
           {reviewArray.map((review, index) => {
             return (
               <Review
-                id={review.id}
                 key={index}
-                star={review.ratingScore}
-                statement={review.statement}
-                userName={review.userName}
-                isAuthenticated={currentUser !== null ? "true" : "false"}
-                sessionUserName={
-                  currentUser !== null
-                    ? currentUser.displayName
-                    : "anonymous"
-                }
-                name={restaurantName}
+                id={review.id}
+                ratingScore={review.data.ratingScore}
+                statement={review.data.statement}
+                userName={review.data.userName}
+                currentUser={currentUser}
+                restaurantName={restaurantName}
                 deleteReview={deleteReview}
                 editReview={editReview}
                 isEditing={review.id === editingID ? true : false}
@@ -236,9 +251,7 @@ export default function DetailCard({ restaurantName, reviewDataArray, reviewCoun
             );
           })}
         </InfiniteScroll>
-
       </main>
-
 
       <footer className="text-muted py-5">
         <div className={styles.attribution}>

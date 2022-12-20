@@ -1,5 +1,6 @@
 import DetailCard from "../../../components/detailCard";
-import { getDocDataArray } from "../../../utils/getDocDataArray";
+import getDocIdDataArray from "../../../utils/getDocIdDataArray";
+import { DocIdData } from "../../../utils/getDocIdDataArray";
 import { db, storage } from "../../../firebase-config";
 import {
   DocumentData,
@@ -13,22 +14,22 @@ import {
 import { StorageReference, ref, listAll, getDownloadURL } from "firebase/storage";
 
 type StaticProps = {
-  restaurantData: DocumentData,
-  reviewDataArray: DocumentData[],
+  restaurantIdData: DocIdData,
+  reviewIdDataArray: DocIdData[],
   reviewCountFecthed: number,
   imgURLArray: string[]
 }
 
 export async function getStaticPaths() {
   const q = query(collection(db, "restaurants"));
-  const restaurantDataArray = await getDocDataArray(q);
+  const restaurantIdDataArray = await getDocIdDataArray(q);
   const paths = [];
 
-  for (const doc of restaurantDataArray) {
+  for (const docIdData of restaurantIdDataArray) {
     paths.push({
       params: {
-        category: doc.category,
-        restaurant: doc.name,
+        category: docIdData.data.category,
+        restaurant: docIdData.data.name,
       },
     });
   }
@@ -47,13 +48,13 @@ export async function getStaticProps({ params }) {
   const q2Collection = collection(db, `restaurants/${params.restaurant}/reviews`);
   const q2 = query(
     q2Collection,
-    orderBy("id"),
+    orderBy("timestamp", "desc"),
     limit(2)
   );
 
-  const restaurantDataArray = await getDocDataArray(q1);
-  const restaurantData = restaurantDataArray[0];
-  const reviewDataArray = await getDocDataArray(q2);
+  const restaurantIdDataArray = await getDocIdDataArray(q1);
+  const restaurantIdData = restaurantIdDataArray[0];
+  const reviewIdDataArray = await getDocIdDataArray(q2);
   const q2CountSnapshot = await getCountFromServer(q2Collection);
   const reviewCountFecthed = q2CountSnapshot.data().count;
 
@@ -68,8 +69,8 @@ export async function getStaticProps({ params }) {
 
   return {
     props: {
-      restaurantData,
-      reviewDataArray,
+      restaurantIdData,
+      reviewIdDataArray,
       reviewCountFecthed,
       imgURLArray
     }
@@ -77,16 +78,16 @@ export async function getStaticProps({ params }) {
 }
 
 export default function RestaurantList({
-  restaurantData,
-  reviewDataArray,
+  restaurantIdData,
+  reviewIdDataArray,
   reviewCountFecthed,
   imgURLArray
 }: StaticProps) {
   return (
     <>
       <DetailCard
-        restaurantName={restaurantData.name}
-        reviewDataArray={reviewDataArray}
+        restaurantName={restaurantIdData.data.name}
+        reviewIdDataArray={reviewIdDataArray}
         reviewCountFecthed={reviewCountFecthed}
         imgURLArray={imgURLArray}
       />

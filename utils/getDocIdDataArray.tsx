@@ -1,11 +1,14 @@
-//Apply change (id)
-
 import { Query, DocumentData, getDocs } from "firebase/firestore";
 
-export const getDocDataArray = async (query: Query<DocumentData>) => {
+export type DocIdData = {
+    id: string,
+    data: DocumentData
+}
+
+export default async function getDocIdDataArray(query: Query<DocumentData>) {
     const querySnapshot = await getDocs(query);
     const querySnapshotDocs = querySnapshot.docs;
-    const docDataArray = querySnapshotDocs.map((doc) => {
+    const docIdDataArray = querySnapshotDocs.map((doc) => {
         return (
             {
                 id: doc.id,
@@ -14,5 +17,5 @@ export const getDocDataArray = async (query: Query<DocumentData>) => {
         );
     });
 
-    return docDataArray;
+    return docIdDataArray;
 };
