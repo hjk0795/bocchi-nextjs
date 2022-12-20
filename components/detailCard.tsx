@@ -49,8 +49,9 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
   const [reviewArray, setReviewArray] = useState<ReviewIdData[]>(reviewIdDataArray as ReviewIdData[]);
   const [reviewToBePosted, setReviewToBePosted] = useState<ReviewIdData>(null);
   const [isWritingReview, setIsWritingReview] = useState(false);
-  const [editingID, setEditingID] = useState(null);
   const [currentUser, setCurrentUser] = useState<User>(null);
+  const [editingID, setEditingID] = useState<string>(null);
+  
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -121,15 +122,13 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
 
     alert("Deleted");
 
-    setReviewArray(
-      reviewArray.filter((review) => {
-        return review.id !== id;
-      })
-    );
-  }
+    const reviewArrayFiltered = reviewArray.filter((review) => {
+      return review.id !== id;
+    })
 
-  function editReview(id: string) {
-    setEditingID(id);
+    setReviewArray(
+      reviewArrayFiltered
+    );
   }
 
   async function saveReview(id: string, newStatement: string) {
@@ -141,13 +140,18 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
       { merge: true }
     );
 
+    setEditingID(null);
+
     for (let i = 0; i < reviewArray.length; i++) {
       if (reviewArray[i].id === id) {
         reviewArray[i].data.statement = newStatement;
       }
     }
 
-    setEditingID(null);
+    
+
+    setReviewArray(reviewArray);
+
   }
 
   return (
@@ -244,9 +248,9 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
                 currentUser={currentUser}
                 restaurantName={restaurantName}
                 deleteReview={deleteReview}
-                editReview={editReview}
-                isEditing={review.id === editingID ? true : false}
                 saveReview={saveReview}
+                isEditing={review.id===editingID?true:false}
+                setEditingID={setEditingID}
               />
             );
           })}

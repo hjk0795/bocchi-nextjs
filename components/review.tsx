@@ -2,7 +2,7 @@ import styles from "../styles/review.module.css";
 import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import { AiOutlineCheckSquare } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "next/legacy/image";
@@ -17,15 +17,15 @@ type ReviewProps = {
   userName: string;
   currentUser: User,
   restaurantName: string;
-  deleteReview: (id: string) => void;
-  editReview: (id: string) => void;
   isEditing: boolean;
-  saveReview: (id: string, newStatement: string) => void;
+  setEditingID: Dispatch<SetStateAction<string>>;
+  deleteReview: (id: string) => void;
+  saveReview: (id: string, newStatement: string) => Promise<void>;
 }
 
-export default function Review({ id, ratingScore, statement, userName, currentUser, restaurantName, deleteReview, editReview, isEditing, saveReview }: ReviewProps) {
-  const [newStatement, setNewStatement] = useState(null);
-
+export default function Review({ id, ratingScore, statement, userName, currentUser, isEditing, restaurantName, setEditingID, deleteReview, saveReview }: ReviewProps) {
+  const [newStatement, setNewStatement] = useState(statement);
+  
   function numToStar(num: number) {
     let star = "";
 
@@ -38,7 +38,7 @@ export default function Review({ id, ratingScore, statement, userName, currentUs
 
   return (
     <>
-      <Row className="g-3" style={{ paddingTop: "16px" }}>
+      <Row className={`${styles.container} g-3`} >
         <Col xs={3}>
           <div className={styles.imgContainer}>
             <Image
@@ -61,7 +61,7 @@ export default function Review({ id, ratingScore, statement, userName, currentUs
                       {isEditing ? (
                         <AiOutlineCheckSquare
                           className={styles.icon}
-                          onClick={() => {
+                          onClick={()=>{
                             saveReview(id, newStatement);
                           }}
                         />
@@ -69,7 +69,7 @@ export default function Review({ id, ratingScore, statement, userName, currentUs
                         <BiEdit
                         className={styles.icon}
                           onClick={() => {
-                            editReview(id);
+                            setEditingID(id);
                           }}
                         />
                       )}
@@ -87,11 +87,10 @@ export default function Review({ id, ratingScore, statement, userName, currentUs
               {isEditing ? (
                 <input
                   type="text"
-                  defaultValue={statement}
                   onChange={(e) => {
                     setNewStatement(e.target.value);
                   }}
-                  value={newStatement}
+                  value={newStatement?newStatement:statement}
                 />
               ) : (
                 <p className={`card-text ${styles.cardText}`}>

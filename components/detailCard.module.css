@@ -49,3 +49,9 @@
     height: 150px;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .rating {
+    filter: invert(100%);
+  }
+}
