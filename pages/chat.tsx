@@ -3,27 +3,34 @@ import Card from "react-bootstrap/Card";
 import styles from "../styles/chat.module.css";
 import Form from "react-bootstrap/Form";
 import ChatBox from "../components/chatBox";
+import { millisecondsToDate } from "../utils/millisecondsToDate";
 import { useState, useEffect } from "react";
 import {
   collection,
   addDoc,
   query,
-  where,
   onSnapshot,
-  serverTimestamp,
   orderBy,
 } from "firebase/firestore";
-import YearMonthDay from "../components/yearMonthDay";
 import { db, auth } from "../firebase-config";
-import { signOut, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+
+type MessageIdData = {
+  id: string;
+  data: {
+    text: string;
+    userName: string;
+    userImage: string;
+    timestamp: number;
+  }
+}
 
 function Chat() {
-  const [message, setMessage] = useState("");
-  var [chatMessages, setChatMessages] = useState([]);
-  var [isExecuted, setIsExecuted] = useState(false);
+  const [textToBeSent, setTextToBeSent] = useState<string>("");
+  const [messageArray, setMessageArray] = useState<MessageIdData[]>(null);
   const [currentUser, setCurrentUser] = useState(null);
 
-  if (isExecuted === false) {
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
@@ -33,52 +40,26 @@ function Chat() {
     });
 
     const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const temp = [];
-
-      querySnapshot.forEach((doc) => {
-        var tempObject = {
-          text: "",
-          hour: 0,
-          minute: 0,
-          year: 0,
-          month: 0,
-          day: 0,
-          userName: "",
-          userImage: "",
-          timestamp: 0,
-        };
-
-        tempObject.text = doc.data().text;
-        tempObject.hour = doc.data().hour;
-        tempObject.minute = doc.data().minute;
-        tempObject.year = doc.data().year;
-        tempObject.month = doc.data().month;
-        tempObject.day = doc.data().day;
-        tempObject.userName = doc.data().userName;
-        tempObject.userImage = doc.data().userImage;
-        tempObject.timestamp = doc.data().timestamp;
-        temp.push(tempObject);
+    onSnapshot(q, (querySnapshot) => {
+      const querySnapshotDocs = querySnapshot.docs;
+      const msgIdDataArray = querySnapshotDocs.map((doc) => {
+        return (
+          {
+            id: doc.id,
+            data: doc.data()
+          }
+        );
       });
-      setChatMessages(temp);
-      setIsExecuted(true);
-    });
-  }
 
-  function handleChange(event) {
-    setMessage(event.target.value);
-  }
+      setMessageArray(msgIdDataArray as MessageIdData[]);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function saveMessage() {
     const docRef = await addDoc(collection(db, "messages"), {
-      text: `${message}`,
+      text: textToBeSent,
       timestamp: Date.now(),
-      hour: (("0" + new Date().getHours()).slice(-2)),
-      minute: (("0" + new Date().getMinutes()).slice(-2)),
-      year: new Date().getFullYear(),
-      month: new Date().getMonth(),
-      day: new Date().getDate(),
       userName: currentUser !== null ? currentUser.displayName : "anonymous",
       userImage: currentUser !== null ? currentUser.photoURL : "",
     });
@@ -87,6 +68,7 @@ function Chat() {
   }
 
   return (
+    messageArray &&
     <>
       <Card style={{ width: "100%", color: "black", marginTop: "80px" }}>
         <Card.Body>
@@ -95,43 +77,41 @@ function Chat() {
             as="div"
             className="overflow-auto"
           >
-            {chatMessages.map((foundItem, index) => {
+            {messageArray?.map((message, index) => {
+              const dayOfPreviousMsg = index && millisecondsToDate(messageArray[index - 1]?.data.timestamp).day;
+              const dateOfCurrentMsg = millisecondsToDate(message.data.timestamp);
+
               return (
                 <div key={index}>
-                  <YearMonthDay
-                    key={`${foundItem.year}${foundItem.month}${foundItem.day}`}
-                    year={foundItem.year}
-                    month={foundItem.month}
-                    day={foundItem.day}
-                    chatMessages={chatMessages}
-                    index={index}
-                  />
+
+                  {(index === 0 || (dayOfPreviousMsg !== dateOfCurrentMsg.day)) && (<div>{dateOfCurrentMsg.full}</div>)}
 
                   <ChatBox
-                    key={`${index}${foundItem.year}${foundItem.month}${foundItem.day}`}
-                    text={foundItem.text}
-                    hour={foundItem.hour}
-                    minute={foundItem.minute}
-                    userName={foundItem.userName}
-                    userImage={foundItem.userImage}
+                    key={`${index}${message.data.timestamp}`}
+                    text={message.data.text}
+                    userName={message.data.userName}
+                    userImage={message.data.userImage}
                     sessionName={
                       currentUser !== null
                         ? currentUser.displayName
                         : "anonymous"
                     }
-                    timestamp={foundItem.timestamp}
+                    timestamp={message.data.timestamp}
                     index={index}
-                    chatMessages={chatMessages}
+                    chatMessages={messageArray}
                     isLast={
-                      chatMessages.length - 1 === index ? "true" : "false"
+                      messageArray.length - 1 === index ? "true" : "false"
                     }
                   />
                 </div>
               );
             })}
           </Card.Text>
+
           <div className={styles.sendContainer}>
-            <Form.Control type="text" onChange={handleChange} value={message} />
+            <Form.Control type="text" onChange={(event) => {
+              setTextToBeSent(event.target.value);
+            }} value={textToBeSent} />
             <Button
               className={styles.sendButton}
               variant="outline-dark"
@@ -141,6 +121,7 @@ function Chat() {
               Send
             </Button>
           </div>
+
         </Card.Body>
       </Card>
     </>

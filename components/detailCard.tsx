@@ -148,10 +148,7 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
       }
     }
 
-    
-
     setReviewArray(reviewArray);
-
   }
 
   return (
@@ -170,7 +167,7 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
           </div>
         </Row>
 
-        <Row className="g-2" lg={2}>
+        <Row className={`${styles.gridCardContainer} g-2`} lg={2}>
           <GridCard
             imgSrc='https://firebasestorage.googleapis.com/v0/b/bocchi-cd32c.appspot.com/o/images%2Fsushi1%2Ftable%2F3.png?alt=media&token=53b00c6d-e9aa-4179-85b4-6bbabb43ba07'
             isBigSize={true}
@@ -244,9 +241,9 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
                 id={review.id}
                 ratingScore={review.data.ratingScore}
                 statement={review.data.statement}
+                timestamp={review.data.timestamp}
                 userName={review.data.userName}
                 currentUser={currentUser}
-                restaurantName={restaurantName}
                 deleteReview={deleteReview}
                 saveReview={saveReview}
                 isEditing={review.id===editingID?true:false}

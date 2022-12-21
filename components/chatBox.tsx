@@ -1,13 +1,25 @@
 import styles from "./chatBox.module.css";
 import Circle from "./circle";
+import { millisecondsToDate } from "../utils/millisecondsToDate";
 import { useEffect } from "react";
+
+type ChatBoxProps = {
+  text: string;
+  userName: string;
+  userImage: string;
+  sessionName: string;
+  timestamp: number;
+  index: number;
+  chatMessages: any[];
+  isLast: boolean;
+}
 
 export default function ChatBox(props) {
   useEffect(() => {
     document.getElementById("last").scrollIntoView(false);
   }, []);
 
-  var flag = 0;
+  var hidden = false;
   if (props.index === 0) {
     var lastTimestamp = props.chatMessages[props.index].timestamp;
   } else {
@@ -18,7 +30,7 @@ export default function ChatBox(props) {
 
   if (props.index !== 0 && timeGap < 180000) {
     if (props.chatMessages[props.index - 1].userName === props.userName) {
-      flag = 1;
+      hidden = true;
     }
   }
 
@@ -56,17 +68,17 @@ export default function ChatBox(props) {
             height="30px"
             width="30px"
             lineHeight="30px"
-            backgroundImage={props.userImage}
-            hidden={flag === 1 ? "true" : "false"}
+            backgroundImgURL={props.userImage}
+            hidden={hidden}
           />
           <div
             className={`d-flex flex-column align-items-start ${styles.message}`}
           >
-            {flag === 1 ? null : (
+            {hidden ? null : (
               <small className={styles.userName}>{props.userName}</small>
             )}
 
-            <div style={{ marginTop: flag === 1 ? "6px" : "" }}>
+            <div style={{ marginTop: hidden ? "6px" : "" }}>
               <span
                 style={{
                   border: "1px solid black",

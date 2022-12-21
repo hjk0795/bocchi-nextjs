@@ -1,31 +1,29 @@
 import styles from "../styles/review.module.css";
-import { BiEdit } from "react-icons/bi";
-import { BsTrash } from "react-icons/bs";
-import { AiOutlineCheckSquare } from "react-icons/ai";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "next/legacy/image";
-import { style } from "@mui/system";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "../firebase-config";
+import { BiEdit } from "react-icons/bi";
+import { BsTrash } from "react-icons/bs";
+import { AiOutlineCheckSquare } from "react-icons/ai";
+import { Dispatch, SetStateAction, useState } from "react";
+import { User } from "firebase/auth";
 
 type ReviewProps = {
   id: string;
   ratingScore: number;
   statement: string;
+  timestamp: number;
   userName: string;
-  currentUser: User,
-  restaurantName: string;
+  currentUser: User;
   isEditing: boolean;
   setEditingID: Dispatch<SetStateAction<string>>;
   deleteReview: (id: string) => void;
   saveReview: (id: string, newStatement: string) => Promise<void>;
 }
 
-export default function Review({ id, ratingScore, statement, userName, currentUser, isEditing, restaurantName, setEditingID, deleteReview, saveReview }: ReviewProps) {
+export default function Review({ id, ratingScore, statement, timestamp, userName, currentUser, isEditing, setEditingID, deleteReview, saveReview }: ReviewProps) {
   const [newStatement, setNewStatement] = useState(statement);
-  
+
   function numToStar(num: number) {
     let star = "";
 
@@ -53,35 +51,34 @@ export default function Review({ id, ratingScore, statement, userName, currentUs
         <Col>
           <div className="card shadow-sm">
             <div className="card-body">
-
               <div className="d-flex justify-content-between align-items-center">
                 <small className="text-muted">{numToStar(ratingScore)}</small>
                 {(currentUser?.displayName === userName) && (
-                    <small>
-                      {isEditing ? (
-                        <AiOutlineCheckSquare
-                          className={styles.icon}
-                          onClick={()=>{
-                            saveReview(id, newStatement);
-                          }}
-                        />
-                      ) : (
-                        <BiEdit
-                        className={styles.icon}
-                          onClick={() => {
-                            setEditingID(id);
-                          }}
-                        />
-                      )}
-
-                      <BsTrash
+                  <small>
+                    {isEditing ? (
+                      <AiOutlineCheckSquare
                         className={styles.icon}
                         onClick={() => {
-                          deleteReview(id);
+                          saveReview(id, newStatement);
                         }}
                       />
-                    </small>
-                  )}
+                    ) : (
+                      <BiEdit
+                        className={styles.icon}
+                        onClick={() => {
+                          setEditingID(id);
+                        }}
+                      />
+                    )}
+
+                    <BsTrash
+                      className={styles.icon}
+                      onClick={() => {
+                        deleteReview(id);
+                      }}
+                    />
+                  </small>
+                )}
               </div>
 
               {isEditing ? (
@@ -90,7 +87,7 @@ export default function Review({ id, ratingScore, statement, userName, currentUs
                   onChange={(e) => {
                     setNewStatement(e.target.value);
                   }}
-                  value={newStatement?newStatement:statement}
+                  value={newStatement ? newStatement : statement}
                 />
               ) : (
                 <p className={`card-text ${styles.cardText}`}>
