@@ -36,7 +36,8 @@ export default function CallbackEndpoint() {
     }
 
     async function getAccessToken(codeParam: string): Promise<string> {
-      const response = await fetch("http://localhost:3000/api/github/getAccessToken", {
+      const baseURL = window.location.origin;
+      const response = await fetch(`${baseURL}/api/github/getAccessToken`, {
         method: "POST",
         headers: {
           "Accept": "application/json",
