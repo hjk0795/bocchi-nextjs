@@ -1,19 +1,19 @@
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 import styles from "../styles/chat.module.css";
-import Form from "react-bootstrap/Form";
 import ChatBox from "../components/chatBox";
+import Card from "react-bootstrap/Card";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import { millisecondsToDate } from "../utils/millisecondsToDate";
 import { useState, useEffect } from "react";
-import {
-  collection,
-  addDoc,
-  query,
-  onSnapshot,
-  orderBy,
-} from "firebase/firestore";
 import { db, auth } from "../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
+import {
+  query,
+  collection,
+  orderBy,
+  onSnapshot,
+  addDoc,
+} from "firebase/firestore";
 
 type MessageIdData = {
   id: string;
@@ -70,24 +70,29 @@ function Chat() {
   return (
     messageArray &&
     <>
-      <Card style={{ width: "100%", color: "black", marginTop: "80px" }}>
+      <Card className={styles.container}>
         <Card.Body>
-          <Card.Text
-            style={{ height: "400px" }}
-            as="div"
-            className="overflow-auto"
-          >
+          <div className={`${styles.historyContainer} overflow-auto`}>
             {messageArray?.map((message, index) => {
-              const dayOfPreviousMsg = index && millisecondsToDate(messageArray[index - 1]?.data.timestamp).day;
+              const prevMessage = index && messageArray[index - 1];
+              let isProfileHidden = false;
+
+              if (index !== 0 && (message.data.timestamp - prevMessage.data.timestamp < 180000)) {
+                if (prevMessage.data.userName === message.data.userName) {
+                  isProfileHidden = true;
+                }
+              }
+
+              const dayOfPreviousMsg = index && millisecondsToDate(prevMessage.data.timestamp).day;
               const dateOfCurrentMsg = millisecondsToDate(message.data.timestamp);
 
               return (
                 <div key={index}>
-
                   {(index === 0 || (dayOfPreviousMsg !== dateOfCurrentMsg.day)) && (<div>{dateOfCurrentMsg.full}</div>)}
 
                   <ChatBox
                     key={`${index}${message.data.timestamp}`}
+                    id={message.id}
                     text={message.data.text}
                     userName={message.data.userName}
                     userImage={message.data.userImage}
@@ -97,16 +102,15 @@ function Chat() {
                         : "anonymous"
                     }
                     timestamp={message.data.timestamp}
-                    index={index}
-                    chatMessages={messageArray}
+                    isProfileHidden={isProfileHidden}
                     isLast={
-                      messageArray.length - 1 === index ? "true" : "false"
+                      (messageArray.length - 1) === index ? true : false
                     }
                   />
                 </div>
               );
             })}
-          </Card.Text>
+          </div>
 
           <div className={styles.sendContainer}>
             <Form.Control type="text" onChange={(event) => {

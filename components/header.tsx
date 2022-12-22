@@ -35,17 +35,16 @@ export default function Header() {
 
   function signOutAndRedirect() {
     signOut(auth)
-    .then(() => {
-      // setCurrentUser(null);
-      document.cookie = "isAuthenticated=true" + ";max-age=0";
+      .then(() => {
+        document.cookie = "isAuthenticated=true" + ";max-age=0";
 
-      const redirectionUIProps: RedirectionUIProps = { title: "Signed out successfully.", pageToRedirect: "/", isAutoRedirect: true };
-      document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
-      router.push("/redirection");
-    }).catch((error: FirebaseError) => {
-      setAlertToast(true);
-      setAlertToastError({title: error.code, message: error.message});
-    })
+        const redirectionUIProps: RedirectionUIProps = { title: "Signed out successfully.", pageToRedirect: "/", isAutoRedirect: true };
+        document.cookie = 'redirectionProps=' + JSON.stringify(redirectionUIProps);
+        router.push("/redirection");
+      }).catch((error: FirebaseError) => {
+        setAlertToast(true);
+        setAlertToastError({ title: error.code, message: error.message });
+      })
   }
 
   return (
@@ -53,8 +52,7 @@ export default function Header() {
       <Navbar bg="light" expand="lg">
         <Container>
           <Navbar.Brand>
-          <Link href="/">Brand</Link>
-            {/* <Link href="/">bocchimeshi</Link> */}
+            <Link href="/">bocchimeshi</Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -70,10 +68,10 @@ export default function Header() {
               </Nav.Link>
               <div className={styles.alertToast}>
                 <AlertToast
-                title={alertToastError?.title}
-                message={alertToastError?.message}
-                show={alertToast}
-                setShow={setAlertToast}
+                  title={alertToastError?.title}
+                  message={alertToastError?.message}
+                  show={alertToast}
+                  setShow={setAlertToast}
                 />
               </div>
             </Nav>

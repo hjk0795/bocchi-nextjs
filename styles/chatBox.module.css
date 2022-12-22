@@ -1,0 +1,35 @@
+.renderingLeft {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.renderingRight {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.text {
+  border: 1px solid black;
+  border-radius: 15%;
+}
+
+.userName {
+  font-size: small;
+  color: gray;
+}
+
+.hourMinutes {
+  border: 0px solid black;
+  font-size: 10px;
+  color: gray;
+}
+
+.nameTextContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  margin-left: 5px;
+}

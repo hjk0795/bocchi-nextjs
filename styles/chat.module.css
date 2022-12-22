@@ -1,3 +1,13 @@
+.container {
+  width: 100%;
+  color: black;
+  margin-top: 80px;
+}
+
+.historyContainer {
+  height: 400px;
+}
+
 .sendContainer {
   position: relative;
 }

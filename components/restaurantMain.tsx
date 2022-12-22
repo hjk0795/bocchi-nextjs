@@ -1,32 +1,32 @@
-import Review from "./review";
-import getDocIdDataArray from "../utils/getDocIdDataArray";
-import Link from "next/link";
-import InfiniteScroll from "react-infinite-scroll-component";
-import Button from "@mui/material/Button";
-import styles from "./detailCard.module.css";
-import Rating from "@mui/material/Rating";
-import Image from "next/legacy/image";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import styles from "../styles/restaurantMain.module.css";
 import GridCard from "./gridCard";
 import GridCardCarousel from "./gridCardCarousel";
+import Review from "./review";
+import getDocIdDataArray from "../utils/getDocIdDataArray";
+import Image from "next/legacy/image";
+import Link from "next/link";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Rating from "@mui/material/Rating";
+import Button from "@mui/material/Button";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { DocIdData } from "../utils/getDocIdDataArray";
-import { ChangeEvent, useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { ChangeEvent, useState, useEffect } from "react";
 import { db, auth } from "../firebase-config";
+import { User, onAuthStateChanged } from "firebase/auth";
 import {
-  collection,
   query,
+  collection,
   orderBy,
-  limit,
-  addDoc,
   where,
-  deleteDoc,
+  limit,
   doc,
+  addDoc,
   setDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
-type DetailCardProps = {
+type RestaurantMainProps = {
   restaurantName: string,
   reviewIdDataArray: DocIdData[],
   reviewCountFecthed: number,
@@ -43,7 +43,7 @@ type ReviewIdData = {
   }
 }
 
-export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCountFecthed, imgURLArray }: DetailCardProps) {
+export default function RestaurantMain({ restaurantName, reviewIdDataArray, reviewCountFecthed, imgURLArray }: RestaurantMainProps) {
   const [reviewCount, setReviewCount] = useState(reviewCountFecthed);
   const [hasMore, setHasMore] = useState(true);
   const [reviewArray, setReviewArray] = useState<ReviewIdData[]>(reviewIdDataArray as ReviewIdData[]);
@@ -51,7 +51,6 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
   const [isWritingReview, setIsWritingReview] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>(null);
   const [editingID, setEditingID] = useState<string>(null);
-  
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -65,28 +64,32 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
   }, []);
 
   async function getMoreReviews() {
-    const next = query(
-      collection(db, `restaurants/${restaurantName}/reviews`),
-      orderBy("timestamp", "desc"),
-      where("timestamp", "<", reviewArray[reviewArray.length - 1].data.timestamp),
-      limit(1)
-    );
-    const nextReviewIdDataArray = await getDocIdDataArray(next);
-    const nextReviewIdData = nextReviewIdDataArray[0];
+    if (reviewArray.length === reviewCount) {
+      return setHasMore(false);
+    } else {
+      const next = query(
+        collection(db, `restaurants/${restaurantName}/reviews`),
+        orderBy("timestamp", "desc"),
+        where("timestamp", "<", reviewArray[reviewArray.length - 1].data.timestamp),
+        limit(1)
+      );
+      const nextReviewIdDataArray = await getDocIdDataArray(next);
+      const nextReviewIdData = nextReviewIdDataArray[0];
 
-    setReviewArray([
-      ...reviewArray,
-      {
-        id: nextReviewIdData.id,
-        data: {
-          ratingScore: nextReviewIdData.data.ratingScore,
-          statement: nextReviewIdData.data.statement,
-          userName: nextReviewIdData.data.userName,
-          timestamp: nextReviewIdData.data.timestamp
-        }
-      },
-    ]);
-    setHasMore((reviewArray.length + 1) < reviewCount ? true : false);
+      setReviewArray([
+        ...reviewArray,
+        {
+          id: nextReviewIdData.id,
+          data: {
+            ratingScore: nextReviewIdData.data.ratingScore,
+            statement: nextReviewIdData.data.statement,
+            userName: nextReviewIdData.data.userName,
+            timestamp: nextReviewIdData.data.timestamp
+          }
+        },
+      ]);
+      setHasMore((reviewArray.length + 1) < reviewCount ? true : false);
+    }
   }
 
   function syncReviewToBePosted(event: ChangeEvent) {
@@ -106,13 +109,21 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
   }
 
   async function addReview(reviewToBePosted: ReviewIdData) {
-    const docRef = await addDoc(collection(db, `restaurants/${restaurantName}/reviews`), {
+    const docData = {
       ratingScore: reviewToBePosted.data.ratingScore,
       statement: reviewToBePosted.data.statement,
       userName: currentUser ? currentUser.displayName : "anonymous",
       timestamp: Date.now()
-    });
+    };
+    const docRef = await addDoc(collection(db, `restaurants/${restaurantName}/reviews`), docData);
     console.log("Document written with ID: ", docRef.id);
+
+    setReviewArray([
+      {
+        id: docRef.id,
+        data: docData
+      }, ...reviewArray,
+    ]);
   };
 
   async function deleteReview(id: string) {
@@ -120,7 +131,7 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
       doc(db, `restaurants/${restaurantName}/reviews`, id)
     );
 
-    alert("Deleted");
+    console.log("Deleted");
 
     const reviewArrayFiltered = reviewArray.filter((review) => {
       return review.id !== id;
@@ -177,14 +188,6 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
             imgAlt="table"
             isBigSize={true}
           />
-          {/* <iframe
-                      width="100%"
-                      height="100%"
-                      style={{ border: "0" }}
-                      loading="lazy"
-                      allowfullscreen
-                      src={`https://www.google.com/maps/embed/v1/view?zoom=17&center=-36.8451%2C174.7675&key=${process.env.API_KEY_GOOGLE}`}
-                    ></iframe> */}
         </Row>
 
         <Row>
@@ -232,7 +235,7 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
           next={getMoreReviews}
           hasMore={hasMore}
           loader={<h4>Loading...</h4>}
-          endMessage={<p>You have seen it all</p>}
+          endMessage={reviewCount ? <p>You have seen it all</p> : <p>Please be the first reviewer!</p>}
         >
           {reviewArray.map((review, index) => {
             return (
@@ -246,7 +249,7 @@ export default function DetailCard({ restaurantName, reviewIdDataArray, reviewCo
                 currentUser={currentUser}
                 deleteReview={deleteReview}
                 saveReview={saveReview}
-                isEditing={review.id===editingID?true:false}
+                isEditing={review.id === editingID ? true : false}
                 setEditingID={setEditingID}
               />
             );

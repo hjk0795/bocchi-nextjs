@@ -1,4 +1,4 @@
-import DetailCard from "../../../components/detailCard";
+import RestaurantMain from "../../../components/restaurantMain";
 import getDocIdDataArray from "../../../utils/getDocIdDataArray";
 import { DocIdData } from "../../../utils/getDocIdDataArray";
 import { db, storage } from "../../../firebase-config";
@@ -49,7 +49,7 @@ export async function getStaticProps({ params }) {
   const q2 = query(
     q2Collection,
     orderBy("timestamp", "desc"),
-    limit(2)
+    limit(1)
   );
 
   const restaurantIdDataArray = await getDocIdDataArray(q1);
@@ -85,7 +85,7 @@ export default function RestaurantList({
 }: StaticProps) {
   return (
     <>
-      <DetailCard
+      <RestaurantMain
         restaurantName={restaurantIdData.data.name}
         reviewIdDataArray={reviewIdDataArray}
         reviewCountFecthed={reviewCountFecthed}

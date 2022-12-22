@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 
 export default function Redirection() {
   const [redirectionUIProps, setRedirectionUIProps] = useState<RedirectionUIProps>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const redirectionPropsValue = document.cookie

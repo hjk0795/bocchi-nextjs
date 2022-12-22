@@ -1,7 +1,7 @@
-import { ReactElement } from "react";
-import { IconType } from "react-icons/lib";
 import styles from "../styles/loginButtonOAuth.module.css";
 import _ from "lodash";
+import { ReactElement } from "react";
+import { IconType } from "react-icons/lib";
 
 type Props = {
     provider: string;

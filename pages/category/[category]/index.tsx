@@ -10,8 +10,8 @@ import { DocumentData, query, collection, where } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 
 type StaticProps = {
-  restaurantIdDataArray: DocIdData[],
-  avgRatingScoreArray: number[]
+  restaurantIdDataArray: DocIdData[];
+  avgRatingScoreArray: number[];
 }
 
 export function getStaticPaths() {
@@ -41,13 +41,20 @@ export async function getStaticProps({ params }) {
   const avgRatingScorePromiseArray = restaurantIdDataArray.map(async (docIdData) => {
     const q2 = query(collection(db, `restaurants/${docIdData.data.name}/reviews`));
     const reviewIdDataArray = await getDocIdDataArray(q2);
-    let sumRatingScore = 0;
-    reviewIdDataArray.map((docIdData) => {
-      sumRatingScore += docIdData.data.ratingScore;
-    });
+    const hasNoReviews = Object.keys(reviewIdDataArray).length === 0;
 
-    return Number((sumRatingScore / reviewIdDataArray.length).toFixed(1));
+    if (hasNoReviews) {
+      return null;
+    } else {
+      let sumRatingScore = 0;
+      reviewIdDataArray.map((docIdData) => {
+        sumRatingScore += docIdData.data.ratingScore;
+      });
+
+      return Number((sumRatingScore / reviewIdDataArray.length).toFixed(1));
+    }
   });
+
   avgRatingScoreArray = await Promise.all(avgRatingScorePromiseArray);
 
   return {
@@ -59,6 +66,8 @@ export async function getStaticProps({ params }) {
 }
 
 export default function RestaurantList({ restaurantIdDataArray, avgRatingScoreArray }: StaticProps) {
+  const hasNoReviews = avgRatingScoreArray[0] === null;
+
   return (
     <Row className="g-2" xs={1} sm={2} md={3} lg={4}>
       {restaurantIdDataArray.map((docIdData, index) => {
@@ -67,7 +76,7 @@ export default function RestaurantList({ restaurantIdDataArray, avgRatingScoreAr
             key={index}
             imgSrc={docIdData.data.brandImg}
             title={docIdData.data.name}
-            subTitle={avgRatingScoreArray[index].toString()}
+            subTitle={hasNoReviews ? "No Review" : avgRatingScoreArray[index]?.toString()}
             linkHref={`/category/${_.lowerCase(docIdData.data.category)}/${docIdData.data.name}`}
           />
         );

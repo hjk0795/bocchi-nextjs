@@ -1,10 +1,9 @@
 .sendContainer {
-    position: relative;
-  }
-  
-  .sendContainer .sendButton {
-    position: absolute;
-    right: 5px;
-    bottom: 3px;
-  }
-  
+  position: relative;
+}
+
+.sendContainer .sendButton {
+  position: absolute;
+  right: 5px;
+  bottom: 3px;
+}

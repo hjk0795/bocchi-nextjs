@@ -7,7 +7,6 @@ import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 
 export default function LoginExternal({ setModalShow }: LoadingModalProps) {
-
     function signInWithGoogle() {
         document.cookie = "signInWithRedirect=true";
         setModalShow(true);
