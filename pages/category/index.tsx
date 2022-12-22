@@ -1,9 +1,9 @@
-import styles from "../styles/category.module.css";
-import GridCard from "../components/gridCard";
-import FlaticonAttribution from "../components/flaticonAttribution";
+import styles from "../../styles/category.module.css";
+import GridCard from "../../components/gridCard";
+import FlaticonAttribution from "../../components/flaticonAttribution";
 import Row from "react-bootstrap/Row";
 import _ from "lodash";
-import { getCategoryArray } from "../utils/getCategoryArray";
+import { getCategoryArray } from "../../utils/getCategoryArray";
 
 export type CategoryObject = {
   name: string,

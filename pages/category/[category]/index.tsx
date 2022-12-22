@@ -5,9 +5,7 @@ import _ from "lodash"
 import { getCategoryArray } from "../../../utils/getCategoryArray";
 import { DocIdData } from "../../../utils/getDocIdDataArray";
 import { db } from "../../../firebase-config";
-import { NextResponse } from "next/server";
-import { DocumentData, query, collection, where } from "firebase/firestore";
-import { FirebaseError } from "firebase/app";
+import { query, collection, where } from "firebase/firestore";
 
 type StaticProps = {
   restaurantIdDataArray: DocIdData[];
@@ -19,7 +17,7 @@ export function getStaticPaths() {
   const paths = categoryArray.map((category) => {
     return {
       params: {
-        category: _.lowerCase(category.name)
+        category: category.name === '?' ? "question-mark":_.lowerCase(category.name)
       }
     };
   });

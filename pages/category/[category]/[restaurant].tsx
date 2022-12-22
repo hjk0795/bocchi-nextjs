@@ -3,7 +3,6 @@ import getDocIdDataArray from "../../../utils/getDocIdDataArray";
 import { DocIdData } from "../../../utils/getDocIdDataArray";
 import { db, storage } from "../../../firebase-config";
 import {
-  DocumentData,
   query,
   collection,
   where,
@@ -11,7 +10,7 @@ import {
   limit,
   getCountFromServer,
 } from "firebase/firestore";
-import { StorageReference, ref, listAll, getDownloadURL } from "firebase/storage";
+import { ref, listAll, getDownloadURL } from "firebase/storage";
 
 type StaticProps = {
   restaurantIdData: DocIdData,
@@ -77,7 +76,7 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function RestaurantList({
+export default function RestaurantDetail({
   restaurantIdData,
   reviewIdDataArray,
   reviewCountFecthed,
