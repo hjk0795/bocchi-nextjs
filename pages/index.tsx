@@ -1,7 +1,8 @@
 import styles from "../styles/home.module.css";
 import Link from "next/link";
+import { NextPage } from "next/types";
 
-export default function Home() {
+const Home: NextPage = () => {
   return (
     <>
       <div className={styles.contents}>
@@ -23,3 +24,5 @@ export default function Home() {
     </>
   );
 }
+
+export default Home;

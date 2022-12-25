@@ -10,7 +10,7 @@ type AlertToastProps = {
     setShow: Dispatch<SetStateAction<boolean>>
 }
 
-export default function AlertToast({ title, message, show, setShow }: AlertToastProps) {
+const AlertToast: React.FC<AlertToastProps> = ({ title, message, show, setShow }) => {
     return (
         <>
             <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide>
@@ -26,3 +26,5 @@ export default function AlertToast({ title, message, show, setShow }: AlertToast
         </>
     );
 }
+
+export default AlertToast;
