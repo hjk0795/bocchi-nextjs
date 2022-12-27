@@ -1,11 +1,29 @@
 .container {
-    width: 500px;
-    padding: 0 1rem;
-    margin: 3rem auto 6rem;
+  width: 500px;
+  padding: 0 1rem;
+  margin: 3rem auto 6rem;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.btnFormTextContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.notRegistered:hover {
+  cursor: pointer;
+  text-shadow: 0.5px 0.5px;
+}
+
+.OAuthContainer {
+  margin-top: 1.9rem;
 }
 
 @media only screen and (max-width: 750px) {
-    .container {
-        width: 100%;
-    }
+  .container {
+    width: 100%;
+  }
 }

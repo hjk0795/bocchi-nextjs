@@ -6,7 +6,7 @@ type FlaticonAttributionProps = {
   alias?: string
 };
 
-export default function FlaticonAttribution({ name, alias = null }: FlaticonAttributionProps) {
+const FlaticonAttribution: React.FC<FlaticonAttributionProps> = ({ name, alias = null }) => {
   return (
     <>
       <Link
@@ -19,3 +19,5 @@ export default function FlaticonAttribution({ name, alias = null }: FlaticonAttr
     </>
   );
 }
+
+export default FlaticonAttribution;

@@ -8,7 +8,7 @@ type CircleProps = {
   backgroundImgURL?: string;
 }
 
-export default function Circle({ hidden, width, height, lineHeight, backgroundImgURL }: CircleProps) {
+const Circle: React.FC<CircleProps> = ({ hidden, width, height, lineHeight, backgroundImgURL }) => {
   return (
     <>
       <div
@@ -24,3 +24,5 @@ export default function Circle({ hidden, width, height, lineHeight, backgroundIm
     </>
   );
 }
+
+export default Circle;

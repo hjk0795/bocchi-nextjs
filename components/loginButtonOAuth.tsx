@@ -3,13 +3,13 @@ import _ from "lodash";
 import { ReactElement } from "react";
 import { IconType } from "react-icons/lib";
 
-type Props = {
+type LoginButtonOAuthProps = {
     provider: string;
     icon: ReactElement<any, IconType>;
     signInWithProvider: () => void;
 }
 
-export default function LoginButtonOAuth({ provider, icon, signInWithProvider }: Props) {
+const LoginButtonOAuth: React.FC<LoginButtonOAuthProps> = ({ provider, icon, signInWithProvider }) => {
     return (
         <>
             <div>
@@ -26,3 +26,5 @@ export default function LoginButtonOAuth({ provider, icon, signInWithProvider }:
         </>
     );
 }
+
+export default LoginButtonOAuth;

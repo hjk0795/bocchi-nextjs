@@ -8,7 +8,7 @@ type FormLabelControlProps = {
     onChange?: (event: ChangeEvent) => void;
 }
 
-export default function FormLabelControl({ label, type, onChange }: FormLabelControlProps) {
+const FormLabelControl: React.FC<FormLabelControlProps> = ({ label, type, onChange }) => {
     const [controlValue, setControlValue] = useState<string>("");
 
     function handleChange(event: ChangeEvent) {
@@ -32,3 +32,5 @@ export default function FormLabelControl({ label, type, onChange }: FormLabelCon
         </Form.Group>
     </>;
 }
+
+export default FormLabelControl;
