@@ -92,15 +92,14 @@ function Chat() {
 
                   <ChatBox
                     key={`${index}${message.data.timestamp}`}
-                    id={message.id}
+                    renderingDirection={
+                      message.data.userName === currentUser?.displayName
+                        ? "right"
+                        : "left"
+                    }
                     text={message.data.text}
                     userName={message.data.userName}
                     userImage={message.data.userImage}
-                    sessionName={
-                      currentUser !== null
-                        ? currentUser.displayName
-                        : "anonymous"
-                    }
                     timestamp={message.data.timestamp}
                     isProfileHidden={isProfileHidden}
                     isLast={

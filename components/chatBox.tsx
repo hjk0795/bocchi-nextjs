@@ -4,27 +4,26 @@ import { millisecondsToDate } from "../utils/millisecondsToDate";
 import { useEffect } from "react";
 
 type ChatBoxProps = {
-  id: string;
+  renderingDirection: "left" | "right";
   text: string;
   userName: string;
   userImage: string;
   timestamp: number;
-  sessionName: string;
   isProfileHidden: boolean;
   isLast: boolean;
 }
 
-export default function ChatBox({ id, text, userName, userImage, timestamp, sessionName, isProfileHidden, isLast }: ChatBoxProps) {
+const ChatBox: React.FC<ChatBoxProps> = ({ renderingDirection, text, userName, userImage, timestamp, isProfileHidden, isLast }) => {
   const hours = millisecondsToDate(timestamp).hours;
   const minutes = millisecondsToDate(timestamp).minutes;
 
   useEffect(() => {
-    document.getElementById("last").scrollIntoView(false);
-  }, []);
+    isLast && document.getElementById("last").scrollIntoView(false);
+  }, [isLast]);
 
   return (
     <>
-      {userName === sessionName ? (
+      {renderingDirection === "right" ? (
         <div className={styles.renderingRight}>
           <small className={styles.hourMinutes}>{hours}:</small>
           <small className={styles.hourMinutes}>{minutes}</small>
@@ -52,7 +51,9 @@ export default function ChatBox({ id, text, userName, userImage, timestamp, sess
           <br />
         </div>
       )}
-      {isLast && <div id="last"></div>}
+      {isLast && <div id="last">{null}</div>}
     </>
   );
 }
+
+export default ChatBox;

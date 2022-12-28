@@ -10,7 +10,7 @@ type GridCardCarouselProps = {
     isBigSize?: boolean
 }
 
-export default function GridCardCarousel({ imgURLArray, imgAlt = null, isBigSize = false }: GridCardCarouselProps) {
+const GridCardCarousel: React.FC<GridCardCarouselProps> = ({ imgURLArray, imgAlt = null, isBigSize = false }) => {
     return (
         <>
             <Col>
@@ -24,7 +24,7 @@ export default function GridCardCarousel({ imgURLArray, imgAlt = null, isBigSize
                                         style={{ filter: "invert(100%)" }}
                                         variant="top"
                                         src={imgURL}
-                                        alt={imgAlt + " image " + (index+1)}
+                                        alt={imgAlt?imgAlt+' '+(index+1):"Image " + (index+1)}
                                     />
                                 </Carousel.Item>
                             );
@@ -35,3 +35,5 @@ export default function GridCardCarousel({ imgURLArray, imgAlt = null, isBigSize
         </>
     );
 }
+
+export default GridCardCarousel;

@@ -5,15 +5,15 @@ import _ from "lodash";
 import { useRouter } from "next/router";
 
 type GridCardProps = {
-  imgSrc?: string,
-  imgAlt?: string,
-  title?: string,
-  subTitle?: string
-  linkHref?: string,
-  isBigSize?: boolean
+  imgSrc?: string;
+  imgAlt?: string;
+  title?: string;
+  subTitle?: string;
+  isBigSize?: boolean;
+  linkHref?: string;
 }
 
-export default function GridCard({ imgSrc = null, imgAlt = null, title = null, subTitle = null, linkHref = null, isBigSize = false }: GridCardProps) {
+const GridCard: React.FC<GridCardProps> = ({ imgSrc = null, imgAlt = null, title = null, subTitle = null, isBigSize = false, linkHref = null }) => {
   const router = useRouter();
 
   return (
@@ -39,3 +39,5 @@ export default function GridCard({ imgSrc = null, imgAlt = null, title = null, s
     </>
   );
 }
+
+export default GridCard;

@@ -16,7 +16,7 @@ type AlertToastError = {
   message: string
 }
 
-export default function Header() {
+const Header: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User>(null);
   const [alertToast, setAlertToast] = useState<boolean>(false);
   const [alertToastError, setAlertToastError] = useState<AlertToastError>(null);
@@ -52,7 +52,8 @@ export default function Header() {
       <Navbar bg="light" expand="lg">
         <Container>
           <Navbar.Brand>
-            <Link href="/">bocchimeshi</Link>
+            {/* <Link href="/">bocchimeshi</Link> */}
+            <Link href="/">brand</Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -81,3 +82,5 @@ export default function Header() {
     </>
   );
 }
+
+export default Header;
