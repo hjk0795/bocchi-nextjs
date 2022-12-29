@@ -1,6 +1,7 @@
 import Header from "./header";
 import { createMockRouter } from "../utils/test-utils/createMockRouter";
 import { RouterContext } from 'next/dist/shared/lib/router-context'
+import React from "react";
 
 describe('Header', () => {
     it('should mount', () => {

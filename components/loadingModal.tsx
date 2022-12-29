@@ -2,15 +2,14 @@ import styles from "../styles/loadingModal.module.css";
 import Spinner from 'react-bootstrap/Spinner';
 import Modal from 'react-bootstrap/Modal';
 import { RedirectionUIProps } from "./redirectionUI";
-import { useState, SetStateAction, Dispatch } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 
-export type LoadingModalProps = {
-    modalShow?: boolean,
-    setModalShow?: Dispatch<SetStateAction<boolean>>
-  };
+type LoadingModalProps = {
+    modalShow?: boolean;
+};
 
-export default function LoadingModal({ modalShow }: LoadingModalProps) {
+const LoadingModal: React.FC<LoadingModalProps> = ({ modalShow = false }) => {
     const [elapsedSeconds, setElapsedSeconds] = useState(0);
     const router = useRouter();
 
@@ -43,3 +42,5 @@ export default function LoadingModal({ modalShow }: LoadingModalProps) {
         </Modal>
     );
 }
+
+export default LoadingModal;
