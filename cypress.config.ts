@@ -13,4 +13,7 @@ export default defineConfig({
       bundler: 'webpack',
     },
   },
+  env: {
+    questionMarkImgUrl: "https://cdn-icons-png.flaticon.com/512/84/84042.png"
+  }
 });

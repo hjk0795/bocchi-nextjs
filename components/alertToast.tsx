@@ -19,9 +19,9 @@ const AlertToast: React.FC<AlertToastProps> = ({ title, message, show, setShow }
                         size={20}
                         className={styles.BiCommentError}
                     />
-                    <strong className="me-auto">{title}</strong>
+                    <strong className="me-auto" data-cy="title">{title}</strong>
                 </Toast.Header>
-                <Toast.Body>{message}</Toast.Body>
+                <Toast.Body data-cy="message">{message}</Toast.Body>
             </Toast>
         </>
     );

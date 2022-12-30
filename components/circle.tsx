@@ -20,6 +20,7 @@ const Circle: React.FC<CircleProps> = ({ hidden, width, height, lineHeight, back
           border: hidden ? "1px solid white" : "1px solid black",
           backgroundImage: hidden ? "" : `url(${backgroundImgURL})`
         }}
+        data-cy="circle"
       ></div>
     </>
   );

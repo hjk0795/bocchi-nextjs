@@ -24,14 +24,14 @@ const ChatBox: React.FC<ChatBoxProps> = ({ renderingDirection, text, userName, u
   return (
     <>
       {renderingDirection === "right" ? (
-        <div className={styles.renderingRight}>
+        <div className={styles.renderingRight} data-cy="renderingRight">
           <small className={styles.hourMinutes}>{hours}:</small>
           <small className={styles.hourMinutes}>{minutes}</small>
-          <span className={styles.text} style={{ marginLeft: "3px" }}> {text} </span>
+          <span className={styles.text} style={{ marginLeft: "3px" }} data-cy="text"> {text} </span>
           <br />
         </div>
       ) : (
-        <div className={styles.renderingLeft}>
+        <div className={styles.renderingLeft} data-cy="renderingLeft">
           <Circle
             height="30px"
             width="30px"
@@ -40,10 +40,10 @@ const ChatBox: React.FC<ChatBoxProps> = ({ renderingDirection, text, userName, u
             hidden={isProfileHidden}
           />
           <div className={styles.nameTextContainer}>
-            {!isProfileHidden && <small className={styles.userName}>{userName}</small>}
+            {!isProfileHidden && <small className={styles.userName} data-cy="userName">{userName}</small>}
 
             <div>
-              <span className={styles.text}>{text}</span>
+              <span className={styles.text} data-cy="text">{text}</span>
               <small className={styles.hourMinutes} style={{ marginLeft: "3px" }}>{hours}:</small>
               <small className={styles.hourMinutes}>{minutes}</small>
             </div>

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
-Cypress.Commands.add("getBySel", (selector, ...args) => {
-    return cy.get(`[data-test=${selector}]`, ...args)
+Cypress.Commands.add('dataCy', (value) => {
+    return cy.get(`[data-cy=${value}]`)
 })
 
 
