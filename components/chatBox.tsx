@@ -25,8 +25,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ renderingDirection, text, userName, u
     <>
       {renderingDirection === "right" ? (
         <div className={styles.renderingRight} data-cy="renderingRight">
-          <small className={styles.hourMinutes}>{hours}:</small>
-          <small className={styles.hourMinutes}>{minutes}</small>
+          <small className={styles.hourMinutes} data-cy="hours">{hours}:</small>
+          <small className={styles.hourMinutes} data-cy="minutes">{minutes}</small>
           <span className={styles.text} style={{ marginLeft: "3px" }} data-cy="text"> {text} </span>
           <br />
         </div>
@@ -44,8 +44,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ renderingDirection, text, userName, u
 
             <div>
               <span className={styles.text} data-cy="text">{text}</span>
-              <small className={styles.hourMinutes} style={{ marginLeft: "3px" }}>{hours}:</small>
-              <small className={styles.hourMinutes}>{minutes}</small>
+              <small className={styles.hourMinutes} style={{ marginLeft: "3px" }} data-cy="hours">{hours}:</small>
+              <small className={styles.hourMinutes} data-cy="minutes">{minutes}</small>
             </div>
           </div>
           <br />
