@@ -13,6 +13,7 @@ const FlaticonAttribution: React.FC<FlaticonAttributionProps> = ({ name, alias =
         className={styles.flaticonAttribution}
         href={`https://www.flaticon.com/free-icons/${alias ? alias : name}`}
         title={`${name} icons`}
+        data-cy="link"
       >
         {name}
       </Link>

@@ -28,9 +28,9 @@ const GridCard: React.FC<GridCardProps> = ({ imgSrc = null, imgAlt = null, title
               alt={imgAlt ? imgAlt : title ? title : "Image"}
             />
             {title && <Card.Body>
-              <Card.Title className={subTitle ? styles.cardTitleSubTitle : styles.cardTitleOnly}>
-                <span>{title}</span>
-                <span>{subTitle}</span>
+              <Card.Title className={subTitle ? styles.cardTitleSubTitle : styles.cardTitleOnly} data-cy="cardTitle">
+                <span data-cy="title">{title}</span>
+                <span data-cy="subTitle">{subTitle}</span>
               </Card.Title>
             </Card.Body>}
           </button>}

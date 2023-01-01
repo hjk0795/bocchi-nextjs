@@ -17,7 +17,7 @@ const LoginButtonOAuth: React.FC<LoginButtonOAuthProps> = ({ provider, icon, sig
                     className={`btn btn-outline-dark ${styles.loginButton}`}
                     onClick={signInWithProvider}
                 >
-                    <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex justify-content-between align-items-center" data-cy="insideButton">
                         {icon}
                         <span className={styles[_.lowerCase(provider)]}>{`Sign in with ${provider}`}</span>
                     </div>

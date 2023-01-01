@@ -20,7 +20,7 @@ const FormLabelControl: React.FC<FormLabelControlProps> = ({ label, type, onChan
 
     return <>
         <Form.Group className="mb-3">
-            <Form.Label>{label}</Form.Label>
+            <Form.Label data-cy="label">{label}</Form.Label>
             <Form.Control
                 name={_.lowerCase(label)}
                 type={type ? type : _.lowerCase(label)}
@@ -28,6 +28,7 @@ const FormLabelControl: React.FC<FormLabelControlProps> = ({ label, type, onChan
                 onChange={handleChange}
                 value={controlValue}
                 required
+                data-cy="control"
             />
         </Form.Group>
     </>;

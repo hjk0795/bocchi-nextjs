@@ -39,7 +39,7 @@ export default function RedirectionUI({ title, message = null, pageToRedirect = 
     <>
       <h1 data-cy="title">{title}</h1><hr />
       {message && <div data-cy="message">{message}</div>}<br />
-      {isAutoRedirect ? <small className={styles.autoRedirectMessage}>{autoRedirectMessage}</small> :
+      {isAutoRedirect ? <small className={styles.autoRedirectMessage} data-cy="autoRedirectMessage">{autoRedirectMessage}</small> :
         <Button variant="dark" onClick={() => routerBackOrPush(pageToRedirect)}>Back to the {pageToRedirect} page</Button>}
     </>
   );

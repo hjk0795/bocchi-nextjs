@@ -4,8 +4,8 @@ import { BsFillQuestionOctagonFill } from "react-icons/bs";
 describe('LoginButtonOAuth', () => {
     it('should mount', () => {
         cy.mount(<LoginButtonOAuth provider="Test" icon={<BsFillQuestionOctagonFill size={25} />} signInWithProvider={() => { }} />);
-        cy.get('button').find('div').find('svg');
-        cy.get('span').contains('Sign in with Test');
+        cy.dataCy('insideButton').find('svg').should('exist');
+        cy.dataCy('insideButton').contains('Sign in with Test');
     });
 
     it('when button is clicked, should call signInWithProvider', () => {
