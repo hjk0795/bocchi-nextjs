@@ -1,6 +1,6 @@
 export const millisecondsToDate = (milliseconds: number) => {
     const today = new Date(milliseconds);
-    const full = today.toDateString()
+    const full = today.toDateString();
     const year = today.getFullYear();
     const month = today.getMonth();
     const day = today.getDay();

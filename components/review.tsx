@@ -54,7 +54,7 @@ export default function Review({ id, ratingScore, statement, timestamp, userName
           <Card>
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center">
-                <small className="text-muted">{numToStar(ratingScore)}</small>
+                <small className="text-muted" data-cy="ratingScore">{numToStar(ratingScore)}</small>
                 {(currentUser?.displayName === userName) && (
                   <small>
                     {isEditing ? (
@@ -63,6 +63,7 @@ export default function Review({ id, ratingScore, statement, timestamp, userName
                         onClick={() => {
                           saveReview(id, newStatement);
                         }}
+                        data-cy="AiOutlineCheckSquare"
                       />
                     ) : (
                       <BiEdit
@@ -70,6 +71,7 @@ export default function Review({ id, ratingScore, statement, timestamp, userName
                         onClick={() => {
                           setEditingID(id);
                         }}
+                        data-cy="BiEdit"
                       />
                     )}
 
@@ -78,6 +80,7 @@ export default function Review({ id, ratingScore, statement, timestamp, userName
                       onClick={() => {
                         deleteReview(id);
                       }}
+                      data-cy="BsTrash"
                     />
                   </small>
                 )}
@@ -90,16 +93,17 @@ export default function Review({ id, ratingScore, statement, timestamp, userName
                     setNewStatement(e.target.value);
                   }}
                   value={newStatement ? newStatement : statement}
+                  data-cy="newStatement"
                 />
               ) : (
-                <p className={`card-text ${styles.cardText}`}>
+                <p className={`card-text ${styles.cardText}`} data-cy="statement">
                   {statement}
                 </p>
               )}
 
               <div className="d-flex justify-content-between align-items-center">
-                <small className="text-muted">{millisecondsToDate(timestamp).full}</small>
-                <small className="text-muted">{userName}</small>
+                <small className="text-muted" data-cy="toDateString">{millisecondsToDate(timestamp).full}</small>
+                <small className="text-muted" data-cy="userName">{userName}</small>
               </div>
             </Card.Body>
           </Card>

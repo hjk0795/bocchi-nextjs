@@ -8,18 +8,25 @@ export const handleHttpError = (statusCodeOrMessage: number | string) => {
         switch (statusCode) {
             case 400:
                 response.error += "Bad Request";
+                break;
             case 401:
                 response.error += "Unauthorized";
+                break;
             case 403:
                 response.error += "Forbidden";
+                break;
             case 404:
                 response.error += "Not Found";
+                break;
             case 500:
                 response.error += "Internal Server Error";
+                break;
             case 502:
                 response.error += "Bad Gateway";
+                break;
             case 504:
                 response.error += "Gateway Timeout";
+                break;
             default:
                 if ((400 <= statusCode) && (statusCode <= 499)) {
                     response.error += "Client Error";
