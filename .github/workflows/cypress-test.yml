@@ -57,6 +57,7 @@ jobs:
          path: .next/
          
   acceptance-test:
+    needs: initial-technical-test
     name: Acceptance-test
     runs-on: ubuntu-latest
     steps:
