@@ -33,7 +33,7 @@ jobs:
         run: npm install
       
       - name: Use NextJS cache
-      - uses: actions/cache@v3
+        uses: actions/cache@v3
         with:
          path: |
           ~/.npm
