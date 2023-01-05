@@ -9,6 +9,7 @@ on:
 
 jobs:
   acceptance-test-and-deploy:
+    environment: Production
     name: Acceptance-test-and-deploy
     runs-on: ubuntu-latest
     steps:
