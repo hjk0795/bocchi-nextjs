@@ -14,6 +14,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        
+      - name: Download workflow artifact
+        uses: dawidd6/action-download-artifact@v2.24.3
+        with:
+         workflow: initial-technical-test.yml
+         workflow_conclusion: success
+         
       - name: Cache node modules
         id: cache-npm
         uses: actions/cache@v3
@@ -47,12 +54,6 @@ jobs:
         
       - name: npm run build
         run: npm run build
-        
-      - name: Download workflow artifact
-        uses: dawidd6/action-download-artifact@v2.24.3
-        with:
-         workflow: initial-technical-test.yml
-         workflow_conclusion: success
 
       - name: Run E2E tests
         uses: cypress-io/github-action@v5
