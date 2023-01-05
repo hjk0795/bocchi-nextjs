@@ -39,8 +39,9 @@ jobs:
          restore-keys: |
           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-      - name: Cypress run
+      - name: Run Component tests
         uses: cypress-io/github-action@v5
         with:
+          component: true
           build: npm run build
           start: npm start
