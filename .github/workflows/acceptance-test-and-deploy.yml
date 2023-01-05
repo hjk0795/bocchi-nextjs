@@ -50,6 +50,9 @@ jobs:
         
       - name: Download workflow artifact
         uses: dawidd6/action-download-artifact@v2.24.3
+        with:
+         workflow: initial-technical-test.yml
+         workflow_conclusion: success
 
       - name: Run E2E tests
         uses: cypress-io/github-action@v5
