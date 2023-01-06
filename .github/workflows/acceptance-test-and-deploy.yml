@@ -4,11 +4,8 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
-  workflow_run:
-    workflows: ["Initial-technical-test"]
-    branches: [main]
-    types: 
-      - completed
+  schedule:
+    - cron:  '40 5 * * 0'
 
 jobs:
   acceptance-test-and-deploy:
