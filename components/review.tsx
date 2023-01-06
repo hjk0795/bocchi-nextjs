@@ -38,7 +38,7 @@ export default function Review({ id, ratingScore, statement, timestamp, userName
 
   return (
     <>
-      <Row className={`${styles.container} g-3`} >
+      <Row className={`${styles.container} g-3`} data-cy="reviewContainer">
         <Col xs={3}>
           <div className={styles.imgContainer}>
             <Image
