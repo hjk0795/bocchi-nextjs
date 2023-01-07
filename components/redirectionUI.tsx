@@ -10,7 +10,7 @@ export type RedirectionUIProps = {
   isAutoRedirect?: boolean
 }
 
-export default function RedirectionUI({ title, message = null, pageToRedirect = "previous", isAutoRedirect = false }: RedirectionUIProps) {
+const RedirectionUI: React.FC<RedirectionUIProps> = ({ title, message = null, pageToRedirect = "previous", isAutoRedirect = false }) => {
   (pageToRedirect === "/") && (pageToRedirect = "main");
 
   const [remainingSeconds, setRemainingSeconds] = useState(5);
@@ -44,3 +44,5 @@ export default function RedirectionUI({ title, message = null, pageToRedirect = 
     </>
   );
 }
+
+export default RedirectionUI;
