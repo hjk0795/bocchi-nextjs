@@ -43,7 +43,7 @@ type ReviewIdData = {
   }
 }
 
-export default function RestaurantMain({ restaurantName, reviewIdDataArray, reviewCountFecthed, imgURLArray }: RestaurantMainProps) {
+const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewIdDataArray, reviewCountFecthed, imgURLArray }) => {
   const [reviewCount, setReviewCount] = useState(reviewCountFecthed);
   const [hasMore, setHasMore] = useState(true);
   const [reviewArray, setReviewArray] = useState<ReviewIdData[]>(reviewIdDataArray as ReviewIdData[]);
@@ -272,3 +272,5 @@ export default function RestaurantMain({ restaurantName, reviewIdDataArray, revi
     </>
   );
 }
+
+export default RestaurantMain;
