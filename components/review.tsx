@@ -23,7 +23,7 @@ type ReviewProps = {
   deleteReview: (id: string) => void;
 }
 
-export default function Review({ id, ratingScore, statement, timestamp, userName, currentUser, isEditing, setEditingID, saveReview, deleteReview }: ReviewProps) {
+const Review: React.FC<ReviewProps> = ({ id, ratingScore, statement, timestamp, userName, currentUser, isEditing, setEditingID, saveReview, deleteReview }) => {
   const [newStatement, setNewStatement] = useState(statement);
 
   function numToStar(num: number) {
@@ -112,3 +112,5 @@ export default function Review({ id, ratingScore, statement, timestamp, userName
     </>
   );
 }
+
+export default Review;
