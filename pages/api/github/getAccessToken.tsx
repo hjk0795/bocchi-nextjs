@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { handleHttpError } from "../../../utils/handleHttpError";
 
-export default async function getAccessToken(req: NextApiRequest, res: NextApiResponse) {
+const getAccessToken = async(req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") {
         return res.status(405).json(handleHttpError("Use \"POST\" for the request method"));
     }
@@ -40,3 +40,5 @@ export default async function getAccessToken(req: NextApiRequest, res: NextApiRe
         }
     }
 }
+
+export default getAccessToken;
