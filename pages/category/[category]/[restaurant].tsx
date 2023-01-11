@@ -1,6 +1,7 @@
 import RestaurantMain from "../../../components/restaurantMain";
 import getDocIdDataArray from "../../../utils/getDocIdDataArray";
 import { DocIdData } from "../../../utils/getDocIdDataArray";
+import { GetStaticProps, GetStaticPaths } from 'next'
 import { db, storage } from "../../../firebase-config";
 import {
   query,
@@ -12,14 +13,14 @@ import {
 } from "firebase/firestore";
 import { ref, listAll, getDownloadURL } from "firebase/storage";
 
-type StaticProps = {
+type RestaurantDetailProps = {
   restaurantIdData: DocIdData,
   reviewIdDataArray: DocIdData[],
   reviewCountFecthed: number,
   imgURLArray: string[]
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const q = query(collection(db, "restaurants"));
   const restaurantIdDataArray = await getDocIdDataArray(q);
   const paths = [];
@@ -39,7 +40,7 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }) {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const q1 = query(
     collection(db, "restaurants"),
     where("name", "==", `${params.restaurant}`)
@@ -76,12 +77,12 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function RestaurantDetail({
+const RestaurantDetail: React.FC<RestaurantDetailProps> = ({
   restaurantIdData,
   reviewIdDataArray,
   reviewCountFecthed,
   imgURLArray
-}: StaticProps) {
+}) => {
   return (
     <>
       <RestaurantMain
@@ -93,3 +94,5 @@ export default function RestaurantDetail({
     </>
   );
 }
+
+export default RestaurantDetail;
