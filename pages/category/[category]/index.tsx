@@ -4,20 +4,21 @@ import Row from "react-bootstrap/Row";
 import _ from "lodash"
 import { getCategoryArray } from "../../../utils/getCategoryArray";
 import { DocIdData } from "../../../utils/getDocIdDataArray";
+import { GetStaticProps, GetStaticPaths } from 'next'
 import { db } from "../../../firebase-config";
 import { query, collection, where } from "firebase/firestore";
 
-type StaticProps = {
+type RestaurantListProps = {
   restaurantIdDataArray: DocIdData[];
   avgRatingScoreArray: number[];
 }
 
-export function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const categoryArray = getCategoryArray();
   const paths = categoryArray.map((category) => {
     return {
       params: {
-        category: category.name === '?' ? "question-mark":_.lowerCase(category.name)
+        category: category.name === '?' ? "question-mark" : _.lowerCase(category.name)
       }
     };
   });
@@ -28,7 +29,7 @@ export function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }) {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const q1 = query(
     collection(db, "restaurants"),
     where("category", "==", `${params.category}`)
@@ -63,7 +64,7 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function RestaurantList({ restaurantIdDataArray, avgRatingScoreArray }: StaticProps) {
+const RestaurantList: React.FC<RestaurantListProps> = ({ restaurantIdDataArray, avgRatingScoreArray }) => {
   const hasNoReviews = avgRatingScoreArray[0] === null;
 
   return (
@@ -82,3 +83,5 @@ export default function RestaurantList({ restaurantIdDataArray, avgRatingScoreAr
     </Row>
   );
 }
+
+export default RestaurantList;
