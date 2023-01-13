@@ -1,4 +1,8 @@
-import { CategoryObject } from "../pages/category";
+type CategoryObject = {
+    name: string,
+    src: string,
+    alias?: string
+}
 
 export const getCategoryArray = () => {
     const getCategoryArray: CategoryObject[] = [];

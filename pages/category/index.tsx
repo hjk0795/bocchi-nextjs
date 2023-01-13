@@ -5,13 +5,7 @@ import Row from "react-bootstrap/Row";
 import _ from "lodash";
 import { getCategoryArray } from "../../utils/getCategoryArray";
 
-export type CategoryObject = {
-  name: string,
-  src: string,
-  alias?: string
-}
-
-export default function Category() {
+const Category: React.FC = () => {
   const categoryArray = getCategoryArray();
 
   return (
@@ -40,3 +34,5 @@ export default function Category() {
     </>
   );
 }
+
+export default Category;
