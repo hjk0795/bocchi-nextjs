@@ -4,7 +4,7 @@ import Header from "../components/header";
 import Layout from "../components/layout";
 import type { AppProps } from 'next/app'
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <>
       <Header />
