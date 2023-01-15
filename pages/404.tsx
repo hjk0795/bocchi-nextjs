@@ -1,6 +1,7 @@
 import RedirectionUI from "../components/redirectionUI"
+import { NextPage } from "next/types";
 
-export default function Custom404() {
+const Custom404: NextPage = () => {
     return (
         <>
             <RedirectionUI
@@ -11,3 +12,5 @@ export default function Custom404() {
         </>
     );
 }
+
+export default Custom404;

@@ -1,6 +1,7 @@
 import RedirectionUI from "../components/redirectionUI"
+import { NextPage } from "next/types";
 
-export default function Custom500() {
+const Custom500: NextPage = () => {
     return (
         <>
             <RedirectionUI
@@ -11,3 +12,5 @@ export default function Custom500() {
         </>
     );
 }
+
+export default Custom500;

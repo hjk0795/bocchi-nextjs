@@ -4,8 +4,9 @@ import FlaticonAttribution from "../../components/flaticonAttribution";
 import Row from "react-bootstrap/Row";
 import _ from "lodash";
 import { getCategoryArray } from "../../utils/getCategoryArray";
+import { NextPage } from "next/types";
 
-const Category: React.FC = () => {
+const Category: NextPage = () => {
   const categoryArray = getCategoryArray();
 
   return (
