@@ -1,13 +1,14 @@
 import LoadingModal from "../components/loadingModal";
 import { RedirectionUIProps } from "../components/redirectionUI";
 import { useState, useEffect } from "react";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
 import { FirebaseError } from "firebase/app";
 import { GithubAuthProvider, signInWithCredential } from "firebase/auth";
 
 
-export default function CallbackEndpoint() {
+const CallbackEndpoint: NextPage = () => {
   const [modalShow, setModalShow] = useState<boolean>(false);
   const router = useRouter();
 
@@ -85,3 +86,4 @@ export default function CallbackEndpoint() {
   );
 }
 
+export default CallbackEndpoint;
