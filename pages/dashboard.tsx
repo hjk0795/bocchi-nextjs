@@ -2,10 +2,11 @@ import Image from "next/legacy/image";
 import { RedirectionUIProps } from "../components/redirectionUI";
 import { auth } from "../firebase-config";
 import { useEffect, useState } from "react";
+import { NextPage } from "next/types";
 import { useRouter } from "next/router";
 import { onAuthStateChanged, User } from "firebase/auth";
 
-export default function Dashboard() {
+const Dashboard: NextPage = () => {
   const [currentUser, setCurrentUser] = useState<User>(null);
   const router = useRouter();
   const QUESTION_MARK_IMG = "https://cdn-icons-png.flaticon.com/512/84/84042.png";
@@ -38,3 +39,5 @@ export default function Dashboard() {
     </>
   );
 }
+
+export default Dashboard;

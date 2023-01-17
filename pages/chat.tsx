@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { millisecondsToDate } from "../utils/millisecondsToDate";
 import { useState, useEffect } from "react";
+import { NextPage } from "next/types";
 import { db, auth } from "../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -25,7 +26,7 @@ type MessageIdData = {
   }
 }
 
-function Chat() {
+const Chat: NextPage = () => {
   const [textToBeSent, setTextToBeSent] = useState<string>("");
   const [messageArray, setMessageArray] = useState<MessageIdData[]>(null);
   const [currentUser, setCurrentUser] = useState(null);
