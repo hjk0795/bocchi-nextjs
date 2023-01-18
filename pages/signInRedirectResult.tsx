@@ -1,11 +1,12 @@
 import LoadingModal from "../components/loadingModal";
 import { RedirectionUIProps } from "../components/redirectionUI";
 import { useState, useEffect } from "react";
+import { NextPage } from "next/types";
 import { useRouter } from "next/router";
 import { auth } from "../firebase-config";
 import { getRedirectResult } from "firebase/auth";
 
-export default function SignInRedirectResult() {
+const SignInRedirectResult: NextPage = () => {
     const [modalShow, setModalShow] = useState<boolean>(false);
     const router = useRouter();
 
@@ -31,3 +32,5 @@ export default function SignInRedirectResult() {
         </>
     );
 }
+
+export default SignInRedirectResult;

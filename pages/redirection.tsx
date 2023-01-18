@@ -1,8 +1,8 @@
 import RedirectionUI, { RedirectionUIProps } from "../components/redirectionUI";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { NextPage } from "next/types";
 
-export default function Redirection() {
+const Redirection: NextPage = () => {
   const [redirectionUIProps, setRedirectionUIProps] = useState<RedirectionUIProps>(null);
 
   useEffect(() => {
@@ -34,3 +34,4 @@ export default function Redirection() {
   }
 }
 
+export default Redirection;
