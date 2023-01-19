@@ -5,7 +5,7 @@ export type DocIdData = {
     data: DocumentData
 }
 
-export default async function getDocIdDataArray(query: Query<DocumentData>) {
+export const getDocIdDataArray = async(query: Query<DocumentData>) => {
     const querySnapshot = await getDocs(query);
     const querySnapshotDocs = querySnapshot.docs;
     const docIdDataArray = querySnapshotDocs.map((doc) => {

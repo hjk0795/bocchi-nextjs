@@ -1,6 +1,6 @@
 import RestaurantMain from "../../../components/restaurantMain";
-import getDocIdDataArray from "../../../utils/getDocIdDataArray";
 import { DocIdData } from "../../../utils/getDocIdDataArray";
+import { getDocIdDataArray } from "../../../utils/getDocIdDataArray";
 import { GetStaticProps, GetStaticPaths } from 'next'
 import { db, storage } from "../../../firebase-config";
 import {

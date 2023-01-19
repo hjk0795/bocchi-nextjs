@@ -1,4 +1,5 @@
 import styles from "../styles/header.module.css";
+import Circle from "./circle";
 import AlertToast from "./alertToast";
 import Link from "next/link";
 import Nav from "react-bootstrap/Nav";
@@ -67,6 +68,15 @@ const Header: React.FC = () => {
                 {currentUser ? <Link href="/#sign-out" onClick={signOutAndRedirect}>Sign Out</Link> :
                   <Link href="/login">Login</Link>}
               </Nav.Link>
+              {currentUser && <Nav.Link as="div" className="me-auto">
+                <Circle
+                  height="30px"
+                  width="30px"
+                  lineHeight="30px"
+                  backgroundImgURL={currentUser.photoURL}
+                  hidden={false}
+                />
+              </Nav.Link>}
               <div className={styles.alertToast}>
                 <AlertToast
                   title={alertToastError?.title}

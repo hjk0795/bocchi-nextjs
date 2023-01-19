@@ -1,9 +1,9 @@
 import GridCard from "../../../components/gridCard";
-import getDocIdDataArray from "../../../utils/getDocIdDataArray";
 import Row from "react-bootstrap/Row";
 import _ from "lodash"
 import { getCategoryArray } from "../../../utils/getCategoryArray";
 import { DocIdData } from "../../../utils/getDocIdDataArray";
+import {getDocIdDataArray} from "../../../utils/getDocIdDataArray";
 import { GetStaticProps, GetStaticPaths } from 'next'
 import { db } from "../../../firebase-config";
 import { query, collection, where } from "firebase/firestore";
