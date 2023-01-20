@@ -5,6 +5,9 @@ import Link from "next/link";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
 import { RedirectionUIProps } from "./redirectionUI";
 import { auth } from "../firebase-config";
 import { useState, useEffect } from "react";
@@ -59,7 +62,7 @@ const Header: React.FC = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <Nav.Link as="div" className="me-auto">
+              {/* <Nav.Link as="div" className="me-auto">
                 <Link href="/chat">
                   Chat
                 </Link>
@@ -67,16 +70,26 @@ const Header: React.FC = () => {
               <Nav.Link as="div" className="me-auto">
                 {currentUser ? <Link href="/#sign-out" onClick={signOutAndRedirect}>Sign Out</Link> :
                   <Link href="/login">Login</Link>}
+              </Nav.Link> */}
+              {currentUser ? <Nav.Link as="div" className="me-auto">
+
+              <Circle
+                      height="30px"
+                      width="30px"
+                      lineHeight="30px"
+                      backgroundImgURL={currentUser.photoURL}
+                      hidden={false}
+                    />
+
+              </Nav.Link> : <><Nav.Link as="div" className="me-auto">
+                <Link href="/chat">
+                  Chat
+                </Link>
               </Nav.Link>
-              {currentUser && <Nav.Link as="div" className="me-auto">
-                <Circle
-                  height="30px"
-                  width="30px"
-                  lineHeight="30px"
-                  backgroundImgURL={currentUser.photoURL}
-                  hidden={false}
-                />
-              </Nav.Link>}
+                <Nav.Link as="div" className="me-auto">
+                  <Link href="/login">Login</Link>
+                </Nav.Link></>
+              }
               <div className={styles.alertToast}>
                 <AlertToast
                   title={alertToastError?.title}
