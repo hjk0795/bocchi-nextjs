@@ -25,6 +25,7 @@ const Header: React.FC = () => {
   const [alertToast, setAlertToast] = useState<boolean>(false);
   const [alertToastError, setAlertToastError] = useState<AlertToastError>(null);
   const router = useRouter();
+  const QUESTION_MARK_IMG = "https://cdn-icons-png.flaticon.com/512/84/84042.png";
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -72,14 +73,24 @@ const Header: React.FC = () => {
                   <Link href="/login">Login</Link>}
               </Nav.Link> */}
               {currentUser ? <Nav.Link as="div" className="me-auto">
-
-              <Circle
+                <Dropdown>
+                  <Dropdown.Toggle id="dropdown-basic" size="sm">
+                    <Circle
                       height="30px"
                       width="30px"
                       lineHeight="30px"
                       backgroundImgURL={currentUser.photoURL}
                       hidden={false}
                     />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+
+
 
               </Nav.Link> : <><Nav.Link as="div" className="me-auto">
                 <Link href="/chat">
