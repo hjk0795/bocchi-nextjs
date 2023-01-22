@@ -5,15 +5,27 @@ import Link from "next/link";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Dropdown from 'react-bootstrap/Dropdown';
 import { RedirectionUIProps } from "./redirectionUI";
 import { auth } from "../firebase-config";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { FirebaseError } from "firebase/app";
 import { User, onAuthStateChanged, signOut } from "firebase/auth";
+
+
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import { Paper } from "@mui/material";
 
 type AlertToastError = {
   title: string,
@@ -24,6 +36,7 @@ const Header: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User>(null);
   const [alertToast, setAlertToast] = useState<boolean>(false);
   const [alertToastError, setAlertToastError] = useState<AlertToastError>(null);
+  const [isDrawed, setIsDrawed] = useState<boolean>(false);
   const router = useRouter();
   const QUESTION_MARK_IMG = "https://cdn-icons-png.flaticon.com/512/84/84042.png";
 
@@ -52,6 +65,58 @@ const Header: React.FC = () => {
       })
   }
 
+  const toggleDrawer =
+    (open: boolean) =>
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        if (
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
+
+        setIsDrawed(open);
+      };
+
+  const list = () => (
+    <Box
+      sx={{ width: 'auto' }}
+      role="presentation"
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+      style={{display: 'none'}}
+    >
+      <Paper>
+        <List>
+          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {['All mail', 'Trash', 'Spam'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+    </Box>
+  );
+
   return (
     <>
       <Navbar bg="light" expand="lg">
@@ -73,8 +138,12 @@ const Header: React.FC = () => {
                   <Link href="/login">Login</Link>}
               </Nav.Link> */}
               {currentUser ? <Nav.Link as="div" className="me-auto">
-                <Dropdown>
-                  <Dropdown.Toggle id="dropdown-basic" size="sm">
+
+
+
+
+                <React.Fragment>
+                  <Button onClick={toggleDrawer(true)}>
                     <Circle
                       height="30px"
                       width="30px"
@@ -82,13 +151,17 @@ const Header: React.FC = () => {
                       backgroundImgURL={currentUser.photoURL}
                       hidden={false}
                     />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                  </Button>
+                  {list()}
+                  {/* <Drawer
+                      anchor={'right'}
+                      open={isDrawed}
+                      onClose={toggleDrawer(false)}
+                    >
+                      {list()}
+                    </Drawer> */}
+                </React.Fragment>
+
 
 
 
