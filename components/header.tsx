@@ -1,31 +1,26 @@
 import styles from "../styles/header.module.css";
 import Circle from "./circle";
 import AlertToast from "./alertToast";
+import React from "react";
 import Link from "next/link";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import { RedirectionUIProps } from "./redirectionUI";
-import { auth } from "../firebase-config";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { FirebaseError } from "firebase/app";
-import { User, onAuthStateChanged, signOut } from "firebase/auth";
-
-
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import { RedirectionUIProps } from "./redirectionUI";
+import { auth } from "../firebase-config";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { Paper } from "@mui/material";
+import { BsFillChatFill } from 'react-icons/bs';
+import { GoSignOut } from 'react-icons/go';
+import { FirebaseError } from "firebase/app";
+import { User, onAuthStateChanged, signOut } from "firebase/auth";
 
 type AlertToastError = {
   title: string,
@@ -38,7 +33,6 @@ const Header: React.FC = () => {
   const [alertToastError, setAlertToastError] = useState<AlertToastError>(null);
   const [isDrawed, setIsDrawed] = useState<boolean>(false);
   const router = useRouter();
-  const QUESTION_MARK_IMG = "https://cdn-icons-png.flaticon.com/512/84/84042.png";
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -65,56 +59,27 @@ const Header: React.FC = () => {
       })
   }
 
-  const toggleDrawer =
-    (open: boolean) =>
-      (event: React.KeyboardEvent | React.MouseEvent) => {
-        if (
-          event.type === 'keydown' &&
-          ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-          return;
-        }
-
-        setIsDrawed(open);
-      };
-
   const list = () => (
-    <Box
-      sx={{ width: 'auto' }}
-      role="presentation"
-      onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
-      style={{display: 'none'}}
-    >
-      <Paper>
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
-    </Box>
+    <Paper className={styles.dropdown}>
+      <List>
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => router.push('/chat')}>
+            <ListItemIcon>
+              <BsFillChatFill />
+            </ListItemIcon>
+            <ListItemText primary="Chat" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton onClick={signOutAndRedirect}>
+            <ListItemIcon>
+              <GoSignOut />
+            </ListItemIcon>
+            <ListItemText primary="Sign Out" />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Paper>
   );
 
   return (
@@ -122,28 +87,14 @@ const Header: React.FC = () => {
       <Navbar bg="light" expand="lg">
         <Container>
           <Navbar.Brand>
-            {/* <Link href="/">bocchimeshi</Link> */}
             <Link href="/">brand</Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              {/* <Nav.Link as="div" className="me-auto">
-                <Link href="/chat">
-                  Chat
-                </Link>
-              </Nav.Link>
-              <Nav.Link as="div" className="me-auto">
-                {currentUser ? <Link href="/#sign-out" onClick={signOutAndRedirect}>Sign Out</Link> :
-                  <Link href="/login">Login</Link>}
-              </Nav.Link> */}
               {currentUser ? <Nav.Link as="div" className="me-auto">
-
-
-
-
                 <React.Fragment>
-                  <Button onClick={toggleDrawer(true)}>
+                  <Button onClick={() => setIsDrawed(!isDrawed)}>
                     <Circle
                       height="30px"
                       width="30px"
@@ -152,19 +103,8 @@ const Header: React.FC = () => {
                       hidden={false}
                     />
                   </Button>
-                  {list()}
-                  {/* <Drawer
-                      anchor={'right'}
-                      open={isDrawed}
-                      onClose={toggleDrawer(false)}
-                    >
-                      {list()}
-                    </Drawer> */}
+                  {isDrawed && list()}
                 </React.Fragment>
-
-
-
-
               </Nav.Link> : <><Nav.Link as="div" className="me-auto">
                 <Link href="/chat">
                   Chat
