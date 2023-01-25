@@ -8,10 +8,6 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { RedirectionUIProps } from "./redirectionUI";
 import { auth } from "../firebase-config";
 import { useState, useEffect } from "react";
@@ -21,6 +17,7 @@ import { BsFillChatFill } from 'react-icons/bs';
 import { GoSignOut } from 'react-icons/go';
 import { FirebaseError } from "firebase/app";
 import { User, onAuthStateChanged, signOut } from "firebase/auth";
+import ListItemSet from "./listItemSet";
 
 type AlertToastError = {
   title: string,
@@ -59,29 +56,6 @@ const Header: React.FC = () => {
       })
   }
 
-  const list = () => (
-    <Paper className={styles.dropdown}>
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => router.push('/chat')}>
-            <ListItemIcon>
-              <BsFillChatFill />
-            </ListItemIcon>
-            <ListItemText primary="Chat" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton onClick={signOutAndRedirect}>
-            <ListItemIcon>
-              <GoSignOut />
-            </ListItemIcon>
-            <ListItemText primary="Sign Out" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Paper>
-  );
-
   return (
     <>
       <Navbar bg="light" expand="lg">
@@ -103,7 +77,12 @@ const Header: React.FC = () => {
                       hidden={false}
                     />
                   </Button>
-                  {isDrawed && list()}
+                  {isDrawed && <Paper className={styles.dropdown}>
+                    <List>
+                      <ListItemSet text="Chat" icon={<BsFillChatFill />} handleClick={() => router.push('/chat')} />
+                      <ListItemSet text="Sign Out" icon={<GoSignOut />} handleClick={signOutAndRedirect} />
+                    </List>
+                  </Paper>}
                 </React.Fragment>
               </Nav.Link> : <><Nav.Link as="div" className="me-auto">
                 <Link href="/chat">
