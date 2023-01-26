@@ -8,6 +8,7 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
+import ListItemSet from "./listItemSet";
 import { RedirectionUIProps } from "./redirectionUI";
 import { auth } from "../firebase-config";
 import { useState, useEffect } from "react";
@@ -17,7 +18,6 @@ import { BsFillChatFill } from 'react-icons/bs';
 import { GoSignOut } from 'react-icons/go';
 import { FirebaseError } from "firebase/app";
 import { User, onAuthStateChanged, signOut } from "firebase/auth";
-import ListItemSet from "./listItemSet";
 
 type AlertToastError = {
   title: string,
@@ -66,7 +66,7 @@ const Header: React.FC = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              {currentUser ? <Nav.Link as="div" className="me-auto">
+              {currentUser ? <Nav.Link as="div" className={`${styles.drawer} me-auto`}>
                 <React.Fragment>
                   <Button onClick={() => setIsDrawed(!isDrawed)}>
                     <Circle
