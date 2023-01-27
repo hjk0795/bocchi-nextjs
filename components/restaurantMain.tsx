@@ -12,6 +12,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { DocIdData } from "../utils/getDocIdDataArray";
 import { getDocIdDataArray } from "../utils/getDocIdDataArray";
 import { ChangeEvent, useState, useEffect } from "react";
+import { MdFavoriteBorder } from 'react-icons/md';
 import { db, auth } from "../firebase-config";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
@@ -62,6 +63,10 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function addToFavorite() {
+
+  }
 
   async function getMoreReviews() {
     if (reviewArray.length === reviewCount) {
@@ -164,7 +169,10 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
 
   return (
     <>
-      <h1>{restaurantName}</h1>
+      <div className="d-flex justify-content-around align-items-center">
+        <h1>{restaurantName}</h1>
+        <MdFavoriteBorder size={25} onClick={addToFavorite} style={{cursor: 'pointer'}}/>
+      </div>
       <main>
         <Row>
           <div className={styles.menuImgContainer}>
