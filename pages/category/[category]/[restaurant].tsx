@@ -87,6 +87,7 @@ const RestaurantDetail: React.FC<RestaurantDetailProps> = ({
     <>
       <RestaurantMain
         restaurantName={restaurantIdData.data.name}
+        favoriteEmailArray={restaurantIdData.data.favorite}
         reviewIdDataArray={reviewIdDataArray}
         reviewCountFecthed={reviewCountFecthed}
         imgURLArray={imgURLArray}

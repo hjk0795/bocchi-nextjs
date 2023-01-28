@@ -12,7 +12,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { DocIdData } from "../utils/getDocIdDataArray";
 import { getDocIdDataArray } from "../utils/getDocIdDataArray";
 import { ChangeEvent, useState, useEffect } from "react";
-import { MdFavoriteBorder } from 'react-icons/md';
+import { MdFavoriteBorder, MdFavorite } from 'react-icons/md';
 import { db, auth } from "../firebase-config";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
@@ -28,10 +28,11 @@ import {
 } from "firebase/firestore";
 
 type RestaurantMainProps = {
-  restaurantName: string,
-  reviewIdDataArray: DocIdData[],
-  reviewCountFecthed: number,
-  imgURLArray: string[]
+  restaurantName: string;
+  favoriteEmailArray: string[];
+  reviewIdDataArray: DocIdData[];
+  reviewCountFecthed: number;
+  imgURLArray: string[];
 }
 
 type ReviewIdData = {
@@ -44,7 +45,7 @@ type ReviewIdData = {
   }
 }
 
-const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewIdDataArray, reviewCountFecthed, imgURLArray }) => {
+const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favoriteEmailArray, reviewIdDataArray, reviewCountFecthed, imgURLArray }) => {
   const [reviewCount, setReviewCount] = useState(reviewCountFecthed);
   const [hasMore, setHasMore] = useState(true);
   const [reviewArray, setReviewArray] = useState<ReviewIdData[]>(reviewIdDataArray as ReviewIdData[]);
@@ -64,7 +65,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function addToFavorite() {
+  function toggleFavorite() {
 
   }
 
@@ -171,7 +172,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
     <>
       <div className="d-flex justify-content-around align-items-center">
         <h1>{restaurantName}</h1>
-        <MdFavoriteBorder size={25} onClick={addToFavorite} style={{cursor: 'pointer'}}/>
+        {currentUser?favoriteEmailArray.includes(currentUser.email) && <MdFavorite size={25} onClick={toggleFavorite} style={{ cursor: 'pointer' }} /> : <MdFavoriteBorder size={25} onClick={toggleFavorite} style={{ cursor: 'pointer' }} />}
       </div>
       <main>
         <Row>
