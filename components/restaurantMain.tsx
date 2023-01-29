@@ -46,6 +46,7 @@ type ReviewIdData = {
 }
 
 const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favoriteEmailArray, reviewIdDataArray, reviewCountFecthed, imgURLArray }) => {
+  const [isToggled, setIsToggled] = useState<boolean>(false);
   const [reviewCount, setReviewCount] = useState(reviewCountFecthed);
   const [hasMore, setHasMore] = useState(true);
   const [reviewArray, setReviewArray] = useState<ReviewIdData[]>(reviewIdDataArray as ReviewIdData[]);
@@ -58,6 +59,10 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
+
+        if (favoriteEmailArray.includes(user.email)) {
+          setIsToggled(true);
+        }
       } else {
         setCurrentUser(null);
       }
@@ -66,7 +71,15 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
   }, []);
 
   function toggleFavorite() {
+    if (isToggled) {
 
+    } else {
+      //If not logged in, save favorite lists in cookie.
+      //Prompt alertToast to inform user to log in not to lose list info.
+      if (!currentUser) {
+        console.log("please login first");
+      }
+    }
   }
 
   async function getMoreReviews() {
@@ -172,7 +185,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
     <>
       <div className="d-flex justify-content-around align-items-center">
         <h1>{restaurantName}</h1>
-        {currentUser?favoriteEmailArray.includes(currentUser.email) && <MdFavorite size={25} onClick={toggleFavorite} style={{ cursor: 'pointer' }} /> : <MdFavoriteBorder size={25} onClick={toggleFavorite} style={{ cursor: 'pointer' }} />}
+        {isToggled ? <MdFavorite size={25} onClick={toggleFavorite} style={{ cursor: 'pointer' }} /> : <MdFavoriteBorder size={25} onClick={toggleFavorite} style={{ cursor: 'pointer' }} />}
       </div>
       <main>
         <Row>
