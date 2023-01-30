@@ -72,13 +72,15 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
 
   function toggleFavorite() {
     if (isToggled) {
-
+      setIsToggled(false);
     } else {
       //If not logged in, save favorite lists in cookie.
       //Prompt alertToast to inform user to log in not to lose list info.
       if (!currentUser) {
         console.log("please login first");
       }
+
+      setIsToggled(true);
     }
   }
 
