@@ -72,12 +72,32 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
 
   function toggleFavorite() {
     if (isToggled) {
+      if (!currentUser) {
+        const savedFavoriteList = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('favoriteList'))
+          ?.split('=')[1];
+
+        document.cookie = `favoriteList=${savedFavoriteList};max-age=0`;
+      }
+
       setIsToggled(false);
     } else {
       //If not logged in, save favorite lists in cookie.
       //Prompt alertToast to inform user to log in not to lose list info.
       if (!currentUser) {
-        console.log("please login first");
+        const savedFavoriteList = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('favoriteList'))
+          ?.split('=')[1];
+
+        if (savedFavoriteList) {
+          const favoriteList = JSON.stringify(JSON.parse(savedFavoriteList) + `&${restaurantName}`);
+
+          document.cookie = `favoriteList=${favoriteList};`;
+        } else {
+          document.cookie = `favoriteList=${restaurantName};`;
+        }
       }
 
       setIsToggled(true);
