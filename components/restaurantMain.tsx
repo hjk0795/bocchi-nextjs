@@ -71,36 +71,32 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
   }, []);
 
   function toggleFavorite() {
-    if (isToggled) {
-      if (!currentUser) {
-        const savedFavoriteList = document.cookie
-          .split('; ')
-          .find((row) => row.startsWith('favoriteList'))
-          ?.split('=')[1];
+    if (currentUser) {
+      if (isToggled) {
 
-        document.cookie = `favoriteList=${savedFavoriteList};max-age=0`;
+      } else {
+
       }
-
-      setIsToggled(false);
     } else {
-      //If not logged in, save favorite lists in cookie.
-      //Prompt alertToast to inform user to log in not to lose list info.
-      if (!currentUser) {
-        const savedFavoriteList = document.cookie
-          .split('; ')
-          .find((row) => row.startsWith('favoriteList'))
-          ?.split('=')[1];
+      const savedFavoriteList = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('favoriteList'))
+        ?.split('=')[1];
 
+      if (isToggled) {
+        document.cookie = `favoriteList=${savedFavoriteList};max-age=0`;
+        setIsToggled(false);
+      } else {
         if (savedFavoriteList) {
-          const favoriteList = JSON.stringify(JSON.parse(savedFavoriteList) + `&${restaurantName}`);
+          const favoriteList = savedFavoriteList + `&${restaurantName}`;
 
           document.cookie = `favoriteList=${favoriteList};`;
         } else {
           document.cookie = `favoriteList=${restaurantName};`;
         }
-      }
 
-      setIsToggled(true);
+        setIsToggled(true);
+      }
     }
   }
 
