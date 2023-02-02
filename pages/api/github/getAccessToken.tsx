@@ -11,7 +11,6 @@ const getAccessToken = async(req: NextApiRequest, res: NextApiResponse) => {
         client_secret: process.env.GITHUB_SECRET,
         code: req.body.code as string
     }
-    Object.freeze(clientInfo);
 
     try {
         const response = await fetch("https://github.com/login/oauth/access_token", {

@@ -67,6 +67,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
         setCurrentUser(null);
       }
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
