@@ -68,8 +68,25 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
       }
     });
 
+    setIsToggled(checkSavedFavorite());
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function checkSavedFavorite() {
+    const savedFavoriteList = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('favoriteList'))
+      ?.split('=')[1];
+
+    if (savedFavoriteList) {
+      if (savedFavoriteList.includes(restaurantName)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   function toggleFavorite() {
     if (currentUser) {
@@ -85,6 +102,9 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
         ?.split('=')[1];
 
       if (isToggled) {
+        //e.g. 'sushi1&ramen1&donburi1'
+
+
         document.cookie = `favoriteList=${savedFavoriteList};max-age=0`;
         setIsToggled(false);
       } else {
