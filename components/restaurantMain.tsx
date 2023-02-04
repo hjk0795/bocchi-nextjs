@@ -102,10 +102,17 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
         ?.split('=')[1];
 
       if (isToggled) {
-        //e.g. 'sushi1&ramen1&donburi1'
+        const savedFavoriteListArray = savedFavoriteList.split('&');
 
+        savedFavoriteListArray.splice(savedFavoriteListArray.indexOf(restaurantName), 1);
+        const updatedFavoriteList = savedFavoriteListArray.join('&');
 
-        document.cookie = `favoriteList=${savedFavoriteList};max-age=0`;
+        if (updatedFavoriteList) {
+          document.cookie = `favoriteList=${updatedFavoriteList};`;
+        } else {
+          document.cookie = `favoriteList=${updatedFavoriteList};max-age=0`;
+        }
+
         setIsToggled(false);
       } else {
         if (savedFavoriteList) {
