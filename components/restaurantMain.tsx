@@ -68,24 +68,18 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
       }
     });
 
-    setIsToggled(checkSavedFavorite());
+    setIsToggled(getFavoriteList().includes(restaurantName));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function checkSavedFavorite() {
+  function getFavoriteList() {
     const savedFavoriteList = document.cookie
       .split('; ')
       .find((row) => row.startsWith('favoriteList'))
       ?.split('=')[1];
 
-    if (savedFavoriteList) {
-      if (savedFavoriteList.includes(restaurantName)) {
-        return true;
-      }
-    }
-
-    return false;
+    return savedFavoriteList;
   }
 
   function toggleFavorite() {
@@ -96,10 +90,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
 
       }
     } else {
-      const savedFavoriteList = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('favoriteList'))
-        ?.split('=')[1];
+      const savedFavoriteList = getFavoriteList();
 
       if (isToggled) {
         const savedFavoriteListArray = savedFavoriteList.split('&');
