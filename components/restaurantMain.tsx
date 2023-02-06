@@ -68,7 +68,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
       }
     });
 
-    setIsToggled(getFavoriteList().includes(restaurantName));
+    getFavoriteList()?.includes(restaurantName) && setIsToggled(true);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
