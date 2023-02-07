@@ -29,7 +29,6 @@ import {
 
 type RestaurantMainProps = {
   restaurantName: string;
-  favoriteEmailArray: string[];
   reviewIdDataArray: DocIdData[];
   reviewCountFecthed: number;
   imgURLArray: string[];
@@ -45,7 +44,7 @@ type ReviewIdData = {
   }
 }
 
-const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favoriteEmailArray, reviewIdDataArray, reviewCountFecthed, imgURLArray }) => {
+const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewIdDataArray, reviewCountFecthed, imgURLArray }) => {
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [reviewCount, setReviewCount] = useState(reviewCountFecthed);
   const [hasMore, setHasMore] = useState(true);
@@ -60,7 +59,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
       if (user) {
         setCurrentUser(user);
 
-        if (favoriteEmailArray.includes(user.email)) {
+        if (checkFavoriteList()) {
           setIsToggled(true);
         }
       } else {
@@ -216,6 +215,17 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, favorit
     }
 
     setReviewArray(reviewArray);
+  }
+
+  async function checkFavoriteList() {
+    // const q1 = query(
+    //   collection(db, `restaurants/${restaurantName}/reviews`),
+    //   orderBy("timestamp", "desc"),
+    //   where("timestamp", "<", reviewArray[reviewArray.length - 1].data.timestamp),
+    //   limit(1)
+    // );
+    // const nextReviewIdDataArray = await getDocIdDataArray(q1);
+    // const nextReviewIdData = nextReviewIdDataArray[0];
   }
 
   return (
