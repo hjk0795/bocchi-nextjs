@@ -218,14 +218,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
   }
 
   async function checkFavoriteList() {
-    // const q1 = query(
-    //   collection(db, `restaurants/${restaurantName}/reviews`),
-    //   orderBy("timestamp", "desc"),
-    //   where("timestamp", "<", reviewArray[reviewArray.length - 1].data.timestamp),
-    //   limit(1)
-    // );
-    // const nextReviewIdDataArray = await getDocIdDataArray(q1);
-    // const nextReviewIdData = nextReviewIdDataArray[0];
+
   }
 
   return (
