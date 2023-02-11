@@ -35,15 +35,21 @@ const Dashboard: NextPage = () => {
     );
     const userIdDataArray = await getDocIdDataArray(q1);
     const userIdData = userIdDataArray[0];
+    const savedFavoriteList = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('favoriteList'))
+      ?.split('=')[1];
 
     if (!userIdData) {
+      const savedFavoriteListArray = savedFavoriteList?.split('&');
       const docRef = await addDoc(collection(db, "users"), {
         email: user.email,
-        favoriteList: []
+        favoriteList: savedFavoriteListArray ? savedFavoriteListArray : []
       });
-
       console.log("Document written with ID: ", docRef.id);
     }
+
+    document.cookie = `favoriteList=${savedFavoriteList};max-age=0`;
   }
 
   return (
