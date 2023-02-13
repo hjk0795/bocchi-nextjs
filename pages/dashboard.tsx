@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { NextPage } from "next/types";
 import { useRouter } from "next/router";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { addDoc, collection, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, query, setDoc, where } from "firebase/firestore";
 
 const Dashboard: NextPage = () => {
   const [currentUser, setCurrentUser] = useState<User>(null);
@@ -17,7 +17,7 @@ const Dashboard: NextPage = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
-        checkUserEntry(user);
+        checkUserDoc(user);
 
       } else {
         const redirectionUIProps: RedirectionUIProps = { title: "Please login first", pageToRedirect: "/login", isAutoRedirect: true }
@@ -28,21 +28,21 @@ const Dashboard: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function checkUserEntry(user: User) {
+  async function checkUserDoc(user: User) {
     const q1 = query(
-      collection(db, "users"),
-      where("email", "==", `${user.email}`)
+      collection(db, "users")
     );
     const userIdDataArray = await getDocIdDataArray(q1);
-    const userIdData = userIdDataArray[0];
 
-    if (!userIdData) {
-      const docRef = await addDoc(collection(db, "users"), {
-        email: user.email,
-        favoriteList: []
-      });
-      console.log("Document written with ID: ", docRef.id);
-    }
+    userIdDataArray.forEach((userIdData) => {
+      if (userIdData.id == user.email) {
+        return 0;
+      }
+    });
+
+    await setDoc(doc(db, "users", user.email), {
+      favoriteList: []
+    });
   }
 
   return (
