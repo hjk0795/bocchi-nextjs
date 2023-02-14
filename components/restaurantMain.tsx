@@ -59,6 +59,11 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
       if (user) {
         setCurrentUser(user);
 
+        const savedFavoriteList = getFavoriteList(user);
+        const savedFavoriteListArray = savedFavoriteList.split('&');
+
+        savedFavoriteListArray?.includes(restaurantName) && setIsToggled(true);
+
         if (checkFavoriteList()) {
           setIsToggled(true);
         }
@@ -67,21 +72,30 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
       }
     });
 
-    const savedFavoriteList = getFavoriteList();
-    const savedFavoriteListArray = savedFavoriteList.split('&');
 
-    savedFavoriteListArray?.includes(restaurantName) && setIsToggled(true);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function getFavoriteList() {
-    const savedFavoriteList = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('favoriteList'))
-      ?.split('=')[1];
+  async function getFavoriteList(user: User) {
+    if (user) {
+      const q = query(collection(db, "users"));
+      const userIdDataArray = await getDocIdDataArray(q);
 
-    return savedFavoriteList;
+      userIdDataArray.forEach((userIdData) => {
+        if (userIdData.id == user.email) {
+          return userIdData.data.favoriteList;
+        }
+      });
+
+    } else {
+      const savedFavoriteList = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('favoriteList'))
+        ?.split('=')[1];
+
+      return savedFavoriteList;
+    }
   }
 
   function toggleFavorite() {
@@ -92,7 +106,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
 
       }
     } else {
-      const savedFavoriteList = getFavoriteList();
+      const savedFavoriteList = getFavoriteList(currentUser);
 
       if (isToggled) {
         const savedFavoriteListArray = savedFavoriteList.split('&');
