@@ -55,11 +55,11 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
   const [editingID, setEditingID] = useState<string>(null);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         setCurrentUser(user);
 
-        const savedFavoriteList = getFavoriteList(user);
+        const savedFavoriteList = await getFavoriteList(user);
         const savedFavoriteListArray = savedFavoriteList.split('&');
 
         savedFavoriteListArray?.includes(restaurantName) && setIsToggled(true);
@@ -98,7 +98,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
     }
   }
 
-  function toggleFavorite() {
+  async function toggleFavorite() {
     if (currentUser) {
       if (isToggled) {
 
@@ -106,7 +106,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
 
       }
     } else {
-      const savedFavoriteList = getFavoriteList(currentUser);
+      const savedFavoriteList = await getFavoriteList(currentUser);
 
       if (isToggled) {
         const savedFavoriteListArray = savedFavoriteList.split('&');
