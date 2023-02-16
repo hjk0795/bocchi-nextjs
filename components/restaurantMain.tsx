@@ -59,20 +59,18 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
       if (user) {
         setCurrentUser(user);
 
-        const savedFavoriteList = await getFavoriteList(user);
-        const savedFavoriteListArray = savedFavoriteList.split('&');
-
-        savedFavoriteListArray?.includes(restaurantName) && setIsToggled(true);
-
         if (checkFavoriteList()) {
           setIsToggled(true);
         }
       } else {
         setCurrentUser(null);
       }
+
+      const savedFavoriteList = await getFavoriteList(user);
+      const savedFavoriteListArray = savedFavoriteList.split('&');
+
+      savedFavoriteListArray?.includes(restaurantName) && setIsToggled(true);
     });
-
-
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
