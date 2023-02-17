@@ -25,6 +25,7 @@ import {
   addDoc,
   setDoc,
   deleteDoc,
+  getDoc,
 } from "firebase/firestore";
 
 type RestaurantMainProps = {
@@ -66,8 +67,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
         setCurrentUser(null);
       }
 
-      const savedFavoriteList = await getFavoriteList(user);
-      const savedFavoriteListArray = savedFavoriteList.split('&');
+      const savedFavoriteListArray = await getFavoriteList(user);
 
       savedFavoriteListArray?.includes(restaurantName) && setIsToggled(true);
     });
@@ -77,22 +77,27 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
 
   async function getFavoriteList(user: User) {
     if (user) {
-      const q = query(collection(db, "users"));
-      const userIdDataArray = await getDocIdDataArray(q);
+      // const q = query(collection(db, "users"));
+      // const userIdDataArray = await getDocIdDataArray(q);
 
-      userIdDataArray.forEach((userIdData) => {
-        if (userIdData.id == user.email) {
-          return userIdData.data.favoriteList;
-        }
-      });
+      // userIdDataArray.forEach((userIdData) => {
+      //   if (userIdData.id == user.email) {
+      //     return userIdData.data.favoriteList;
+      //   }
+      // });
+      const docRef = doc(db, "users", user.email);
+      const docSnap = await getDoc(docRef);
+
+      return docSnap.data().favoriteList;
 
     } else {
       const savedFavoriteList = document.cookie
         .split('; ')
         .find((row) => row.startsWith('favoriteList'))
         ?.split('=')[1];
+      const savedFavoriteListArray = savedFavoriteList.split('&');
 
-      return savedFavoriteList;
+      return savedFavoriteListArray;
     }
   }
 
