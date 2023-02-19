@@ -104,7 +104,12 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
   async function toggleFavorite() {
     if (currentUser) {
       if (isToggled) {
+        const savedFavoriteListArray = await getFavoriteList(currentUser);
+        savedFavoriteListArray.splice(savedFavoriteListArray.indexOf(restaurantName), 1);
 
+        await setDoc(doc(db, "users", currentUser.email), {
+          favoriteList: savedFavoriteListArray
+        });
       } else {
         const savedFavoriteListArray = await getFavoriteList(currentUser);
         savedFavoriteListArray.push(restaurantName);
