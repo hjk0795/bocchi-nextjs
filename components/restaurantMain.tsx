@@ -77,14 +77,6 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
 
   async function getFavoriteList(user: User) {
     if (user) {
-      // const q = query(collection(db, "users"));
-      // const userIdDataArray = await getDocIdDataArray(q);
-
-      // userIdDataArray.forEach((userIdData) => {
-      //   if (userIdData.id == user.email) {
-      //     return userIdData.data.favoriteList;
-      //   }
-      // });
       const docRef = doc(db, "users", user.email);
       const docSnap = await getDoc(docRef);
 
