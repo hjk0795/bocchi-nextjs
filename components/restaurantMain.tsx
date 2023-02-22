@@ -59,10 +59,6 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         setCurrentUser(user);
-
-        if (checkFavoriteList()) {
-          setIsToggled(true);
-        }
       } else {
         setCurrentUser(null);
       }
