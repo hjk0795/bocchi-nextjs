@@ -83,7 +83,7 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
         .split('; ')
         .find((row) => row.startsWith('favoriteList'))
         ?.split('=')[1];
-      const savedFavoriteListArray = savedFavoriteList.split('&');
+      const savedFavoriteListArray = savedFavoriteList?.split('&');
 
       return savedFavoriteListArray;
     }
@@ -104,10 +104,8 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
       const savedFavoriteList = await getFavoriteList(currentUser);
 
       if (isToggled) {
-        const savedFavoriteListArray = savedFavoriteList.split('&');
-
-        savedFavoriteListArray.splice(savedFavoriteListArray.indexOf(restaurantName), 1);
-        const updatedFavoriteList = savedFavoriteListArray.join('&');
+        savedFavoriteList.splice(savedFavoriteList.indexOf(restaurantName), 1);
+        const updatedFavoriteList = savedFavoriteList.join('&');
 
         if (updatedFavoriteList) {
           document.cookie = `favoriteList=${updatedFavoriteList};`;
