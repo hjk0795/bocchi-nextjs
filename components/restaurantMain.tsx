@@ -93,8 +93,10 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
     if (currentUser) {
       const savedFavoriteListArray = await getFavoriteList(currentUser);
       if (isToggled) {
+        setIsToggled(false);
         savedFavoriteListArray.splice(savedFavoriteListArray.indexOf(restaurantName), 1);
       } else {
+        setIsToggled(true);
         savedFavoriteListArray.push(restaurantName);
       }
       await setDoc(doc(db, "users", currentUser.email), {
