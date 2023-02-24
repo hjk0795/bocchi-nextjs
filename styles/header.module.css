@@ -1,3 +1,11 @@
+.collapsed {
+  display: none;
+}
+
+.notCollapsed {
+  display: block;
+}
+
 .alertToast {
     position: absolute;
     z-index: 1;
@@ -13,6 +21,14 @@
 
 @media only screen and (max-width: 992px) {
     .drawer {
+      display: none;
+    }
+
+    .collapsed {
+      display: block;
+    }
+
+    .notCollapsed {
       display: none;
     }
   }

@@ -229,10 +229,6 @@ const RestaurantMain: React.FC<RestaurantMainProps> = ({ restaurantName, reviewI
     setReviewArray(reviewArray);
   }
 
-  async function checkFavoriteList() {
-
-  }
-
   return (
     <>
       <div className="d-flex justify-content-around align-items-center">

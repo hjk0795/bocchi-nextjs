@@ -65,43 +65,58 @@ const Header: React.FC = () => {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
-              {currentUser ? <Nav.Link as="div" className={`${styles.drawer} me-auto`}>
-                <React.Fragment>
-                  <Button onClick={() => setIsDrawed(!isDrawed)}>
-                    <Circle
-                      height="30px"
-                      width="30px"
-                      lineHeight="30px"
-                      backgroundImgURL={currentUser.photoURL}
-                      hidden={false}
-                    />
-                  </Button>
-                  {isDrawed && <Paper className={styles.dropdown}>
-                    <List>
-                      <ListItemSet text="Chat" icon={<BsFillChatFill />} handleClick={() => router.push('/chat')} />
-                      <ListItemSet text="Sign Out" icon={<GoSignOut />} handleClick={signOutAndRedirect} />
-                    </List>
-                  </Paper>}
-                </React.Fragment>
-              </Nav.Link> : <><Nav.Link as="div" className="me-auto">
-                <Link href="/chat">
-                  Chat
-                </Link>
-              </Nav.Link>
+            <div className={`${styles.collapsed} me-auto`}>
+              <Nav className="ms-auto">
+                <Nav.Link as="div" className="me-auto">
+                  <Link href="/chat">
+                    Chat
+                  </Link>
+                </Nav.Link>
                 <Nav.Link as="div" className="me-auto">
                   <Link href="/login">Login</Link>
-                </Nav.Link></>
-              }
-              <div className={styles.alertToast}>
-                <AlertToast
-                  title={alertToastError?.title}
-                  message={alertToastError?.message}
-                  show={alertToast}
-                  setShow={setAlertToast}
-                />
-              </div>
-            </Nav>
+                </Nav.Link>
+              </Nav>
+            </div>
+            <div className={`${styles.notCollapsed} ms-auto`}>
+              <Nav className="ms-auto">
+                {currentUser ? <Nav.Link as="div" className={`${styles.drawer} me-auto`}>
+                  <React.Fragment>
+                    <Button onClick={() => setIsDrawed(!isDrawed)}>
+                      <Circle
+                        height="30px"
+                        width="30px"
+                        lineHeight="30px"
+                        backgroundImgURL={currentUser.photoURL}
+                        hidden={false}
+                      />
+                    </Button>
+                    {isDrawed && <Paper className={styles.dropdown}>
+                      <List>
+                        <ListItemSet text="Chat" icon={<BsFillChatFill />} handleClick={() => router.push('/chat')} />
+                        <ListItemSet text="Sign Out" icon={<GoSignOut />} handleClick={signOutAndRedirect} />
+                      </List>
+                    </Paper>}
+                  </React.Fragment>
+                </Nav.Link> : <><Nav.Link as="div" className="me-auto">
+                  <Link href="/chat">
+                    Chat
+                  </Link>
+                </Nav.Link>
+                  <Nav.Link as="div" className="me-auto">
+                    <Link href="/login">Login</Link>
+                  </Nav.Link></>
+                }
+              </Nav>
+            </div>
+            <div className={styles.alertToast}>
+              <AlertToast
+                title={alertToastError?.title}
+                message={alertToastError?.message}
+                show={alertToast}
+                setShow={setAlertToast}
+              />
+            </div>
+
           </Navbar.Collapse>
         </Container>
       </Navbar>
