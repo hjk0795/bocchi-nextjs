@@ -73,7 +73,7 @@ const Header: React.FC = () => {
                   </Link>
                 </Nav.Link>
                 <Nav.Link as="div" className="me-auto">
-                  <Link href="/login">Login</Link>
+                  {currentUser ? <Link href="#signout" onClick={signOutAndRedirect}>Sign Out</Link> : <Link href="/login">Login</Link>}
                 </Nav.Link>
               </Nav>
             </div>
