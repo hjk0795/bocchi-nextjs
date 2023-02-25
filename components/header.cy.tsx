@@ -23,9 +23,9 @@ describe('Header', () => {
         cy.get('@push').should('have.been.called', '/');
         cy.get('button').should('have.class', 'navbar-toggler collapsed').click();
         cy.get('button').should('have.class', 'navbar-toggler');
-        cy.get('a').contains('Chat').click();
+        cy.contains('Chat').click();
         cy.get('@push').should('have.been.called', '/chat');
-        cy.get('a').contains('Login').click();
+        cy.contains('Login').click();
         cy.get('@push').should('have.been.called', '/login');
     });
 });
