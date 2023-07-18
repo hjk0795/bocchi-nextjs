@@ -1,1 +1,1 @@
-원하는 종류의 식당을 찾아볼 수 있는 간단한 웹페이지입니다. 주요 기능으로는 리뷰 관리, 채팅, 로그인 기능이 있습니다.
+A simple webpage that lets you find the kind of restaurant you're looking for. Key features include review management, chat, and login(OAuth)
